@@ -71,6 +71,36 @@ void VariablesExtended::set(const QString &name_, QVector<double> &&data_)
             ;
 }
 
+bool VariablesExtended::get(const QString &name_, QStringList &data_) const
+{
+    return m_base ?
+                m_base->get(name_, data_)
+              : m_extend ?
+                    m_extend->get(name_, data_)
+                  : false
+                    ;
+}
+
+void VariablesExtended::set(const QString &name_, const QStringList &data_)
+{
+    m_base ?
+        m_base->set(name_, data_)
+        : m_extend ?
+            m_extend->set(name_, data_)
+          : static_cast<void>(nullptr)
+            ;
+}
+
+void VariablesExtended::set(const QString &name_, QStringList &&data_)
+{
+    m_base ?
+        m_base->set(name_, std::move(data_))
+        : m_extend ?
+            m_extend->set(name_, std::move(data_))
+          : static_cast<void>(nullptr)
+            ;
+}
+
 bool VariablesExtended::isUpdated(const QSet<QString> &vars_, IVariables *base_) const
 {
     return m_extend ?

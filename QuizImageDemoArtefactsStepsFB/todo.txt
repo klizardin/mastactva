@@ -163,3 +163,4 @@ opencv addon test
 
 * UI design
 - demo with good images
+* document classes

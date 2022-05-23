@@ -40,6 +40,9 @@ public:
     virtual bool get(const QString &name_, QVector<double> &data_) const = 0;
     virtual void set(const QString &name_, const QVector<double> &data_) = 0;
     virtual void set(const QString &name_, QVector<double> &&data_) = 0;
+    virtual bool get(const QString &name_, QStringList &data_) const = 0;
+    virtual void set(const QString &name_, const QStringList &data_) = 0;
+    virtual void set(const QString &name_, QStringList &&data_) = 0;
     virtual bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const = 0;
     virtual const IVariables * getRoot() const;
     virtual IVariables * getRoot();
@@ -53,6 +56,9 @@ public:
     bool get(const QString &name_, QVector<double> &data_) const override;
     void set(const QString &name_, const QVector<double> &data_) override;
     void set(const QString &name_, QVector<double> &&data_) override;
+    bool get(const QString &name_, QStringList &data_) const override;
+    void set(const QString &name_, const QStringList &data_) override;
+    void set(const QString &name_, QStringList &&data_) override;
     bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
 
     const IVariables * getRoot() const override;

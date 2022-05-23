@@ -285,6 +285,50 @@ void drawing_data::QuizImageObject::set(const QString &name_, QVector<double> &&
     }
 }
 
+bool drawing_data::QuizImageObject::get(const QString &name_, QStringList &data_) const
+{
+    const auto fit = strVariables.find(name_);
+    if(std::end(strVariables) == fit)
+    {
+        return false;
+    }
+    else
+    {
+        data_ = fit->second;
+        return true;
+    }
+}
+
+void drawing_data::QuizImageObject::set(const QString &name_, const QStringList &data_)
+{
+    setVariable(name_);
+
+    auto fit = strVariables.find(name_);
+    if(std::end(strVariables) == fit)
+    {
+        strVariables.insert({name_, data_});
+    }
+    else
+    {
+        fit->second = data_;
+    }
+}
+
+void drawing_data::QuizImageObject::set(const QString &name_, QStringList &&data_)
+{
+    setVariable(name_);
+
+    auto fit = strVariables.find(name_);
+    if(std::end(strVariables) == fit)
+    {
+        strVariables.insert({name_, std::move(data_)});
+    }
+    else
+    {
+        fit->second = data_;
+    }
+}
+
 bool drawing_data::QuizImageObject::isUpdated(const QSet<QString> &vars_, IVariables *base_) const
 {
     return detail::Calculations::isUpdated(vars_, base_);
@@ -466,6 +510,52 @@ void drawing_data::QuizImageObjects::set(const QString &name_, QVector<double> &
 {
     setVariable(name_);
     const QVector<double> data = std::move(data_);
+
+    for(std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        object_->set(name_, data);
+    }
+}
+
+bool drawing_data::QuizImageObjects::get(const QString &name_, QStringList &data_) const
+{
+    bool result = false;
+    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        result |= object_->get(name_, data_);
+    }
+    return result;
+}
+
+void drawing_data::QuizImageObjects::set(const QString &name_, const QStringList &data_)
+{
+    setVariable(name_);
+
+    for(std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        object_->set(name_, data_);
+    }
+}
+
+void drawing_data::QuizImageObjects::set(const QString &name_, QStringList &&data_)
+{
+    setVariable(name_);
+    const QStringList data = std::move(data_);
 
     for(std::shared_ptr<QuizImageObject> &object_ : objects)
     {

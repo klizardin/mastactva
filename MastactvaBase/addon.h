@@ -4,7 +4,9 @@
 
 #include <QString>
 
-
+/*
+    addons interface for effects sub-system
+*/
 class IEffectAddOn
 {
 public:

@@ -322,10 +322,15 @@ bool LuaRuntimeVariables::get(const QString &name_, const drawingdata::IPosition
 
 bool LuaRuntimeVariables::get(const QString &name_, const drawingdata::IPosition *position_, QStringList &data_) const
 {
-    Q_UNUSED(name_);
     Q_UNUSED(position_);
-    Q_UNUSED(data_);
-    return false; // no implementation at runtime
+    if(m_variables)
+    {
+        return m_variables->get(name_, data_);
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void LuaRuntimeVariables::add(const QJsonDocument &data_)
@@ -363,18 +368,30 @@ bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition
 
 bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition *position_, const QStringList &data_)
 {
-    Q_UNUSED(name_);
     Q_UNUSED(position_);
-    Q_UNUSED(data_);
-    return false; // no implementation at runtime
+    if(m_variables)
+    {
+        m_variables->set(name_, data_);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition *position_, QStringList &&data_)
 {
-    Q_UNUSED(name_);
     Q_UNUSED(position_);
-    Q_UNUSED(data_);
-    return false; // no implementation at runtime
+    if(m_variables)
+    {
+        m_variables->set(name_, data_);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void LuaRuntimeVariables::addAliases(const QJsonDocument &data_, const drawingdata::IPosition *position_)
@@ -395,7 +412,11 @@ void LuaRuntimeVariables::clear()
     // no implementation at runtime
 }
 
-
+/*
+    the class for runtime calculation of variables with lua scripts
+    it calls main function in the lua script
+    it is called if at least one of the required variables were changed
+*/
 class LuaRuntimeCalculations :
         public opengl_drawing::IEffectCalculation,
         protected LuaAPI
@@ -421,7 +442,7 @@ LuaRuntimeCalculations::LuaRuntimeCalculations(
     setFilename(filename_);
     setRequiredVariables(requiredVariables_);
     load(luaScript_);
-    m_variables = std::make_shared<LuaRuntimeVariables>();
+    m_variables = std::make_shared<LuaRuntimeVariables>(); // use of stub variables class to initialize variables usage
     set(m_variables);
 }
 
