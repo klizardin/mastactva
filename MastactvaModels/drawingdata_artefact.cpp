@@ -395,7 +395,11 @@ void LuaRuntimeVariables::clear()
     // no implementation at runtime
 }
 
-
+/*
+    the class for runtime calculation of variables with lua scripts
+    it calls main function in the lua script
+    it is called if at least one of the required variables were changed
+*/
 class LuaRuntimeCalculations :
         public opengl_drawing::IEffectCalculation,
         protected LuaAPI
@@ -421,7 +425,7 @@ LuaRuntimeCalculations::LuaRuntimeCalculations(
     setFilename(filename_);
     setRequiredVariables(requiredVariables_);
     load(luaScript_);
-    m_variables = std::make_shared<LuaRuntimeVariables>();
+    m_variables = std::make_shared<LuaRuntimeVariables>(); // use of stub variables class to initialize variables usage
     set(m_variables);
 }
 
