@@ -1110,6 +1110,7 @@ namespace drawing_data
         std::vector<Texture> textures;
         std::vector<QString> objectStates;
         std::vector<QString> objectCalculations;
+        std::map<QString, QStringList> strVariables;
 
     public:
         QuizImageObject();
@@ -1118,6 +1119,9 @@ namespace drawing_data
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;
         void set(const QString &name_, QVector<double> &&data_) override;
+        bool get(const QString &name_, QStringList &data_) const override;
+        void set(const QString &name_, const QStringList &data_) override;
+        void set(const QString &name_, QStringList &&data_) override;
         bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
 
         bool allowedForTime(double t_) const;
@@ -1206,6 +1210,9 @@ namespace drawing_data
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;
         void set(const QString &name_, QVector<double> &&data_) override;
+        bool get(const QString &name_, QStringList &data_) const override;
+        void set(const QString &name_, const QStringList &data_) override;
+        void set(const QString &name_, QStringList &&data_) override;
         bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
 
         template<typename ItemType_>

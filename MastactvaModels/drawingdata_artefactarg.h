@@ -367,6 +367,21 @@ public:
                         val
                         )
                     );
+
+        // possibly, this part is not very needed
+        QStringList strData;
+        if(details_.variables.operator bool() &&
+                details_.variables->get(m_name, details_.position.get(), strData))
+        {
+        }
+        else if(val->empty())
+        {
+            drawingdata::utils::splitTo(m_defaultValue, QString(g_renderObjectsStatesSpliter), strData);
+        }
+        if(!strData.isEmpty())
+        {
+            object_.set(m_name, std::move(strData));
+        }
     }
 
     void addVariable(
@@ -464,6 +479,22 @@ public:
         else if(g_renderObjectCalculationsName == m_name)
         {
             setStringListValue(details_, object_.objectCalculations);
+        }
+        else
+        {
+            QStringList strData;
+            if(details_.variables.operator bool() &&
+                details_.variables->get(m_name, details_.position.get(), strData))
+            {
+            }
+            else
+            {
+                drawingdata::utils::splitTo(m_defaultValue, QString(g_renderObjectsStatesSpliter), strData);
+            }
+            if(!strData.isEmpty())
+            {
+                object_.set(m_name, std::move(strData));
+            }
         }
     }
 

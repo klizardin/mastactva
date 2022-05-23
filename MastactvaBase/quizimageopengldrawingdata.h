@@ -157,6 +157,36 @@ namespace opengl_drawing
             m_imageData->set(name_, std::move(data_));
         }
 
+        bool get(const QString &name_, QStringList &data_) const override
+        {
+            if(!m_imageData.operator bool())
+            {
+                return false;
+            }
+
+            return m_imageData->get(name_, data_);
+        }
+
+        void set(const QString &name_, const QStringList &data_) override
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+
+            m_imageData->set(name_, data_);
+        }
+
+        void set(const QString &name_, QStringList &&data_) override
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+
+            m_imageData->set(name_, std::move(data_));
+        }
+
         bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
 
         template<typename ItemType_>
@@ -283,6 +313,36 @@ public:
     }
 
     void set(const QString &name_, QVector<double> &&data_) override
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+
+        m_openglData->set(name_, std::move(data_));
+    }
+
+    bool get(const QString &name_, QStringList &data_) const override
+    {
+        if(!m_openglData.operator bool())
+        {
+            return false;
+        }
+
+        return m_openglData->get(name_, data_);
+    }
+
+    void set(const QString &name_, const QStringList &data_) override
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+
+        m_openglData->set(name_, data_);
+    }
+
+    void set(const QString &name_, QStringList &&data_) override
     {
         if(!m_openglData.operator bool())
         {

@@ -322,10 +322,15 @@ bool LuaRuntimeVariables::get(const QString &name_, const drawingdata::IPosition
 
 bool LuaRuntimeVariables::get(const QString &name_, const drawingdata::IPosition *position_, QStringList &data_) const
 {
-    Q_UNUSED(name_);
     Q_UNUSED(position_);
-    Q_UNUSED(data_);
-    return false; // no implementation at runtime
+    if(m_variables)
+    {
+        return m_variables->get(name_, data_);
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void LuaRuntimeVariables::add(const QJsonDocument &data_)
@@ -363,18 +368,30 @@ bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition
 
 bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition *position_, const QStringList &data_)
 {
-    Q_UNUSED(name_);
     Q_UNUSED(position_);
-    Q_UNUSED(data_);
-    return false; // no implementation at runtime
+    if(m_variables)
+    {
+        m_variables->set(name_, data_);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition *position_, QStringList &&data_)
 {
-    Q_UNUSED(name_);
     Q_UNUSED(position_);
-    Q_UNUSED(data_);
-    return false; // no implementation at runtime
+    if(m_variables)
+    {
+        m_variables->set(name_, data_);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void LuaRuntimeVariables::addAliases(const QJsonDocument &data_, const drawingdata::IPosition *position_)
