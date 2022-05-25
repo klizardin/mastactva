@@ -31,6 +31,7 @@
 
 namespace opengl_drawing
 {
+    /* TODO: add specialization for QOpenGLFramebufferObject */
     class Texture
     {
     public:
