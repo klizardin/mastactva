@@ -39,6 +39,13 @@ bool opengl_drawing::Texture::setFilename(const QString &fileName_, const QColor
     return true;
 }
 
+bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_)
+{
+    Q_UNUSED(frameBufferObject_);
+    // TODO: add impelementation
+    return false;
+}
+
 void opengl_drawing::Texture::setLocation(int location_)
 {
     m_location = location_;
@@ -731,6 +738,46 @@ void opengl_drawing::Object::setTexture(
     setTextureIndexes();
 }
 
+void opengl_drawing::Object::setTextureFromFrameBuffer(
+        const QString &name_,
+        QOpenGLFramebufferObject *currentFrameBufferObject_
+        )
+{
+    auto fit = std::find_if(
+                std::begin(m_imageData->textures),
+                std::end(m_imageData->textures),
+                [&name_](const drawing_data::Texture &texture_)->bool
+    {
+        return name_ == texture_.name;
+    });
+
+    if(textures.find(name_) == std::end(textures)
+            && textures[name_].operator bool()
+            )
+    {
+        textures[name_]->setFromFrameBufferObject(currentFrameBufferObject_);
+        return;
+    }
+
+    std::unique_ptr<Texture> texture = std::make_unique<Texture>();
+    if(!texture->setFromFrameBufferObject(currentFrameBufferObject_))
+    {
+        return;
+    }
+
+    if(std::end(m_imageData->textures) == fit)
+    {
+        m_imageData->textures.push_back({name_, ""});
+    }
+    else
+    {
+        fit->filename = "";
+    }
+    textures[name_] = std::move(texture);
+
+    setTextureIndexes();
+}
+
 bool opengl_drawing::Object::getTextureSize(
         const QString &name_,
         QSize &imageSize_
@@ -1394,6 +1441,14 @@ QSize opengl_drawing::Objects::getTextureSize(const QString &name_, const QSize 
 }
 
 void opengl_drawing::Objects::setTexture(
+        const QString &textureName_,
+        const QString &newFilename_
+        )
+{
+    setTexture(textureName_, newFilename_, getClearColor());
+}
+
+void opengl_drawing::Objects::setTexture(
         const QString &name_,
         const QString &newFilename_,
         const QColor &backgroundColor_
@@ -1409,6 +1464,20 @@ void opengl_drawing::Objects::setTexture(
     }
 }
 
+void opengl_drawing::Objects::setTextureFromCurrentFrameBuffer(
+        const QString &textureName_
+        )
+{
+    if(!m_updated.contains(textureName_))
+    {
+        m_updated.push_back(textureName_);
+    }
+    for(std::unique_ptr<Object> &object_ : m_objects)
+    {
+        object_->setTextureFromFrameBuffer(textureName_, m_currentFrameBufferObject);
+    }
+}
+
 void opengl_drawing::Objects::setFromImage(const QString &url_)
 {
     setTexture(g_renderFromImageName, url_, m_imageData ? m_imageData->clearColor : QColor(0,0,0));    // TODO: dependency inversion
@@ -1417,6 +1486,11 @@ void opengl_drawing::Objects::setFromImage(const QString &url_)
 void opengl_drawing::Objects::setToImage(const QString &url_)
 {
     setTexture(g_renderToImageName, url_, m_imageData ? m_imageData->clearColor : QColor(0,0,0));  // TODO: dependency inversion
+}
+
+void opengl_drawing::Objects::setCurrentFrameBufferObject(QOpenGLFramebufferObject *currentFrameBufferObject_)
+{
+    m_currentFrameBufferObject = currentFrameBufferObject_;
 }
 
 QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
@@ -1561,6 +1635,7 @@ bool ObjectsRenderer::isValidData() const
 
 QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
 {
+    Q_UNUSED(proportinalRect_);
     QMatrix4x4 renderMatrix;
     //renderMatrix.ortho(QRectF(0,0, proportinalRect_.x(), proportinalRect_.y()));
     //renderMatrix.ortho(0.0, proportinalRect_.x(), proportinalRect_.y(), 0.0, -10.0, 10.0);
