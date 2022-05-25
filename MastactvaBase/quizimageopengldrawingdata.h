@@ -35,6 +35,7 @@ namespace opengl_drawing
     {
     public:
         bool setFilename(const QString &fileName_, const QColor &backgroundColor_);
+        bool setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_);
         void setLocation(int location_);
         void setIndex(int index_);
         void setUniform(QOpenGLShaderProgram *program_) const;
@@ -94,6 +95,7 @@ namespace opengl_drawing
         void release();
 
         void setTexture(const QString &name_, const QString& newFilename_, const QColor &backgroundColor_);
+        void setTextureFromFrameBuffer(const QString &name_, QOpenGLFramebufferObject *currentFrameBufferObject_);
         bool getTextureSize(const QString &name_, QSize &imageSize_) const;
 
         bool isUsable() const;
@@ -115,7 +117,7 @@ namespace opengl_drawing
         std::unique_ptr<States> m_states;
     };
 
-    class Objects : public IVariables
+    class Objects : public IVariables, public ITextures
     {
     public:
         std::unique_ptr<drawing_data::QuizImageObjects> free();
@@ -251,13 +253,18 @@ namespace opengl_drawing
             return m_imageData->getArgumentValue(name_, values_);
         }
 
+        void setTexture(const QString &textureName_, const QString &newFilename_) override;
+        void setTexture(const QString &textureName_, const QString &newFilename_, const QColor &newBackgroundColor_) override;
+        void setTextureFromCurrentFrameBuffer(const QString &textureName_) override;
+
         QColor getClearColor() const;
         int getAttributeTupleSize(const QString &name_) const;
         bool getTextureSize(const QString &name_, QSize &size_) const;
         QSize getTextureSize(const QString &name_, const QSize &size_) const;
-        void setTexture(const QString &name_, const QString &newFilename_, const QColor &backgroundColor_);
+        //void setTexture(const QString &name_, const QString &newFilename_, const QColor &backgroundColor_);
         void setFromImage(const QString &url_);
         void setToImage(const QString &url_);
+        void setCurrentFrameBufferObject(QOpenGLFramebufferObject *currentFrameBufferObject_);
 
     private:
         QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
@@ -272,6 +279,7 @@ namespace opengl_drawing
         opengl_drawing::IEffectCalculation *m_geometryDefault = nullptr;
         QStringList m_updated;
         std::unique_ptr<States> m_states;
+        QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;
     };
 }
 
