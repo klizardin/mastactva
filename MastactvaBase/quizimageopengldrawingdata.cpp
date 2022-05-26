@@ -31,19 +31,24 @@ bool opengl_drawing::Texture::setFilename(const QString &fileName_, const QColor
     {
         return false;
     }
-
-    m_texture = std::make_unique<QOpenGLTexture>(m_image.mirrored());
-    m_texture->setMagnificationFilter(QOpenGLTexture::Filter::Linear);
-    m_texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
-    m_texture->setBorderColor(backgroundColor_);
+    createTextureFromImage();
+    setWrapClampToBorder();
+    setBorderColor(backgroundColor_);
     return true;
 }
 
-bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_)
+bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_, const QColor &backgroundColor_)
 {
-    Q_UNUSED(frameBufferObject_);
-    // TODO: add impelementation
-    return false;
+    m_texture.reset();
+    if(!frameBufferObject_)
+    {
+        return false;
+    }
+    m_image = frameBufferObject_->toImage();
+    createTextureFromImage();
+    setWrapClampToBorder();
+    setBorderColor(backgroundColor_);
+    return true;
 }
 
 void opengl_drawing::Texture::setLocation(int location_)
@@ -111,6 +116,12 @@ void opengl_drawing::Texture::setBorderColor(const QColor &backgroundColor_)
 bool opengl_drawing::Texture::isValidLocation() const
 {
     return m_location >= 0;
+}
+
+void opengl_drawing::Texture::createTextureFromImage()
+{
+    m_texture = std::make_unique<QOpenGLTexture>(m_image.mirrored());
+    m_texture->setMagnificationFilter(QOpenGLTexture::Filter::Linear);
 }
 
 
@@ -740,7 +751,8 @@ void opengl_drawing::Object::setTexture(
 
 void opengl_drawing::Object::setTextureFromFrameBuffer(
         const QString &name_,
-        QOpenGLFramebufferObject *currentFrameBufferObject_
+        QOpenGLFramebufferObject *currentFrameBufferObject_,
+        const QColor &backgroundColor_
         )
 {
     auto fit = std::find_if(
@@ -755,12 +767,12 @@ void opengl_drawing::Object::setTextureFromFrameBuffer(
             && textures[name_].operator bool()
             )
     {
-        textures[name_]->setFromFrameBufferObject(currentFrameBufferObject_);
+        textures[name_]->setFromFrameBufferObject(currentFrameBufferObject_, backgroundColor_);
         return;
     }
 
     std::unique_ptr<Texture> texture = std::make_unique<Texture>();
-    if(!texture->setFromFrameBufferObject(currentFrameBufferObject_))
+    if(!texture->setFromFrameBufferObject(currentFrameBufferObject_, backgroundColor_))
     {
         return;
     }
@@ -1468,13 +1480,21 @@ void opengl_drawing::Objects::setTextureFromCurrentFrameBuffer(
         const QString &textureName_
         )
 {
+    setTextureFromCurrentFrameBuffer(textureName_, getClearColor());
+}
+
+void opengl_drawing::Objects::setTextureFromCurrentFrameBuffer(
+        const QString &textureName_
+        , const QColor &newBackgroundColor_
+        )
+{
     if(!m_updated.contains(textureName_))
     {
         m_updated.push_back(textureName_);
     }
     for(std::unique_ptr<Object> &object_ : m_objects)
     {
-        object_->setTextureFromFrameBuffer(textureName_, m_currentFrameBufferObject);
+        object_->setTextureFromFrameBuffer(textureName_, m_currentFrameBufferObject, newBackgroundColor_);
     }
 }
 
