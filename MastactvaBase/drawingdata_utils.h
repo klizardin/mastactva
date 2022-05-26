@@ -804,6 +804,18 @@ public:
     void clear();
 };
 
+
+class ITextures
+{
+public:
+    virtual ~ITextures() = default;
+    virtual void setTexture(const QString &textureName_, const QString &newFilename_) = 0;
+    virtual void setTexture(const QString &textureName_, const QString &newFilename_, const QColor &newBackgroundColor_) = 0;
+    virtual void setTextureFromCurrentFrameBuffer(const QString &textureName_) = 0;
+    virtual void setTextureFromCurrentFrameBuffer(const QString &textureName_, const QColor &backgroundColor_) = 0;
+};
+
+
 }
 
 

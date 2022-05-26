@@ -27,6 +27,7 @@
 #include <QQuickFramebufferObject>
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/opengldrawing_utils.h"
+#include "../MastactvaBase/drawingdata_utils.h"
 
 
 namespace opengl_drawing
@@ -35,7 +36,7 @@ namespace opengl_drawing
     {
     public:
         bool setFilename(const QString &fileName_, const QColor &backgroundColor_);
-        bool setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_);
+        bool setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_, const QColor &backgroundColor_);
         void setLocation(int location_);
         void setIndex(int index_);
         void setUniform(QOpenGLShaderProgram *program_) const;
@@ -45,6 +46,9 @@ namespace opengl_drawing
         void setWrapClampToEdge();
         void setBorderColor(const QColor &backgroundColor_);
         bool isValidLocation() const;
+
+    private:
+        void createTextureFromImage();
 
     private:
         constexpr static int locationWrongValue{-1};
@@ -95,7 +99,7 @@ namespace opengl_drawing
         void release();
 
         void setTexture(const QString &name_, const QString& newFilename_, const QColor &backgroundColor_);
-        void setTextureFromFrameBuffer(const QString &name_, QOpenGLFramebufferObject *currentFrameBufferObject_);
+        void setTextureFromFrameBuffer(const QString &name_, QOpenGLFramebufferObject *currentFrameBufferObject_, const QColor &backgroundColor_);
         bool getTextureSize(const QString &name_, QSize &imageSize_) const;
 
         bool isUsable() const;
@@ -117,7 +121,7 @@ namespace opengl_drawing
         std::unique_ptr<States> m_states;
     };
 
-    class Objects : public IVariables, public ITextures
+    class Objects : public IVariables, public drawingdata::ITextures
     {
     public:
         std::unique_ptr<drawing_data::QuizImageObjects> free();
@@ -256,6 +260,7 @@ namespace opengl_drawing
         void setTexture(const QString &textureName_, const QString &newFilename_) override;
         void setTexture(const QString &textureName_, const QString &newFilename_, const QColor &newBackgroundColor_) override;
         void setTextureFromCurrentFrameBuffer(const QString &textureName_) override;
+        void setTextureFromCurrentFrameBuffer(const QString &textureName_, const QColor &newBackgroundColor_) override;
 
         QColor getClearColor() const;
         int getAttributeTupleSize(const QString &name_) const;

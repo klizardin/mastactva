@@ -111,7 +111,9 @@ private:
         effectAddArgValue,
         addonCall,
         addonGetNames,
-        addonHasName
+        addonHasName,
+        setTextureFileName,
+        setTextureFromCurrentFrameBuffer
     };
 
 public:
@@ -128,6 +130,7 @@ public:
     bool callArtefact(drawingdata::IPosition *position_);
     bool callArtefactAtRuntime(drawingdata::IPosition *position_) const;
     void set(std::shared_ptr<drawingdata::IVariables> variables_);
+    void set(std::shared_ptr<drawingdata::ITextures> textures_);
     void addTest(std::unique_ptr<LuaAPITest> &&test_);
     void setTestObserver(std::shared_ptr<TestObserver> testObserver_);
     void set(std::shared_ptr<IAddonModules> addons_);
@@ -178,6 +181,8 @@ private:
     void effectAddArgSetImpl() const;
     void effectGetArgSetArgumentsImpl() const;
     void effectAddArgValueImpl() const;
+    void setTextureFileNameImpl() const;
+    void setTextureFromCurrentFrameBufferImpl() const;
     void processStack(int inputArgsCount_, int outputArgsCount_) const;
     void hideLibsBlackList();
     template<FunctionImplEn func_>
@@ -187,6 +192,7 @@ private:
 private:
     lua_State *m_luaState = nullptr;
     std::shared_ptr<drawingdata::IVariables> m_variables;
+    std::shared_ptr<drawingdata::ITextures> m_textures;
     mutable drawingdata::IPosition *m_artefactPosition = nullptr;
     static QHash<lua_State *, LuaAPI *> s_apis;
     std::vector<std::unique_ptr<LuaAPITest>> m_tests;

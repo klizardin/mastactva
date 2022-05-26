@@ -22,6 +22,7 @@
 #include "../MastactvaBase/wavefrontobj.h"
 #include "../MastactvaBase/luaapi.h"
 #include "../MastactvaBase/opengldrawing_utils.h"
+#include "../MastactvaBase/quizimageopengldrawingdata.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -412,6 +413,68 @@ void LuaRuntimeVariables::clear()
     // no implementation at runtime
 }
 
+class TexturesProxy : public drawingdata::ITextures
+{
+public:
+    void setImpl(drawingdata::ITextures *proxy_);
+    void clearImpl();
+
+    void setTexture(const QString &textureName_, const QString &newFilename_) override;
+    void setTexture(const QString &textureName_, const QString &newFilename_, const QColor &newBackgroundColor_) override;
+    void setTextureFromCurrentFrameBuffer(const QString &textureName_) override;
+    void setTextureFromCurrentFrameBuffer(const QString &textureName_, const QColor &backgroundColor_) override;
+
+private:
+    drawingdata::ITextures *m_proxy = nullptr;
+};
+
+void TexturesProxy::setImpl(drawingdata::ITextures *proxy_)
+{
+    m_proxy = proxy_;
+}
+
+void TexturesProxy::clearImpl()
+{
+    m_proxy = nullptr;
+}
+
+void TexturesProxy::setTexture(const QString &textureName_, const QString &newFilename_)
+{
+    if(!m_proxy)
+    {
+        return;
+    }
+    m_proxy->setTexture(textureName_, newFilename_);
+}
+
+void TexturesProxy::setTexture(const QString &textureName_, const QString &newFilename_, const QColor &newBackgroundColor_)
+{
+    if(!m_proxy)
+    {
+        return;
+    }
+    m_proxy->setTexture(textureName_, newFilename_, newBackgroundColor_);
+}
+
+void TexturesProxy::setTextureFromCurrentFrameBuffer(const QString &textureName_)
+{
+    if(!m_proxy)
+    {
+        return;
+    }
+    m_proxy->setTextureFromCurrentFrameBuffer(textureName_);
+}
+
+void TexturesProxy::setTextureFromCurrentFrameBuffer(const QString &textureName_, const QColor &backgroundColor_)
+{
+    if(!m_proxy)
+    {
+        return;
+    }
+    m_proxy->setTextureFromCurrentFrameBuffer(textureName_, backgroundColor_);
+}
+
+
 /*
     the class for runtime calculation of variables with lua scripts
     it calls main function in the lua script
@@ -431,6 +494,7 @@ public:
 
 private:
     mutable std::shared_ptr<drawingdata::IVariables> m_variables;
+    mutable std::shared_ptr<drawingdata::ITextures> m_textures;
 };
 
 LuaRuntimeCalculations::LuaRuntimeCalculations(
@@ -444,6 +508,8 @@ LuaRuntimeCalculations::LuaRuntimeCalculations(
     load(luaScript_);
     m_variables = std::make_shared<LuaRuntimeVariables>(); // use of stub variables class to initialize variables usage
     set(m_variables);
+    m_textures = std::make_shared<TexturesProxy>();
+    set(m_textures);
 }
 
 void LuaRuntimeCalculations::calculate(opengl_drawing::IVariables *variables_) const
@@ -454,10 +520,17 @@ void LuaRuntimeCalculations::calculate(opengl_drawing::IVariables *variables_) c
     {
         return;
     }
+    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_->getRoot());
+    if(!objects)
+    {
+        return; // work only with quiz image opengl drawing data
+    }
 
     dynamic_cast<LuaRuntimeVariables *>(m_variables.get())->setImpl(variables_);
+    dynamic_cast<TexturesProxy *>(m_variables.get())->setImpl(static_cast<drawingdata::ITextures *>(objects));
     callArtefactAtRuntime(nullptr);
     dynamic_cast<LuaRuntimeVariables *>(m_variables.get())->clearImpl();
+    dynamic_cast<TexturesProxy *>(m_variables.get())->clearImpl();
 }
 
 
