@@ -108,6 +108,11 @@ void LuaAPI::set(std::shared_ptr<drawingdata::IVariables> variables_)
     m_variables = std::move(variables_);
 }
 
+void LuaAPI::set(std::shared_ptr<drawingdata::ITextures> textures_)
+{
+    m_textures = std::move(textures_);
+}
+
 void LuaAPI::addTest(std::unique_ptr<LuaAPITest> &&test_)
 {
     m_tests.push_back(std::move(test_));

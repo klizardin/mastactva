@@ -27,6 +27,7 @@
 #include <QQuickFramebufferObject>
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/opengldrawing_utils.h"
+#include "../MastactvaBase/drawingdata_utils.h"
 
 
 namespace opengl_drawing
@@ -120,7 +121,7 @@ namespace opengl_drawing
         std::unique_ptr<States> m_states;
     };
 
-    class Objects : public IVariables, public ITextures
+    class Objects : public IVariables, public drawingdata::ITextures
     {
     public:
         std::unique_ptr<drawing_data::QuizImageObjects> free();
