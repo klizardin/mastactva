@@ -111,7 +111,9 @@ private:
         effectAddArgValue,
         addonCall,
         addonGetNames,
-        addonHasName
+        addonHasName,
+        setTextureFileName,
+        setTextureFromCurrentFrameBuffer
     };
 
 public:
@@ -179,6 +181,8 @@ private:
     void effectAddArgSetImpl() const;
     void effectGetArgSetArgumentsImpl() const;
     void effectAddArgValueImpl() const;
+    void setTextureFileNameImpl() const;
+    void setTextureFromCurrentFrameBufferImpl() const;
     void processStack(int inputArgsCount_, int outputArgsCount_) const;
     void hideLibsBlackList();
     template<FunctionImplEn func_>

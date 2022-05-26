@@ -1043,6 +1043,36 @@ void LuaAPI::effectAddArgValueImpl() const
     processStack(3, 1);
 }
 
+void LuaAPI::setTextureFileNameImpl() const
+{
+    QString textureName, newFilename;
+    if(!getArguments(m_luaState, textureName, newFilename))
+    {
+        processStack(2, 0);
+        return;
+    }
+    lua_pop(m_luaState, 2);
+    if(m_textures)
+    {
+        m_textures->setTexture(textureName, newFilename);
+    }
+}
+
+void LuaAPI::setTextureFromCurrentFrameBufferImpl() const
+{
+    QString textureName;
+    if(!getArguments(m_luaState, textureName))
+    {
+        processStack(1, 0);
+        return;
+    }
+    lua_pop(m_luaState, 1);
+    if(m_textures)
+    {
+        m_textures->setTextureFromCurrentFrameBuffer(textureName);
+    }
+}
+
 void LuaAPI::processStack(int inputArgsCount_, int outputArgsCount_) const
 {
     lua_pop(m_luaState, inputArgsCount_);
@@ -1274,6 +1304,18 @@ void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::effectAddArg
     effectAddArgValueImpl();
 }
 
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setTextureFileName>() const
+{
+    setTextureFileNameImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setTextureFromCurrentFrameBuffer>() const
+{
+    setTextureFromCurrentFrameBufferImpl();
+}
+
 template<LuaAPI::FunctionImplEn function_, int inputArgsCount_, int outputArgsCount_>
 int l_implementation(lua_State *luaState_)
 {
@@ -1349,6 +1391,13 @@ void LuaAPI::initFunctions() const
                 { "call", l_implementation<LuaAPI::FunctionImplEn::addonCall, 2, 1> },
                 { "getNames", l_implementation<LuaAPI::FunctionImplEn::addonGetNames, 0, 1> },
                 { "hasName", l_implementation<LuaAPI::FunctionImplEn::addonHasName, 1, 1> },
+            }
+        },
+        {
+            "textures",
+            {
+                { "setTexture", l_implementation<LuaAPI::FunctionImplEn::setTextureFileName, 2, 0> },
+                { "setTextureFromCurrentFrameBuffer", l_implementation<LuaAPI::FunctionImplEn::setTextureFromCurrentFrameBuffer, 1, 0> },
             }
         }
     };
