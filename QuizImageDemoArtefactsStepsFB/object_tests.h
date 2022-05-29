@@ -145,6 +145,12 @@ namespace drawing_objects
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
+
+    class WalkEffectDrawingBufferTest : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+    };
 }
 
 // using TestCaseInitializer = drawing_objects::BaseTest;

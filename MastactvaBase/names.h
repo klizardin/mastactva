@@ -106,6 +106,7 @@ Q_DECL_UNUSED static const char * g_indexesStorageName = "indexes";
 Q_DECL_UNUSED static const char * g_renderFromImageName = "renderFromImage";
 Q_DECL_UNUSED static const char * g_renderToImageName = "renderToImage";
 Q_DECL_UNUSED static const char * g_renderMatrixName = "renderMatrix";
+Q_DECL_UNUSED static const char * g_renderImageMatrixName = "renderFromMatrix";
 Q_DECL_UNUSED static const char * g_renderFromImageMatrixName = "renderFromImageMatrix";
 Q_DECL_UNUSED static const char * g_renderToImageMatrixName = "renderToImageMatrix";
 Q_DECL_UNUSED static const char * g_renderScreenRectName = "renderScreenRect";
