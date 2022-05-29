@@ -23,6 +23,9 @@
         <file>Shaders/walkeffecttest/walkeffectfrom.vsh</file>
         <file>Shaders/walkeffecttest/walkeffectto.fsh</file>
         <file>Shaders/walkeffecttest/walkeffectto.vsh</file>
+        <file>Shaders/walkeffecttest/walkeffect.fsh</file>
+        <file>Shaders/walkeffecttest/walkeffectfromv1.vsh</file>
+        <file>Shaders/walkeffecttest/walkeffecttov1.vsh</file>
     </qresource>
     <qresource prefix="/Images">
         <file>Images/no-image.png</file>
