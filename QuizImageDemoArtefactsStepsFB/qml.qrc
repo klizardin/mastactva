@@ -37,4 +37,7 @@
         <file>swift.obj</file>
         <file>cube.obj</file>
     </qresource>
+    <qresource prefix="/lua">
+        <file>lua/walkeffect/walkEffectLuaRuntimeUpdateTextureFromFrameBuffer.lua</file>
+    </qresource>
 </RCC>
