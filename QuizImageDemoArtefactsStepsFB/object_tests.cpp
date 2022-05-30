@@ -226,6 +226,8 @@ static const char *g_emptyFilename = "empty.lua";
 static const char *g_walkEffectFromVertexShaderV1Filename = "walkeffectfromv1.vsh";
 static const char *g_walkEffectToVertexShaderV1Filename = "walkeffecttov1.vsh";
 static const char *g_walkEffectFragmentShaderV1Filename = "walkeffect.fsh";
+static const char *g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer = "walkEffectLuaRuntimeUpdateTextureFromFrameBuffer.lua";
+static const char *g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName = "walkEffectLuaRuntimeUpdateTextureFromFrameBuffer.lua";
 
 
 std::shared_ptr<MapFileSource> createMapFileSource()
@@ -336,6 +338,10 @@ std::shared_ptr<MapFileSource> createMapFileSource()
                     loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffect.fsh")
                     );
     filesource->add(g_emptyFilename, QString{});
+    filesource->add(
+            g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName,
+            loadTextFile(":/lua/lua/walkeffect/walkEffectLuaRuntimeUpdateTextureFromFrameBuffer.lua")
+            );
     return filesource;
 }
 
@@ -3037,7 +3043,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     static QString effectProgrammerNameMain = QString(g_defaultObjectInfoProgrammerName) + "_globalData";
     const QDateTime now = QDateTime::currentDateTime();
     static const int effectObjectStep0 = 0;
-    static const int effectObjectStep1 = 1;
+    static const int effectObjectStep1 = 10;
 
     QDir addonsDir;
     findDynLibs(QDir("./"), addonsDir);
@@ -3090,6 +3096,30 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     "15.0 13.0"
                     ).release()
                 );
+    const std::vector<Argument> luaScriptArgs1 = {
+        {
+            1,
+            ArtefactArgTypeEn::stringsType,
+            ArtefactArgStorageEn::uniformStorage,
+            "textureName",
+            "renderGeneratedFromImage"
+        }
+    };
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                        effectId,
+                    now,
+                    effectObjectStep0 + 1,
+                    1,
+                    ArtefactTypeEn::scriptLuaRuntime,
+                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
+                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName,
+                    effectObjectStep0 + 1,
+                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
+                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
+                    luaScriptArgs1
+                    ).release()
+                );
     effect->m_effectObjectsData->push_back(
                 createWalkEffectDrawingBufferTestObject(
                     effectId,
@@ -3105,6 +3135,30 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     //fromCoords,
                     toCoords,
                     "15.0 13.0"
+                    ).release()
+                );
+    const std::vector<Argument> luaScriptArgs2 = {
+        {
+            1,
+            ArtefactArgTypeEn::stringsType,
+            ArtefactArgStorageEn::uniformStorage,
+            "textureName",
+            "renderGeneratedToImage"
+        }
+    };
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                        effectId,
+                    now,
+                    effectObjectStep1 + 1,
+                    1,
+                    ArtefactTypeEn::scriptLuaRuntime,
+                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
+                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName,
+                    effectObjectStep1 + 1,
+                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
+                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
+                    luaScriptArgs2
                     ).release()
                 );
     return effect;
