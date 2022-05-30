@@ -228,6 +228,7 @@ static const char *g_walkEffectToVertexShaderV1Filename = "walkeffecttov1.vsh";
 static const char *g_walkEffectFragmentShaderV1Filename = "walkeffect.fsh";
 static const char *g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer = "walkEffectLuaRuntimeUpdateTextureFromFrameBuffer.lua";
 static const char *g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName = "walkEffectLuaRuntimeUpdateTextureFromFrameBuffer.lua";
+static const char *g_walkEffectFragmentShaderStep2Filename = "walkeffects2.fsh";
 
 
 std::shared_ptr<MapFileSource> createMapFileSource()
@@ -342,6 +343,10 @@ std::shared_ptr<MapFileSource> createMapFileSource()
             g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName,
             loadTextFile(":/lua/lua/walkeffect/walkEffectLuaRuntimeUpdateTextureFromFrameBuffer.lua")
             );
+    filesource->add(
+        g_walkEffectFragmentShaderStep2Filename,
+        loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffects2.fsh")
+        );
     return filesource;
 }
 
@@ -2762,6 +2767,161 @@ std::unique_ptr<EffectObjectsData> createWalkEffectDrawingBufferTestObject(
     return effectObject;
 }
 
+std::unique_ptr<EffectObjectsData> createWalkEffectDrawingBufferTestObjectStep2(
+        int effectId,
+        const char *effectName,
+        const char *effectProgrammerName,
+        const QDateTime &now,
+        int effectObjectStep
+        )
+{
+    std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
+                effectId,
+                effectName,
+                effectProgrammerName,
+                now,
+                effectObjectStep
+                );
+
+    // vertex shader artefact
+    static const ArgumentsTuple vertexArgs1[] =
+    {
+        {
+            1,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            g_renderVertexAttributeName,
+            emptyStr
+        },
+        {
+            2,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            g_renderTextureAttributeName,
+            emptyStr
+        },
+        {
+            3,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderMatrixName,
+            emptyStr
+        },
+        {
+            4,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderFromImageMatrixName,
+            emptyStr
+        },
+        {
+            5,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderToImageMatrixName,
+            emptyStr
+        },
+        {
+            6,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderFacedGeometryCoefsName,
+            "0.0 0.0"
+        },
+        {
+            7,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderGeomertySizeName,
+            "2.0 2.0"
+        },
+        {
+            8,
+            ArtefactArgTypeEn::intType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderIsGeomertySolidName,
+            "1"
+        },
+        {
+            9,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderScreenRectName,
+            "1.0 1.0"
+        },
+        {
+            10,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderWindowSizeName,
+            "1.0 1.0"
+        }
+    };
+    static const int objectArtefactStep0 = 0;
+    processArtefact(
+        effectObject,
+        g_defaultVertexShaderFilename,
+        1,
+        "vertext shader",
+        ArtefactTypeEn::shaderVertex,
+        1,
+        objectArtefactStep0,
+        effectId,
+        now,
+        vertexArgs1
+    );
+
+    // fragment shader artefact
+    static const ArgumentsTuple fragmentArgs1[] =
+    {
+        {
+            101,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderOpacityName,
+            "1.0"
+        },
+        {
+            102,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderTName,
+            "0.5"
+        },
+    };
+    processArtefact(
+        effectObject,
+        g_walkEffectFragmentShaderStep2Filename,
+        2,
+        "fragment shader",
+        ArtefactTypeEn::shaderFragmet,
+        2,
+        objectArtefactStep0,
+        effectId,
+        now,
+        fragmentArgs1
+    );
+
+    // textures artefacts
+    static const TextureTuple textures[] =
+    {
+        {"renderGeneratedFromImage", ""},
+        {"renderGeneratedToImage", ""}
+    };
+    static const int textureBaseArtefactId = 3;
+    static const int textureBaseObjectArtefactId = 3;
+    processTexturesArtefacts(
+                effectObject,
+                textureBaseArtefactId,
+                textureBaseObjectArtefactId,
+                objectArtefactStep0,
+                effectId,
+                now,
+                textures
+                );
+    return effectObject;
+}
+
 std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
         int effectId,
         const QString &effectName,
@@ -3044,6 +3204,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     const QDateTime now = QDateTime::currentDateTime();
     static const int effectObjectStep0 = 0;
     static const int effectObjectStep1 = 10;
+    static const int effectObjectStep2 = 20;
 
     QDir addonsDir;
     findDynLibs(QDir("./"), addonsDir);
@@ -3149,16 +3310,25 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     effect->m_effectObjectsData->push_back(
                 createEffectObjectWithOneArtefactWithArguments(
                         effectId,
-                    now,
-                    effectObjectStep1 + 1,
-                    1,
-                    ArtefactTypeEn::scriptLuaRuntime,
-                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
-                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName,
-                    effectObjectStep1 + 1,
-                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
-                    g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
-                    luaScriptArgs2
+                        now,
+                        effectObjectStep1 + 1,
+                        1,
+                        ArtefactTypeEn::scriptLuaRuntime,
+                        g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
+                        g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName,
+                        effectObjectStep1 + 1,
+                        g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
+                        g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
+                        luaScriptArgs2
+                    ).release()
+                );
+    effect->m_effectObjectsData->push_back(
+                createWalkEffectDrawingBufferTestObjectStep2(
+                        effectId,
+                        effectName,
+                        effectProgrammerName,
+                        now,
+                        effectObjectStep2
                     ).release()
                 );
     return effect;
