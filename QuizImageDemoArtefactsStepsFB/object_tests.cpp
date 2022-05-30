@@ -3065,36 +3065,6 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     //qDebug() << "fromCoords" << fromCoords;
     //qDebug() << "toCoords" << toCoords;
 
-    auto effectObject0 = createWalkEffectDrawingBufferTestObject(
-                effectId,
-                effectName,
-                effectProgrammerName,
-                now,
-                effectObjectStep0,
-                g_walkEffectFromVertexShaderV1Filename,
-                g_walkEffectFragmentShaderV1Filename,
-                g_renderFromImageName,
-                "/home/klizardin/Pictures/test_images/from_image.jpg",
-                "textureAttributeFrom",
-                fromCoords,
-                //toCoords,
-                "15.0 13.0"
-                );
-    auto effectObject1 = createWalkEffectDrawingBufferTestObject(
-                effectId,
-                effectName,
-                effectProgrammerName,
-                now,
-                effectObjectStep1,
-                g_walkEffectToVertexShaderV1Filename,
-                g_walkEffectFragmentShaderV1Filename,
-                g_renderToImageName,
-                "/home/klizardin/Pictures/test_images/to_image.jpg",
-                "textureAttributeTo",
-                //fromCoords,
-                toCoords,
-                "15.0 13.0"
-                );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
                 effectName,
@@ -3102,8 +3072,41 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                 now,
                 MergeId()
                 );
-    effect->m_effectObjectsData->push_back(effectObject0.release());
-    effect->m_effectObjectsData->push_back(effectObject1.release());
+
+    effect->m_effectObjectsData->push_back(
+                createWalkEffectDrawingBufferTestObject(
+                    effectId,
+                    effectName,
+                    effectProgrammerName,
+                    now,
+                    effectObjectStep0,
+                    g_walkEffectFromVertexShaderV1Filename,
+                    g_walkEffectFragmentShaderV1Filename,
+                    g_renderFromImageName,
+                    "/home/klizardin/Pictures/test_images/from_image.jpg",
+                    "textureAttributeFrom",
+                    fromCoords,
+                    //toCoords,
+                    "15.0 13.0"
+                    ).release()
+                );
+    effect->m_effectObjectsData->push_back(
+                createWalkEffectDrawingBufferTestObject(
+                    effectId,
+                    effectName,
+                    effectProgrammerName,
+                    now,
+                    effectObjectStep1,
+                    g_walkEffectToVertexShaderV1Filename,
+                    g_walkEffectFragmentShaderV1Filename,
+                    g_renderToImageName,
+                    "/home/klizardin/Pictures/test_images/to_image.jpg",
+                    "textureAttributeTo",
+                    //fromCoords,
+                    toCoords,
+                    "15.0 13.0"
+                    ).release()
+                );
     return effect;
 }
 
