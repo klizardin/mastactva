@@ -527,10 +527,10 @@ void LuaRuntimeCalculations::calculate(opengl_drawing::IVariables *variables_) c
     }
 
     dynamic_cast<LuaRuntimeVariables *>(m_variables.get())->setImpl(variables_);
-    dynamic_cast<TexturesProxy *>(m_variables.get())->setImpl(static_cast<drawingdata::ITextures *>(objects));
+    dynamic_cast<TexturesProxy *>(m_textures.get())->setImpl(static_cast<drawingdata::ITextures *>(objects));
     callArtefactAtRuntime(nullptr);
     dynamic_cast<LuaRuntimeVariables *>(m_variables.get())->clearImpl();
-    dynamic_cast<TexturesProxy *>(m_variables.get())->clearImpl();
+    dynamic_cast<TexturesProxy *>(m_textures.get())->clearImpl();
 }
 
 
