@@ -51,7 +51,8 @@ using Tests = std::tuple<
     drawing_objects::LuaScriptArgTest1,
     drawing_objects::ArgSetBaseTest,
     drawing_objects::AlphaBlendingMultipleObjectsTest,
-    drawing_objects::WalkEffectTest
+    drawing_objects::WalkEffectTest,
+    drawing_objects::WalkEffectDrawingBufferTest
     >;
 
 
