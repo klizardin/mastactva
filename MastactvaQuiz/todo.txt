@@ -68,6 +68,7 @@
 45. test opengl drawing
 46. add no image view if can't download image from a server
 47. use opencl kernels for calculations
+48. Design UI
 
 
 
