@@ -3199,7 +3199,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     static const int effectId = 1;
     static const char *effectName = "effect #1";
     static const char *effectProgrammerName = "effect1";
-    static const char *effectNameMain = "global data";
+    //static const char *effectNameMain = "global data";
     static QString effectProgrammerNameMain = QString(g_defaultObjectInfoProgrammerName) + "_globalData";
     const QDateTime now = QDateTime::currentDateTime();
     static const int effectObjectStep0 = 0;
