@@ -143,7 +143,7 @@ bool drawing_data::detail::Calculations::hasCalculations() const
                 std::end(calculations),
                 [](const std::shared_ptr<opengl_drawing::IEffectCalculation> &calc_)->bool
     {
-        return !calc_;
+        return (bool)calc_;
     });
 }
 
