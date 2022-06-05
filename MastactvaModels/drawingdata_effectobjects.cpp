@@ -196,7 +196,17 @@ bool ObjectArtefacts::build(
             (*it)->runAddons(details_, addonNames_);
         }
     }
-    return !object_.fragmentShader.isEmpty() && !object_.vertexShader.isEmpty();
+    const bool bothShaders =
+            !object_.fragmentShader.isEmpty()
+            && !object_.vertexShader.isEmpty()
+            ;
+    const bool anyShader =
+            !object_.fragmentShader.isEmpty()
+            || !object_.vertexShader.isEmpty()
+            ;
+    return (object_.hasCalculations() && !anyShader)
+            || bothShaders
+            ;
 }
 
 void ObjectArtefacts::addArgs(

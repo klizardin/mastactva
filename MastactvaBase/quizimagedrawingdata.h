@@ -1084,6 +1084,7 @@ namespace drawing_data
             void postCalculation();
             void init(const std::vector<QString> &effectCalculationNames_);
             bool find(const opengl_drawing::IEffectCalculation *calculation_) const;
+            bool hasCalculations() const;
 
         protected:
             void setVariable(const QString &name_);

@@ -3199,7 +3199,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     static const int effectId = 1;
     static const char *effectName = "effect #1";
     static const char *effectProgrammerName = "effect1";
-    static const char *effectNameMain = "global data";
+    //static const char *effectNameMain = "global data";
     static QString effectProgrammerNameMain = QString(g_defaultObjectInfoProgrammerName) + "_globalData";
     const QDateTime now = QDateTime::currentDateTime();
     static const int effectObjectStep0 = 0;
@@ -3240,6 +3240,52 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                 MergeId()
                 );
 
+    QVector<TestDataEffectArgs> args = {
+        {
+            int(ArtefactArgStorageEn::uniformStorage),
+            int(ArtefactArgTypeEn::stringsType),
+            "textureName",
+            "",
+            101
+        },
+        {
+            int(ArtefactArgStorageEn::uniformStorage),
+            int(ArtefactArgTypeEn::stringsType),
+            "textureName",
+            "",
+            102
+        }
+    };
+    effect->m_effectArgsData = createEffectArgsData(
+                args,
+                effectId,
+                1000,
+                "description of %d",
+                now
+                );
+    QVector<QVector<TestArgValue>> argSets = {
+        {
+            {
+                1000,
+                "renderGeneratedFromImage"
+            },
+            {
+                1001,
+                "renderGeneratedToImage"
+            },
+        },
+    };
+    effect->m_effectArgSetsData = createEffectArgSetsData(
+                argSets,
+                effect->m_effectArgsData.get(),
+                effectId,
+                1,
+                1,
+                "arg value description %d",
+                "arg set description %d",
+                now
+                );
+
     effect->m_effectObjectsData->push_back(
                 createWalkEffectDrawingBufferTestObject(
                     effectId,
@@ -3271,7 +3317,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                         effectId,
                     now,
                     effectObjectStep0 + 1,
-                    1,
+                    101,
                     ArtefactTypeEn::scriptLuaRuntime,
                     g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
                     g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName,
@@ -3312,7 +3358,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                         effectId,
                         now,
                         effectObjectStep1 + 1,
-                        1,
+                        102,
                         ArtefactTypeEn::scriptLuaRuntime,
                         g_walkEffectLuaRuntimeUpdateTextureFromFrameBuffer,
                         g_walkEffectLuaRuntimeUpdateTextureFromFrameBufferFileName,
