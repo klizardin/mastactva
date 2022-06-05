@@ -505,11 +505,14 @@ LuaRuntimeCalculations::LuaRuntimeCalculations(
 {
     setFilename(filename_);
     setRequiredVariables(requiredVariables_);
-    load(luaScript_);
-    m_variables = std::make_shared<LuaRuntimeVariables>(); // use of stub variables class to initialize variables usage
-    set(m_variables);
-    m_textures = std::make_shared<TexturesProxy>();
-    set(m_textures);
+    const bool loadResult = load(luaScript_);
+    if(loadResult)
+    {
+        m_variables = std::make_shared<LuaRuntimeVariables>(); // use of stub variables class to initialize variables usage
+        set(m_variables);
+        m_textures = std::make_shared<TexturesProxy>();
+        set(m_textures);
+    }
 }
 
 void LuaRuntimeCalculations::calculate(opengl_drawing::IVariables *variables_) const
