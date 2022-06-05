@@ -132,6 +132,21 @@ bool drawing_data::detail::Calculations::find(
     return false;
 }
 
+bool drawing_data::detail::Calculations::hasCalculations() const
+{
+    if(calculations.empty())
+    {
+        return false;
+    }
+    return std::any_of(
+                std::begin(calculations),
+                std::end(calculations),
+                [](const std::shared_ptr<opengl_drawing::IEffectCalculation> &calc_)->bool
+    {
+        return !calc_;
+    });
+}
+
 void drawing_data::detail::Calculations::setVariable(const QString &name_)
 {
     m_updated.insert(name_);
