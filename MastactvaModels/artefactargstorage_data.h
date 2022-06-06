@@ -21,9 +21,9 @@
 
 enum class ArtefactArgStorageEn
 {
-    attributeStorage = 1,
-    uniformStorage,
-    indexesStorage
+    attributeStorage = 1,           /* attribute -- array of variable size of types */
+    uniformStorage,                 /* uniform - one item of type */
+    indexesStorage                  /* indexes - positions at the attribute array */
 };
 
 

@@ -3263,6 +3263,8 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                 "description of %d",
                 now
                 );
+    // args data set contains setup values for atrguments
+    // while arguments of the artefacts contain initial values
     QVector<QVector<TestArgValue>> argSets = {
         {
             {

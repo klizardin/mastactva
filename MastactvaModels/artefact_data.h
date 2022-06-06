@@ -29,6 +29,11 @@
 #include "../MastactvaModels/artefacttype_data.h"
 
 
+/*
+    class that containt information about arterfact
+    1 artefact - 1 file of it
+    1 artefact can ref to N arguments
+*/
 struct ArtefactData
 {
 public:
@@ -53,16 +58,16 @@ private:
     void createArrays();
 
 public:
-    int m_id = -1;
-    QString m_name;
-    FileSource m_filename;
-    QString m_hash;
-    int m_typeId = -1;
-    QString m_description;
-    QDateTime m_created;
-    MergeId m_mergeid;
+    int m_id = -1;              /* id to optimize server's operations */
+    QString m_name;             /* artefact name */
+    FileSource m_filename;      /* file of the artefact */
+    QString m_hash;             /* hash of the artefact's file data */
+    int m_typeId = -1;          /* type of the artefact */
+    QString m_description;      /* description of the artefact */
+    QDateTime m_created;        /* creation data time */
+    MergeId m_mergeid;          /* unique id for merges of artafects. for a colabartive work on a project */
 
-    std::shared_ptr<QVector<ArtefactArgData *>> m_artefactArgData;
+    std::shared_ptr<QVector<ArtefactArgData *>> m_artefactArgData;  /* list of arguments */
 
     ArtefactData(const ArtefactData &data_) = delete;
     ArtefactData &operator = (const ArtefactData &data_) = delete;

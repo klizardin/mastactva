@@ -29,6 +29,9 @@
 #include "../MastactvaBase/imagesource.h"
 
 
+/*
+ * argument of the artefact
+*/
 struct ArtefactArgData : public EffectArgumentData
 {
 public:
@@ -55,7 +58,7 @@ public:
 
 public:
     int m_id = -1;
-    int m_artefactId = -1;
+    int m_artefactId = -1;          /* artefact id */
     QString m_description;
     QDateTime m_created;
     MergeId m_mergeid;
