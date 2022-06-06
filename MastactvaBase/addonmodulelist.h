@@ -50,6 +50,10 @@ private:
 };
 
 
+/*
+ * to load addons in the specific path
+ * and do calls to the addons
+*/
 class AddonModules : public IAddonModules
 {
 public:
