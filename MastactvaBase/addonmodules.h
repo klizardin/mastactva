@@ -7,6 +7,9 @@
 #include <QString>
 
 
+/*
+ * inteface to call addons
+*/
 class IAddonModules
 {
 public:
