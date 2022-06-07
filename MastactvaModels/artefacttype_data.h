@@ -25,9 +25,9 @@
 enum class ArtefactTypeEn{
     shaderVertex = 1,
     shaderFragmet,
-    texture1D,
+    texture1D,          /* not active now */
     texture2D,
-    texture3D,
+    texture3D,          /* not active now */
     dataJson,
     dataObj3D,
     convertNamesJson,
