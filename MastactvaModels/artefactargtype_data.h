@@ -73,9 +73,9 @@ public:                                                             \
 /*end macro*/
 
 ARTEFACT_ARG_TYPE_EN_TRAITS(int, int, ArtefactArgTypeEn::intType, 1)
-//ARTEFACT_ARG_TYPE_EN_TRAITS(?, int, ArtefactArgTypeEn::ivec2Type, 2)          // do not used now
-//ARTEFACT_ARG_TYPE_EN_TRAITS(?, int, ArtefactArgTypeEn::ivec3Type, 3)          // do not used now
-//ARTEFACT_ARG_TYPE_EN_TRAITS(?, int, ArtefactArgTypeEn::ivec4Type, 4)          // do not used now
+//ARTEFACT_ARG_TYPE_EN_TRAITS(?, int, ArtefactArgTypeEn::ivec2Type, 2)          // is not used now
+//ARTEFACT_ARG_TYPE_EN_TRAITS(?, int, ArtefactArgTypeEn::ivec3Type, 3)          // is not used now
+//ARTEFACT_ARG_TYPE_EN_TRAITS(?, int, ArtefactArgTypeEn::ivec4Type, 4)          // is not used now
 ARTEFACT_ARG_TYPE_EN_TRAITS(float, float, ArtefactArgTypeEn::floatType, 1)
 ARTEFACT_ARG_TYPE_EN_TRAITS(QVector2D, float, ArtefactArgTypeEn::vec2Type, 2)
 ARTEFACT_ARG_TYPE_EN_TRAITS(QVector3D, float, ArtefactArgTypeEn::vec3Type, 3)
