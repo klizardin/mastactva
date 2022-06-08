@@ -3,6 +3,10 @@
 
 
 /*
+ * it is minimal required implementation of addon module in the separate dynamic library
+*/
+
+/*
  * return addon module name
 */
 extern "C" const char * addonModuleGetName();
