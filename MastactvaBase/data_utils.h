@@ -23,6 +23,9 @@
 #include <QVector>
 
 
+/*
+ * utilities classes to work with data vectors
+*/
 namespace data_object
 {
 namespace utils
