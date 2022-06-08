@@ -10,6 +10,10 @@
 #include "../MastactvaBase/addonmodules.h"
 
 
+/*
+ * abstract interface of an addon module
+ * with utility function to pass and return QJsonDocument to a module
+*/
 class IAddonModule
 {
 public:
@@ -20,6 +24,9 @@ public:
 };
 
 
+/*
+ * implementation of the IAddonModule interface
+*/
 class AddonModule : public IAddonModule
 {
 public:

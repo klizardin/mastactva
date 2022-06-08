@@ -30,7 +30,7 @@
 
 
 /*
-    class that containt information about arterfact
+    class that contains information about arterfact
     1 artefact - 1 file of it
     1 artefact can ref to N arguments
 */
