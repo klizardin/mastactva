@@ -8,7 +8,8 @@
 
 
 /*
- * inteface to call addons
+ * inteface to call addons from the dynamic libraries
+ * the utility abstaction for lua scripting and so on
 */
 class IAddonModules
 {
