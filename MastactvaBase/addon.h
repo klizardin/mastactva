@@ -6,6 +6,11 @@
 
 /*
     addons interface for effects sub-system
+    it is required to start addons of the effect
+    so that we can apply addons to the effect data
+    it is an inteface that is used by GUI
+    so it returns addons aligned to the effect
+    and can apply banch of addons to the effect
 */
 class IEffectAddOn
 {
