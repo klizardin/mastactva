@@ -11,6 +11,9 @@ class EffectArgSetData;
 class EffectArgValueData;
 
 
+/*
+ * the holder class to pass drawing data arg sets and arg data to the functions
+*/
 class DrawingDataArgSetsAndArgs
 {
 public:
