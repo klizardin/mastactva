@@ -221,6 +221,12 @@ void drawing_data::TestMinimalDrawQTLogoQuizImageObject::initialize(
     data_.objects.push_back(std::move(object));
 }
 
+std::pair<const char *, const char *>  drawing_data::TestMinimalDrawQTLogoQuizImageObject::getDescription() const
+{
+    return {"TestMinimalDrawQTLogoQuizImageObject",
+        "draw QT logo: uses default shaders; setup attributes and uniform variables."};
+}
+
 
 void drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject::initialize(
         QuizImageObjects &data_,
@@ -303,6 +309,12 @@ void drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject::initialize(
 
     data_.objects.push_back(std::move(object1));
     data_.objects.push_back(std::move(object2));
+}
+
+std::pair<const char *, const char *>  drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject::getDescription() const
+{
+    return {"TestMinimal2PassDrawQTLogoQuizImageObject",
+        "draw two QT logos (two passes): uses default shaders; setup attributes and uniform variables."};
 }
 
 
@@ -411,6 +423,14 @@ void drawing_data::Test0QuizImageObject::initialize(
 
     data_.objects.push_back(std::move(object));
 }
+
+std::pair<const char *, const char *>  drawing_data::Test0QuizImageObject::getDescription() const
+{
+    return {"Test0QuizImageObject",
+        "draw two images in betweeen: uses default shaders for mixing of images; "
+        "setup attributes and uniform variables; setup textures."};
+}
+
 
 void drawing_data::Test1QuizImageObject::initialize(
         QuizImageObjects &data_,

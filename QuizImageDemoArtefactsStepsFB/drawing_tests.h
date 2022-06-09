@@ -37,18 +37,21 @@ namespace drawing_data
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class TestMinimal2PassDrawQTLogoQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class Test0QuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class Test1QuizImageObject : public IDefaultData<QuizImageObjects>
