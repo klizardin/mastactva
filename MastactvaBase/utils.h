@@ -501,6 +501,7 @@ public:
     virtual ~IDefaultData() = default;
     virtual void initialize(DataType_ &data_, int argsSetIndex_ = 0) const = 0;
     virtual int getArgSetCount() const { return 1; }
+    virtual std::pair<const char *, const char *> getDescription() const { return {nullptr, nullptr}; }
 };
 
 
