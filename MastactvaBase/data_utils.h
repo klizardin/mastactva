@@ -25,6 +25,10 @@
 
 /*
  * utilities classes to work with data vectors
+ * vector of pointers of some data type has custom destructor
+ * for the shared_ptr (unique_ptr?) holding which clear all
+ * the items of the vector. The inplace smart pointers are not used
+ * because of optimization
 */
 namespace data_object
 {
@@ -51,6 +55,10 @@ namespace utils
         });
     }
 
+    /*
+     * the function that uses specific method (getDataCopy()) of elements
+     * to create a copy of the vector of the data
+    */
     template<typename DataType_> inline
     void copyDataVector(const QVector<DataType_ *> *src_, QVector<DataType_ *> *dest_)
     {
