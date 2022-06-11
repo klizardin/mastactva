@@ -21,13 +21,14 @@ public:
     std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;
     std::shared_ptr<QVector<EffectArgSetData *>> m_effectArgSetsData;
 
+    bool find(const QString &name_);
+    QString getValue() const;
+
     void setArgSetIndex(int index_);
     void setObjectLocalPosition(bool local_);
     bool doAddVariableToLocalPosition() const;
     void setObjectArtefactId(int objectArtefactId_);
     void clearObjectArtefactId();
-    bool find(const QString &name_);
-    QString getValue() const;
 
 private:
     int m_argSetIndex = 0;
