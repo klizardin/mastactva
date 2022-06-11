@@ -58,24 +58,28 @@ namespace drawing_data
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class Test2QuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class Test3QuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class Test4QuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     private:
         std::unique_ptr<QuizImageObject> createObjectWithgDefaultShaderAndPeriod(
                 double tFrom_,
@@ -90,6 +94,7 @@ namespace drawing_data
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 }
 

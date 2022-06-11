@@ -427,7 +427,8 @@ void drawing_data::Test0QuizImageObject::initialize(
 std::pair<const char *, const char *>  drawing_data::Test0QuizImageObject::getDescription() const
 {
     return {"Test0QuizImageObject",
-        "draw two images in betweeen: uses default shaders for mixing of images; "
+        "draw two images in betweeen - simple transmition from one image to another: "
+        "uses default shaders for mixing of images; "
         "setup attributes and uniform variables; setup textures."};
 }
 
@@ -549,6 +550,15 @@ void drawing_data::Test1QuizImageObject::initialize(
     data_.objects.push_back(std::move(object));
 }
 
+std::pair<const char *, const char *>  drawing_data::Test1QuizImageObject::getDescription() const
+{
+    return {"Test1QuizImageObject",
+        "draw two images in betweeen - cube rotation: "
+        "uses shaders for mixing of images with cube rotation; "
+        "setup attributes and uniform variables; setup textures."};
+}
+
+
 void drawing_data::Test2QuizImageObject::initialize(
         QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
@@ -651,6 +661,15 @@ void drawing_data::Test2QuizImageObject::initialize(
 
     data_.objects.push_back(std::move(object));
 }
+
+std::pair<const char *, const char *>  drawing_data::Test2QuizImageObject::getDescription() const
+{
+    return {"Test2QuizImageObject",
+        "draw two images in betweeen - mix line horizontally: "
+        "uses shaders for mixing of images by line horizontally; "
+        "setup attributes and uniform variables; setup textures."};
+}
+
 
 void drawing_data::Test3QuizImageObject::initialize(
         QuizImageObjects &data_,
@@ -765,6 +784,15 @@ void drawing_data::Test3QuizImageObject::initialize(
 
     data_.objects.push_back(std::move(object));
 }
+
+std::pair<const char *, const char *>  drawing_data::Test3QuizImageObject::getDescription() const
+{
+    return {"Test3QuizImageObject",
+        "draw two images in betweeen - mix 4 facets on some direction: "
+        "uses shaders for mixing of images with 4 facets; "
+        "setup attributes and uniform variables; setup textures."};
+}
+
 
 std::unique_ptr<drawing_data::QuizImageObject> drawing_data::Test4QuizImageObject::createObjectWithgDefaultShaderAndPeriod(
         double tFrom_,
@@ -988,6 +1016,16 @@ void drawing_data::Test4QuizImageObject::initialize(
             ));
 }
 
+std::pair<const char *, const char *>  drawing_data::Test4QuizImageObject::getDescription() const
+{
+    return {"Test4QuizImageObject",
+        "draw tree images in betweeen - mix 3 images (second between first and third): "
+        "uses default shaders for mixing of images; "
+        "setup attributes and uniform variables; setup textures; "
+        "create two objects: object 1 - first image + second image; object 2 - second image + third image"};
+}
+
+
 void drawing_data::TestAlphaBlendingsDrawQTLogoQuizImageObject::initialize(
         QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
@@ -1071,4 +1109,13 @@ void drawing_data::TestAlphaBlendingsDrawQTLogoQuizImageObject::initialize(
 
     data_.objects.push_back(std::move(object1));
     data_.objects.push_back(std::move(object2));
+}
+
+std::pair<const char *, const char *>  drawing_data::TestAlphaBlendingsDrawQTLogoQuizImageObject::getDescription() const
+{
+    return {"TestAlphaBlendingsDrawQTLogoQuizImageObject",
+        "draw two QT logo with alpha blending: "
+        "uses default shaders for objects; "
+        "setup attributes and uniform variables; setup textures; "
+        "create two objects: object 1 - background drawing; object 2 - alpha blending drawing"};
 }
