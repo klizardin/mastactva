@@ -12,6 +12,7 @@ class EffectArgValueData;
 
 
 /*
+ * the helper class for algorithm of processing effect data to the effect objects
  * the holder class to pass drawing data arg sets and arg data to the functions
 */
 class DrawingDataArgSetsAndArgs
