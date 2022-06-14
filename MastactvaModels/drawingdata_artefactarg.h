@@ -30,24 +30,64 @@
 #include "../MastactvaBase/utils.h"
 
 
+/*
+ * interface for drawing data artefact's argument.
+ * it is required because there are several implementations of
+ * this interface.
+*/
 class IDrawingDataArtefactArg
 {
 public:
     virtual ~IDrawingDataArtefactArg() = default;
+
+    /*
+     * the function to add argument value to the object's arguments.
+     * the argument in the object is a value that is used for shaders
+     * or calculations. if there is a variable for this argument then
+     * the value of variable is used. the argument itself holds a default
+     * value for object's arguments.
+    */
     virtual void addArgument(
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const = 0;
+
+    /*
+     * the function to add variable to the data of the effect.
+     * variables are used for scripts and for setup of arguments of drawing objects.
+     * variables can be taken arg set as a default value instead of an argument value
+     * of an artefact itself. If arg sets data is not specified then an artefact's value
+     * is used as a default value and a variable's value is used as a main candidate (
+     * before a default value).
+    */
     virtual void addVariable(
             const drawingdata::Details &details_,
             bool global_,
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const = 0;
+
+    /*
+     * the function that returns addon's names.
+     * if an artefact's argument is a special value - name of addons
+     * (g_renderAddonNameName).
+    */
     virtual void getAddonNames(
             QStringList &names_
             ) const = 0;
+
+    /*
+     * the function returns true if the argument is a special value
+     * of the global arguments. Now it are g_renderFillColor,
+     * g_renderGlobalStatesName, and g_renderGlobalCalculationsName.
+    */
     virtual bool isGlobalArgument(
             ) const = 0;
+
+    /*
+     * the function setups the global objects arguments if the argument
+     * is a special value - a global argument.
+     * global values are hold as a special values inside the effect objects data.
+    */
     virtual void addGlobalArgument(
             drawing_data::QuizImageObjects &data_,
             const drawingdata::Details &details_
@@ -55,6 +95,10 @@ public:
 };
 
 
+/*
+ * base implemtation for the inteface IDrawingDataArtefactArg for the
+ * EffectArgumentData data.
+*/
 class DrawingDataArtefactArg :
         public EffectArgumentData,
         public IDrawingDataArtefactArg
@@ -138,6 +182,9 @@ public:
     }
 
 protected:
+    /*
+     * the helper function to setup some value of the vector<string> type.
+    */
     void setStringListValue(
             const drawingdata::Details &details_,
             std::vector<QString> &states_
@@ -156,6 +203,10 @@ protected:
     }
 
 private:
+    /*
+     * the helper function to choose specialization by the type for the attribute storage arguments.
+     * it limits the available types for attributes.
+    */
     template<template <typename> class DrawingDataArtefactArgType_>
     static
     std::unique_ptr<DrawingDataArtefactArg> createForAttributeTypes(EffectArgumentData &&data_)
@@ -177,6 +228,10 @@ private:
         }
     }
 
+    /*
+     * the helper function to choose specialization by the type for the uniform storage arguments.
+     * it limits the available types for uniforms.
+    */
     template<template <typename> class DrawingDataArtefactArgType_>
     static
     std::unique_ptr<DrawingDataArtefactArg> createForUniformTypes(EffectArgumentData &&data_)
@@ -216,6 +271,9 @@ private:
         }
     }
 protected:
+    /*
+     * the template implementation of the function to setup variable
+    */
     template<typename ArgType_>
     void addVariableImpl(
             const drawingdata::Details &details_,
@@ -230,41 +288,52 @@ protected:
         bool global = global_;
         if(argSetsAndArgs_)
         {
+            // check if there is a value in the argument set
             if(!argSetsAndArgs_->find(m_name))
             {
                 return;
             }
+            // get founded value
             value = argSetsAndArgs_->getValue();
+            // should we use the value as global one or should use just for the current object.
+            // rewrite global argument with value from the pipeline
             global = !argSetsAndArgs_->doAddVariableToLocalPosition();
             if(global
                     && details_.position
                     )
             {
+                // clear object index. the value can be used for all such objects
                 auto posNew = details_.position->getCopyClearObjectIndex();
                 position = drawingdata::Position::fromPosition(posNew.get());
                 pos = &position;
             }
             else
             {
+                // use stric position that points to the current object
                 pos = details_.position.get();
             }
         }
         else
         {
             QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data0;
+            // if exists variable or argument is not global
             if(!global
                     && details_.variables.operator bool()
                     && details_.variables->get(m_name, details_.position.get(), data0)
                     )
             {
+                // then skip
                 return;
             }
+            // use dafault value
             value = m_defaultValue;
             if(!global)
             {
+                // TODO: fix logic
                 pos = details_.position.get();
             }
         }
+        // setup the variable
         QVector<double> data;
         drawingdata::utils::toVec(value, data);
         details_.variables->add(
@@ -274,6 +343,9 @@ protected:
                     );
     }
 
+    /*
+     * the specialization of the template implementation of the function to setup variable for the string types
+    */
     void addVariableImpl(
             const drawingdata::Details &details_,
             bool global_,
@@ -319,6 +391,7 @@ protected:
             value = m_defaultValue;
             if(!global)
             {
+                // TODO: fix logic
                 pos = details_.position.get();
             }
         }
@@ -335,6 +408,10 @@ protected:
 };
 
 
+/*
+ * specialization for the attribute storages.
+ * attributes is an array of variable size of some item types.
+*/
 template<typename ArgType_>
 class DrawingDataArtefactAtrributeArg : public DrawingDataArtefactArg
 {
@@ -350,17 +427,23 @@ public:
             const drawingdata::Details &details_
             ) const override
     {
+        // main value is an array of some types. this attribute storage values are used by shaders (and by calculations).
+        // it is optimized for opengl usage.
         auto val = std::make_shared<std::vector<ArgType_>>();
         QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data;
+        // check if the variable value exists
         if(details_.variables.operator bool() &&
                 details_.variables->get(m_name, details_.position.get(), data))
         {
+            // use value of variable
             drawingdata::utils::vecToAttribute(data, *val);
         }
         else
         {
+            // use dafault this value
             drawingdata::utils::toAttribute(m_defaultValue, *val);
         }
+        // setup attribute value of a drawing object
         object_.attributes.push_back(
                     std::make_unique<drawing_data::Attribute<ArgType_>>(
                         m_name,
@@ -368,16 +451,24 @@ public:
                         )
                     );
 
+        // duplicate string value as a string value to make happy calculations by scripts (only) that uses some times
+        // arrays of strings as it's arguments.
+
         // possibly, this part is not very needed
         QStringList strData;
+        // check if variable exists
         if(details_.variables.operator bool() &&
                 details_.variables->get(m_name, details_.position.get(), strData))
         {
+            // do not use variable value
+            // TODO: maybe need to skip extra speciality
         }
         else if(val->empty())
         {
+            // use default this value
             drawingdata::utils::splitTo(m_defaultValue, QString(g_renderObjectsStatesSpliter), strData);
         }
+        // if there is only default this value then setup vector<string> for a drawing object
         if(!strData.isEmpty())
         {
             object_.set(m_name, std::move(strData));
@@ -399,6 +490,10 @@ public:
     }
 };
 
+
+/*
+ * specialization for the uniform storage.
+*/
 template<typename ArgType_>
 class DrawingDataArtefactUniformArg : public DrawingDataArtefactArg
 {
@@ -409,11 +504,15 @@ public:
     {
     }
 
+    /*
+     * add argument value to a draing object for the uniform storage for generic (not string) types.
+    */
     void addArgument(
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const override
     {
+        // this variables should be of string type only.
         if(g_renderObjectsStatesName == m_name
                 || g_renderObjectCalculationsName == m_name
                 )
@@ -424,15 +523,19 @@ public:
         {
             auto val = std::make_shared<ArgType_>();
             QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> vec;
+            // check if exist variable
             if(details_.variables.operator bool() &&
                     details_.variables->get(m_name, details_.position.get(), vec))
             {
+                // use variable
                 drawingdata::utils::vecToUniform(vec, *val);
             }
             else
             {
+                // use default this value
                 drawingdata::utils::toUniform(m_defaultValue, *val);
             }
+            // set uniform value to a drawing object
             object_.uniforms.push_back(
                         std::make_unique<drawing_data::Uniform<ArgType_>>(
                             m_name,
@@ -457,6 +560,9 @@ public:
     }
 };
 
+/*
+ * specialization for the string type of the uniform storage.
+*/
 template<>
 class DrawingDataArtefactUniformArg<QString> : public DrawingDataArtefactArg
 {
@@ -467,11 +573,15 @@ public:
     {
     }
 
+    /*
+     * setup of arguments with the string type of the uniform storage.
+    */
     void addArgument(
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const override
     {
+        // special setup for special variables
         if(g_renderObjectsStatesName == m_name)
         {
             setStringListValue(details_, object_.objectStates);
@@ -482,10 +592,13 @@ public:
         }
         else
         {
+            // default setup for string arguments.
             QStringList strData;
             if(details_.variables.operator bool() &&
                 details_.variables->get(m_name, details_.position.get(), strData))
             {
+                // TODO: maybe fix extra specialization
+                // now we can't use string variable result from scripting
             }
             else
             {
@@ -516,6 +629,10 @@ public:
 namespace drawingdata {
 namespace utils {
 
+/*
+ * factory of the DrawingDataArtefactArg.
+ * in the top level it chooses by a storage type more deeper by type of item(s).
+*/
 template<> inline
 std::unique_ptr<DrawingDataArtefactArg> factory(EffectArgumentData &&data_, const DrawingDataArtefactArg *)
 {
