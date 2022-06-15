@@ -322,7 +322,7 @@ protected:
                     && details_.variables->get(m_name, details_.position.get(), data0)
                     )
             {
-                // then skip
+                // do not reinitialize variable for the current position
                 return;
             }
             // use dafault value
@@ -386,6 +386,7 @@ protected:
                     && details_.variables->get(m_name, details_.position.get(), data0)
                     )
             {
+                // do not reinitialize variable for the current position
                 return;
             }
             value = m_defaultValue;
@@ -460,8 +461,7 @@ public:
         if(details_.variables.operator bool() &&
                 details_.variables->get(m_name, details_.position.get(), strData))
         {
-            // do not use variable value
-            // TODO: maybe need to skip extra speciality
+            //it's ok we initilize strData while get
         }
         else if(val->empty())
         {
@@ -597,8 +597,7 @@ public:
             if(details_.variables.operator bool() &&
                 details_.variables->get(m_name, details_.position.get(), strData))
             {
-                // TODO: maybe fix extra specialization
-                // now we can't use string variable result from scripting
+                // it's ok we initialize strData while get
             }
             else
             {
