@@ -29,6 +29,10 @@
 class DrawingDataEffectObjects;
 
 
+/*
+ * implementation of drawing effect data that extend effect data.
+ * implement interfaces quiz image object initializer, effect GUI addon
+*/
 class DrawingDataEffect :
         public EffectData,
         public IDefaultData<drawing_data::QuizImageObjects>,
