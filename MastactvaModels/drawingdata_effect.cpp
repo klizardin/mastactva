@@ -183,6 +183,12 @@ void DrawingDataEffect::runAddons(const QStringList &names_) const
     runObjectsAndAddons(data_, sortedMainEffectObjects, names_);
 }
 
+/*
+ * build list of
+ *   * main objects - to do preparations before run not main objects
+ *   * all other objects - to main effect objects presentation
+ *   * all other objects sorted by programmer name - to better process objects list - where objects specified by its names
+*/
 void DrawingDataEffect::extractMainObjects(
         SortedEffectObjects &sortedEffectObjects_,
         SortedEffectObjects &sortedMainEffectObjects_,
@@ -247,19 +253,26 @@ void DrawingDataEffect::processByObjectListOrder(
         const SortedByProgrammerNameEffectObjects &sortedByProgrammerNameEffectObjects_
         ) const
 {
+    // list of objects that are used in the object list
     auto objectsToRunUnique = getUnique(objectsToRun_);
+    // set up index shifts
     std::map<QString, int> stepIndexShifts = setupShifts(objectsToRunUnique);
     for(const QString &objectName_ : objectsToRun_)
     {
+        // get all template objects for the given object name in the objects list
+        // it can be several template objects with the same name
         const auto fitb = sortedByProgrammerNameEffectObjects_.lower_bound(objectName_);
         const auto fite = sortedByProgrammerNameEffectObjects_.upper_bound(objectName_);
         std::size_t objectsInPack = std::distance(fitb, fite);
         Q_ASSERT(stepIndexShifts.find(objectName_) != std::end(stepIndexShifts));
+        // get the current objects shift for the specific object name
         const int stepIndexShift = stepIndexShifts[objectName_];
         for(auto it = fitb; it != fite; ++it)
         {
+            // add objects from the template objects
             it->second->addObjects(data_, m_details, stepIndexShift);
         }
+        // correct index shift for the current object name
         stepIndexShifts[objectName_] += objectsInPack;
     }
 }

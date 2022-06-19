@@ -377,6 +377,9 @@ void DrawingDataEffectObjects::getAddonNames(
     }
 }
 
+/*
+ * object is main if it's programmer name starts with g_defaultObjectInfoProgrammerName
+*/
 bool DrawingDataEffectObjects::isMain() const
 {
     return m_objectInfoData.operator bool()
