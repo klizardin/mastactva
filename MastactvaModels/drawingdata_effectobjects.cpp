@@ -32,6 +32,9 @@ DrawingDataEffectObjects::DrawingDataEffectObjects(EffectObjectsData &&data_)
 }
 
 
+/*
+ * class to process object's artefacts
+*/
 class ObjectArtefacts
 {
 private:
@@ -40,51 +43,96 @@ private:
 
 public:
     ObjectArtefacts() = default;
+
+    /*
+     * populate this class with artefacts and build iterator over the artefacts
+    */
     void populate(const QVector<ObjectArtefactData *> &objectArtefacts_);
+
+    /*
+     * is end of the artefacts
+    */
     bool isEnd() const;
+
+    /*
+     * move to the first artefact
+    */
     void first();
+
+    /*
+     * move to te next artefact
+    */
     void next();
+
+    /*
+     * build object and fulfill the image object data
+     * return true if object can be added to the list of image objects
+    */
     bool build(
-            drawing_data::QuizImageObjects &data_,
-            drawing_data::QuizImageObject &object_,
-            const drawingdata::Details &details_,
-            const QStringList &addonNames_ = QStringList{},
-            bool mainObjects_ = false
+            drawing_data::QuizImageObjects &data_,      // image objects
+            drawing_data::QuizImageObject &object_,     // this image object to fulfill
+            const drawingdata::Details &details_,       // details of the parent class to share data between objects
+            const QStringList &addonNames_ = QStringList{},     // addon names to run
+            bool mainObjects_ = false                   // is it the main object
             ) const;
+
+    /*
+     * add arguments to the details data
+    */
     void addArgs(
-            const drawingdata::Details &details_,
-            DrawingDataArgSetsAndArgs &argSetsAndArgs_
+            const drawingdata::Details &details_,       // details of the parent class to share data between objects
+            DrawingDataArgSetsAndArgs &argSetsAndArgs_  // arg sets
             );
+
+    /*
+     * add main calculations
+    */
     void addMainCalculations(
-            drawing_data::QuizImageObjects &objects_,
-            const drawingdata::Details &details_
+            drawing_data::QuizImageObjects &objects_,   // image objects
+            const drawingdata::Details &details_        // details from the parent class
             ) const;
+
+    /*
+     * return addons names
+    */
     void getAddonNames(
             QStringList &names_
             ) const;
 
 private:
+    /*
+     * helper function to initialize iterator
+    */
     void findEnd();
+
+    /*
+     * helper function to update detail's artefact step index
+    */
     static void updateArtefactStepIndex(
-            const drawingdata::Details &details_,
-            const DrawingDataObjectArtefact *objectArtefact_,
-            bool first_
+            const drawingdata::Details &details_,               // details from the parent class
+            const DrawingDataObjectArtefact *objectArtefact_,   // artefact
+            bool first_                                         // is the first artefact
             );
+
+    /*
+     * do runtime checks
+    */
     static void checkArtefactStepIndex(
             const drawingdata::Details &details_,
             const DrawingDataObjectArtefact *objectArtefact_
             );
 
 private:
-    VectorType m_artefacts;
-    Iterator m_objectBegin = std::cend(m_artefacts);
-    Iterator m_objectEnd = std::cend(m_artefacts);
+    VectorType m_artefacts;                                 // list of artefacts
+    Iterator m_objectBegin = std::cend(m_artefacts);        // begin iterator
+    Iterator m_objectEnd = std::cend(m_artefacts);          // end iterator
 };
 
 void ObjectArtefacts::populate(const QVector<ObjectArtefactData *> &objectArtefacts_)
 {
     m_artefacts.clear();
     m_artefacts.reserve(objectArtefacts_.size());
+    // push all artefacts
     for(const ObjectArtefactData *ptr_ : objectArtefacts_)
     {
         auto ptr = dynamic_cast<const DrawingDataObjectArtefact *>(ptr_);
@@ -94,6 +142,7 @@ void ObjectArtefacts::populate(const QVector<ObjectArtefactData *> &objectArtefa
         }
         m_artefacts.push_back(ptr);
     }
+    // sort artefacts by step index of artefact
     std::sort(
                 std::begin(m_artefacts),
                 std::end(m_artefacts),
@@ -101,6 +150,7 @@ void ObjectArtefacts::populate(const QVector<ObjectArtefactData *> &objectArtefa
     {
         return left_ && right_ && *left_ < *right_;
     });
+    // initialize iterators
     m_objectBegin = std::cend(m_artefacts);
     m_objectEnd = std::cend(m_artefacts);
 }
@@ -110,12 +160,18 @@ bool ObjectArtefacts::isEnd() const
     return std::cend(m_artefacts) == m_objectBegin;
 }
 
+/*
+ * set up to the first step inedx
+*/
 void ObjectArtefacts::first()
 {
     m_objectBegin = std::cbegin(m_artefacts);
     findEnd();
 }
 
+/*
+ * set up to the next step index
+*/
 void ObjectArtefacts::next()
 {
     m_objectBegin = m_objectEnd;
@@ -130,11 +186,13 @@ bool ObjectArtefacts::build(
         bool mainObjects_ /*= false*/
         ) const
 {
+    // set up for details current step index
     if(std::cend(m_artefacts) != m_objectBegin)
     {
         updateArtefactStepIndex(details_, *m_objectBegin, std::cbegin(m_artefacts) == m_objectBegin);
     }
 
+    // add all variables of the artefacts of the current step index
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
@@ -143,34 +201,42 @@ bool ObjectArtefacts::build(
             (*it)->addVariables(details_);
         }
     }
+    // add all calculations of the artefacts of the current step index
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
         (*it)->addCalculations(object_, details_);
     }
+    // add data from all the artefacts from the current step index
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
         (*it)->addData(details_);
     }
+    // add first vertex shader from the artefacts of the current step index
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
         if((*it)->setVertexShader(object_, details_))
         {
+            // add arguments for this shader
             (*it)->addArguments(object_, details_);
             break;
         }
     }
+    // add first fragment shader from the artefacts of the current step index
+    // artefact of the fisrt fragment shader can be not equal to the artefact of the first vertex shader - TODO: maybe fix it
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
         if((*it)->setFragmentShader(object_, details_))
         {
+            // add arguments for this shader
             (*it)->addArguments(object_, details_);
             break;
         }
     }
+    // add global arguments if these are the main object's artefacts
     if(mainObjects_)
     {
         for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
@@ -183,12 +249,13 @@ bool ObjectArtefacts::build(
             }
         }
     }
+    // add textures for all artefacts of the current step index
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
         (*it)->addTexture(object_);
     }
-    // run addons after processing of a whole object
+    // run addons after processing of a all object's artefacts of the current step index
     if(!addonNames_.isEmpty())
     {
         for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
@@ -196,8 +263,9 @@ bool ObjectArtefacts::build(
             checkArtefactStepIndex(details_, *it);
             (*it)->runAddons(details_, addonNames_);
         }
-        return false; // do not need to add object, just process it state
+        return false; // do not need to add this object, just process it state
     }
+    // we generate separate image objects for the artefacts of each step index of the drawing object
     const bool bothShaders =
             !object_.fragmentShader.isEmpty()
             && !object_.vertexShader.isEmpty()
@@ -206,11 +274,17 @@ bool ObjectArtefacts::build(
             !object_.fragmentShader.isEmpty()
             || !object_.vertexShader.isEmpty()
             ;
+    // should we add new object or now:
+    // yes - if it can draw or calculate in the runtime
+    // throw it away - if all processing is done and nothing to do at runtime
     return (object_.hasCalculations() && !anyShader)
             || bothShaders
             ;
 }
 
+/*
+ * simplified implemenattion for adding variables
+*/
 void ObjectArtefacts::addArgs(
         const drawingdata::Details &details_,
         DrawingDataArgSetsAndArgs &argSetsAndArgs_
@@ -231,6 +305,9 @@ void ObjectArtefacts::addArgs(
     }
 }
 
+/*
+ * simpilfied implementation for returning of addon names
+*/
 void ObjectArtefacts::getAddonNames(
         QStringList &names_
         ) const
@@ -244,6 +321,9 @@ void ObjectArtefacts::getAddonNames(
     }
 }
 
+/*
+ * simplified implementation for adding the main calculations
+*/
 void ObjectArtefacts::addMainCalculations(
         drawing_data::QuizImageObjects &objects_,
         const drawingdata::Details &details_
@@ -261,6 +341,9 @@ void ObjectArtefacts::addMainCalculations(
     }
 }
 
+/*
+ * find end index of artefacts with current step index (step index of the artefact in the m_objectBegin)
+*/
 void ObjectArtefacts::findEnd()
 {
     if(!isEnd())
@@ -327,18 +410,28 @@ void DrawingDataEffectObjects::addObjects(
     list.populate(*m_objectArtefactData);
     for(list.first(); !list.isEnd(); list.next())
     {
+        // iterate through step indexes
+        // add separate image object for each step index of the artefacts of the current drawing object
         if(isMain())
         {
             list.addMainCalculations(data_, details_);
         }
+        // create temperary image object
         auto obj = std::make_shared<drawing_data::QuizImageObject>();
+        // build image object
         if(list.build(data_, *obj, details_, addonNames_, mainObjects_))
         {
+            // if we need to add new image object we do it
             data_.objects.push_back(obj);
         }
+        // else throw away temperary image object
     }
 }
 
+/*
+ * simplified implemenattion for adding variables
+ * do not create objects
+*/
 void DrawingDataEffectObjects::addArgs(
         const drawingdata::Details &details_,
         DrawingDataArgSetsAndArgs &argSetsAndArgs_,
@@ -360,6 +453,10 @@ void DrawingDataEffectObjects::addArgs(
     }
 }
 
+/*
+ * simpilfied implementation for returning of addon names
+ * do not create objects
+*/
 void DrawingDataEffectObjects::getAddonNames(
         QStringList &names_
         ) const
@@ -402,7 +499,7 @@ QString DrawingDataEffectObjects::getProgrammerName() const
     }
     else
     {
-        return g_defaultObjectInfoProgrammerName;
+        return g_defaultObjectInfoProgrammerName; // not initialized objects are main objects
     }
 }
 
