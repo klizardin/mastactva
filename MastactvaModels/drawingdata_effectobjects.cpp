@@ -196,6 +196,7 @@ bool ObjectArtefacts::build(
             checkArtefactStepIndex(details_, *it);
             (*it)->runAddons(details_, addonNames_);
         }
+        return false; // do not need to add object, just process it state
     }
     const bool bothShaders =
             !object_.fragmentShader.isEmpty()
