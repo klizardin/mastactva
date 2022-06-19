@@ -120,6 +120,9 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_, int ar
     }
 }
 
+/*
+ * return all possible addon names for the whole effect
+*/
 void DrawingDataEffect::getAddonNames(QStringList &names_) const
 {
     if(!m_effectObjectsData.operator bool()
