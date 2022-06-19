@@ -43,8 +43,17 @@ public:
     DrawingDataEffect(EffectData &&data_);
 
     // DIP initializer
+    // {
+    /*
+     * set up IFileSource dependency
+    */
     void init(std::shared_ptr<drawingdata::IFileSource> filesources_);
+
+    /*
+     * set up IAddonModules dependency
+    */
     void init(std::shared_ptr<IAddonModules> modules_);
+    // }
 
     // IDefaultData<drawing_data::QuizImageObjects>
     // {

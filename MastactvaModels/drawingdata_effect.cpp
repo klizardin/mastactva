@@ -72,31 +72,50 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_, int ar
         return;
     }
 
+    // clean up details
     const_cast<DrawingDataEffect *>(this)->m_details.clear();
 
     SortedEffectObjects sortedMainEffectObjects;
     SortedEffectObjects sortedEffectObjects;
     SortedByProgrammerNameEffectObjects sortedByProgrammerNameEffectObjects;
 
+    // extract main objects from the list of all objects
     extractMainObjects(sortedEffectObjects, sortedMainEffectObjects, sortedByProgrammerNameEffectObjects);
 
+    // initialize helper data holder object to pass as an argument
     DrawingDataArgSetsAndArgs argSetsAndArgs;
     argSetsAndArgs.m_effectArgSetsData = m_effectArgSetsData;
     argSetsAndArgs.m_effectArgsData = m_effectArgsData;
 
-    addArguments(argSetsAndArgs, sortedMainEffectObjects, true);
-    addArguments(argSetsAndArgs, sortedEffectObjects, false);
+    // initialize arguments from arg sets as variables
+    addArguments(argSetsAndArgs, sortedMainEffectObjects, true);    // add local object variables
+    addArguments(argSetsAndArgs, sortedEffectObjects, false);       // add global objects variables
+    // set up as global objects needed because of possibility of existing of objects list
+    // where we can not determine exact position of the object (just template of object)
+    // and so all variables are set for all objects (variable for specific template of object, not for exact object)
+    // such variables set up before processing of any object
 
+    // value of variable can be changed while processing of objects
+    // and the latest value of variables will be used
+
+    // process main objects
     runObjects(data_, sortedMainEffectObjects, true);
 
     QStringList objectsToRun;
+    // check if we have an objects list
+    // this is the list of objects build by main objects
+    // that describe actual objects chain from template objects
     if(m_details.variables.operator bool()
             && m_details.variables->getObjectsList(objectsToRun))
     {
+        // process objects with the objects list
+        // already existing objects are used as template objects
+        // in the object list possibly contains several objects of same object template in different order
         processByObjectListOrder(data_, objectsToRun, sortedByProgrammerNameEffectObjects);
     }
     else
     {
+        // process objects without the objects list
         runObjects(data_, sortedEffectObjects);
     }
 }
