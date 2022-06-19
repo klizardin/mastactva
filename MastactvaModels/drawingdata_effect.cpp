@@ -139,9 +139,14 @@ void DrawingDataEffect::getAddonNames(QStringList &names_) const
 
     extractMainObjects(sortedEffectObjects, sortedMainEffectObjects, sortedByProgrammerNameEffectObjects);
 
+    // addon names can be specified just for main objects
     getAddonNames(sortedMainEffectObjects, names_);
 }
 
+/*
+ * the function to run effect's addons with specific names (by the function's argument)
+ * the function reinitialize details of the effect data, so it cleans the current state
+*/
 void DrawingDataEffect::runAddons(const QStringList &names_) const
 {
     drawing_data::QuizImageObjects data_;
@@ -153,21 +158,28 @@ void DrawingDataEffect::runAddons(const QStringList &names_) const
         return;
     }
 
+    // clean effect state
     const_cast<DrawingDataEffect *>(this)->m_details.clear();
 
     SortedEffectObjects sortedMainEffectObjects;
     SortedEffectObjects sortedEffectObjects;
     SortedByProgrammerNameEffectObjects sortedByProgrammerNameEffectObjects;
 
+    // extract main objects
     extractMainObjects(sortedEffectObjects, sortedMainEffectObjects, sortedByProgrammerNameEffectObjects);
 
+    // set up helper data holder object for arg sets
     DrawingDataArgSetsAndArgs argSetsAndArgs;
     argSetsAndArgs.m_effectArgSetsData = m_effectArgSetsData;
     argSetsAndArgs.m_effectArgsData = m_effectArgsData;
 
+    // initialize variables
     addArguments(argSetsAndArgs, sortedMainEffectObjects, true);
     addArguments(argSetsAndArgs, sortedEffectObjects, false);
 
+    // addons can be specified just for main objects
+    // run main objects
+    // and run addons
     runObjectsAndAddons(data_, sortedMainEffectObjects, names_);
 }
 

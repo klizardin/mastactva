@@ -188,6 +188,7 @@ bool ObjectArtefacts::build(
         checkArtefactStepIndex(details_, *it);
         (*it)->addTexture(object_);
     }
+    // run addons after processing of a whole object
     if(!addonNames_.isEmpty())
     {
         for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
