@@ -70,7 +70,7 @@ void DrawingDataArtefact::addArguments(
     {
         return;
     }
-    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    for(const EffectArgumentData *arg_ : qAsConst(*m_effectArgData))
     {
         auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
         if(!arg)
@@ -103,7 +103,7 @@ bool DrawingDataArtefact::hasGlobalArguments() const
     {
         return false;
     }
-    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    for(const EffectArgumentData *arg_ : qAsConst(*m_effectArgData))
     {
         auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
         if(!arg)
@@ -146,7 +146,7 @@ void DrawingDataArtefact::addVariables(
                 || to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLuaRuntime
                 );
 
-    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    for(const EffectArgumentData *arg_ : qAsConst(*m_effectArgData))
     {
         auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
         if(!arg)
@@ -167,7 +167,7 @@ void DrawingDataArtefact::addGlobalArguments(
         return;
     }
 
-    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    for(const EffectArgumentData *arg_ : qAsConst(*m_effectArgData))
     {
         auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
         if(!arg)

@@ -91,7 +91,7 @@ void EffectArgValueData::createValues()
     m_effectArgValuesData = ::data_object::utils::createDataVector(static_cast<const EffectArgumentData *>(nullptr));
     if(m_effectArgsData)
     {
-        for(const EffectArgData *p_ : *m_effectArgsData)
+        for(const EffectArgData *p_ : qAsConst(*m_effectArgsData))
         {
             if(!p_)
             {

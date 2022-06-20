@@ -40,7 +40,7 @@ bool DrawingDataObjectArtefact::forArtefacts(
     {
         return false;
     }
-    for(const ArtefactData * artefact_: *m_artefactData)
+    for(const ArtefactData * artefact_: qAsConst(*m_artefactData))
     {
         auto artefact = dynamic_cast<const DrawingDataArtefact *>(artefact_);
         if(!artefact)

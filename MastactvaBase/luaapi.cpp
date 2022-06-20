@@ -270,7 +270,7 @@ std::tuple<bool, QVector<double>, QStringList> LuaAPI::getVariableValue(const QS
 
 void LuaAPI::processTests(const QString &name_, int position_) const
 {
-    for(const std::unique_ptr<LuaAPITest> &test_ : m_tests)
+    for(const std::unique_ptr<LuaAPITest> &test_ : qAsConst(m_tests))
     {
         if(!test_
                 || test_->getName() != name_)
@@ -1093,7 +1093,7 @@ void LuaAPI::hideLibsBlackList()
         {"load"},
         {"loadfile"}
     };
-    for(const GlobalNameType &name_ : s_globalNames)
+    for(const GlobalNameType &name_ : qAsConst(s_globalNames))
     {
         lua_pushnil(m_luaState);
         lua_setglobal(m_luaState, std::get<0>(name_));
@@ -1109,7 +1109,7 @@ void LuaAPI::hideLibsBlackList()
         {"os", "setlocale"},
         {"os", "tmpname"},
     };
-    for(const SpecificName2Type &name_ : s_specificNames)
+    for(const SpecificName2Type &name_ : qAsConst(s_specificNames))
     {
         lua_getglobal(m_luaState, std::get<0>(name_));
         lua_pushnil(m_luaState);
@@ -1343,7 +1343,7 @@ void LuaAPI::initFunctions() const
         {"test", l_implementation<LuaAPI::FunctionImplEn::test, 2, 0>},
     };
 
-    for(const auto &val_ : functions)
+    for(const auto &val_ : qAsConst(functions))
     {
         lua_pushcfunction(m_luaState, std::get<1>(val_));
         lua_setglobal(m_luaState, std::get<0>(val_));
@@ -1401,10 +1401,10 @@ void LuaAPI::initFunctions() const
             }
         }
     };
-    for(const auto &mf_ : moduleFunctions)
+    for(const auto &mf_ : qAsConst(moduleFunctions))
     {
         lua_newtable(m_luaState);
-        for(const auto &fi_ : std::get<1>(mf_))
+        for(const auto &fi_ : qAsConst(std::get<1>(mf_)))
         {
             const lua_CFunction func = std::get<1>(fi_);
             const char * funcName = std::get<0>(fi_);

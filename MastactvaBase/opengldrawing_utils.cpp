@@ -165,7 +165,7 @@ void IEffectCalculation::setFilename(const QString &filename_)
 
 void IEffectCalculation::setRequiredVariables(const QStringList &vars_)
 {
-    for(const QString &v_ : vars_)
+    for(const QString &v_ : qAsConst(vars_))
     {
         m_vars.insert(v_);
     }

@@ -184,7 +184,7 @@ QVector<QRectF> opengl_drawing::ImagesGeometryMatrixCalculation::getImageRects(
         ) const
 {
     QVector<QRectF> rects;
-    for(const QString &imageName_ : imageNames_)
+    for(const QString &imageName_ : qAsConst(imageNames_))
     {
         const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
         rects.push_back(QRectF{0.0, 0.0, float(imageSize.width()), float(imageSize.height())});

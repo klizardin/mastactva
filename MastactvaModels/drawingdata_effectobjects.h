@@ -32,26 +32,53 @@ public:
     DrawingDataEffectObjects() = default;
     DrawingDataEffectObjects(EffectObjectsData &&data_);
 
+    /*
+     * add objects to the image objects data
+    */
     void addObjects(
-            drawing_data::QuizImageObjects &data_,
-            const drawingdata::Details &details_,
-            int stepIndexShift_ = 0,
-            const QStringList &addonNames_ = QStringList{},
-            bool mainObjects_ = false
+            drawing_data::QuizImageObjects &data_,      // image objects data
+            const drawingdata::Details &details_,       // details from the parent class
+            int stepIndexShift_ = 0,                    // shift index for the objects to add
+            const QStringList &addonNames_ = QStringList{}, // addon names to run
+            bool mainObjects_ = false                   // is it the main object
             ) const;
+
+    /*
+     * add arguments to the detail class
+    */
     void addArgs(
-            const drawingdata::Details &details_,
-            DrawingDataArgSetsAndArgs &argSetsAndArgs_,
-            int stepIndexShift_ = 0
+            const drawingdata::Details &details_,       // details from the parent class
+            DrawingDataArgSetsAndArgs &argSetsAndArgs_, // arg sets
+            int stepIndexShift_ = 0                     // shift of the objects
             ) const;
+
+    /*
+     * return addon names
+    */
     void getAddonNames(
             QStringList &names_
             ) const;
+
+    /*
+     * return true if the object main
+    */
     bool isMain() const;
+
+    /*
+     * return step index
+    */
     int getStepIndex() const;
+
+    /*
+     * return programmer name
+     * TODO: replace this data function with actions
+    */
     QString getProgrammerName() const;
 
 private:
+    /*
+     * set up position in the details data
+    */
     void setupPosition(const drawingdata::Details &details_, int stepIndexShift_) const;
 };
 

@@ -41,7 +41,7 @@ bool drawing_data::detail::Calculations::calculate(
 
     std::vector<opengl_drawing::IEffectCalculation *> updated;
     updated.reserve(m_availableCalculations.size());
-    for(const auto &calc_ : m_availableCalculations)
+    for(const auto &calc_ : qAsConst(m_availableCalculations))
     {
         if(calc_.operator bool()
                 && (
@@ -56,7 +56,7 @@ bool drawing_data::detail::Calculations::calculate(
 
     clearUpdated();
 
-    for(const auto &calc_ : updated)
+    for(const auto &calc_ : qAsConst(updated))
     {
         if(!calc_)
         {
@@ -92,7 +92,7 @@ void drawing_data::detail::Calculations::postCalculation()
 
 void drawing_data::detail::Calculations::init(const std::vector<QString> &effectCalculationNames_)
 {
-    for(const QString &effectCalculateName_ : effectCalculationNames_)
+    for(const QString &effectCalculateName_ : qAsConst(effectCalculationNames_))
     {
         std::unique_ptr<opengl_drawing::IEffectCalculation>
                 calculation = opengl_drawing::getEffectCalculationFactory().get(
@@ -118,7 +118,7 @@ bool drawing_data::detail::Calculations::find(
     {
         return false;
     }
-    for(const auto &calc_ : calculations)
+    for(const auto &calc_ : qAsConst(calculations))
     {
         if(!calc_)
         {
@@ -186,7 +186,7 @@ void drawing_data::QuizImageObject::postInitialization()
 bool drawing_data::QuizImageObject::get(const QString &name_, QVector<double> &data_) const
 {
     std::vector<float> data;
-    for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
+    for(const std::unique_ptr<IAttribute> &attribute_ : qAsConst(attributes))
     {
         if(!attribute_.operator bool()
                 || attribute_->name() != name_
@@ -206,7 +206,7 @@ bool drawing_data::QuizImageObject::get(const QString &name_, QVector<double> &d
         }
         return res;
     }
-    for(const std::unique_ptr<IUniform> &uniform_ : uniforms)
+    for(const std::unique_ptr<IUniform> &uniform_ : qAsConst(uniforms))
     {
         if(!uniform_.operator bool()
                 || uniform_->name() != name_
@@ -378,7 +378,7 @@ bool drawing_data::QuizImageObject::changeAllowedForTime(double told_, double tn
 
 int drawing_data::QuizImageObject::getAttributeTupleSize(const QString &name_) const
 {
-    for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
+    for(const std::unique_ptr<IAttribute> &attribute_ : qAsConst(attributes))
     {
         if(!attribute_.operator bool()
                 || attribute_->name() != name_
@@ -413,7 +413,7 @@ QStringList drawing_data::QuizImageObject::getArgumentNames() const
 {
     QStringList result;
     result.reserve(uniforms.size() + attributes.size());
-    for(const std::unique_ptr<IUniform> &uniform_ : uniforms)
+    for(const std::unique_ptr<IUniform> &uniform_ : qAsConst(uniforms))
     {
         if(!uniform_.operator bool())
         {
@@ -421,7 +421,7 @@ QStringList drawing_data::QuizImageObject::getArgumentNames() const
         }
         result.push_back(uniform_->name());
     }
-    for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
+    for(const std::unique_ptr<IAttribute> &attribute_ : qAsConst(attributes))
     {
         if(!attribute_.operator bool())
         {
@@ -434,7 +434,7 @@ QStringList drawing_data::QuizImageObject::getArgumentNames() const
 
 bool drawing_data::QuizImageObject::getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const
 {
-    for(const std::unique_ptr<IUniform> &uniform_ : uniforms)
+    for(const std::unique_ptr<IUniform> &uniform_ : qAsConst(uniforms))
     {
         if(!uniform_.operator bool()
                 || uniform_->name() != name_
@@ -445,7 +445,7 @@ bool drawing_data::QuizImageObject::getArgumentValue(const QString &name_, std::
         uniform_->getVector(values_);
         return true;
     }
-    for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
+    for(const std::unique_ptr<IAttribute> &attribute_ : qAsConst(attributes))
     {
         if(!attribute_.operator bool()
                 || attribute_->name() != name_
@@ -494,7 +494,7 @@ void drawing_data::QuizImageObjects::postInitialization()
 bool drawing_data::QuizImageObjects::get(const QString &name_, QVector<double> &data_) const
 {
     bool result = false;
-    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    for(const std::shared_ptr<QuizImageObject> &object_ : qAsConst(objects))
     {
         if(!object_.operator bool())
         {
@@ -540,7 +540,7 @@ void drawing_data::QuizImageObjects::set(const QString &name_, QVector<double> &
 bool drawing_data::QuizImageObjects::get(const QString &name_, QStringList &data_) const
 {
     bool result = false;
-    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    for(const std::shared_ptr<QuizImageObject> &object_ : qAsConst(objects))
     {
         if(!object_.operator bool())
         {
@@ -590,7 +590,7 @@ bool drawing_data::QuizImageObjects::isUpdated(const QSet<QString> &vars_, IVari
         return true;
     }
 
-    for(const auto &object_ : objects)
+    for(const auto &object_ : qAsConst(objects))
     {
         if(object_->isUpdated(vars_, nullptr))
         {
@@ -602,7 +602,7 @@ bool drawing_data::QuizImageObjects::isUpdated(const QSet<QString> &vars_, IVari
 
 int drawing_data::QuizImageObjects::getAttributeTupleSize(const QString &name_) const
 {
-    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    for(const std::shared_ptr<QuizImageObject> &object_ : qAsConst(objects))
     {
         if(!object_.operator bool())
         {
@@ -637,7 +637,7 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
     {
         const int szMain = calculations.size();
         int sz = szMain;
-        for(const auto &object_ : objects)
+        for(const auto &object_ : qAsConst(objects))
         {
             sz = std::max(sz, szMain + (int)object_->calculations.size());
         }
@@ -645,7 +645,7 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
     }();
 
     preCalculation();
-    for(const auto &object_ : objects)
+    for(const auto &object_ : qAsConst(objects))
     {
         object_->preCalculation();
     }
@@ -656,7 +656,7 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
         ++step)
     {};
 
-    for(const auto &object_ : objects)
+    for(const auto &object_ : qAsConst(objects))
     {
         object_->postCalculation();
     }
@@ -666,7 +666,7 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
 QStringList drawing_data::QuizImageObjects::getArgumentNames() const
 {
     QStringList result;
-    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    for(const std::shared_ptr<QuizImageObject> &object_ : qAsConst(objects))
     {
         if(!object_.operator bool())
         {
@@ -680,7 +680,7 @@ QStringList drawing_data::QuizImageObjects::getArgumentNames() const
 
 bool drawing_data::QuizImageObjects::getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const
 {
-    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    for(const std::shared_ptr<QuizImageObject> &object_ : qAsConst(objects))
     {
         if(!object_.operator bool())
         {
@@ -715,7 +715,7 @@ bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *v
 {
     bool anyProcessed = detail::Calculations::calculate(variables_);
 
-    for(const auto &object_ : objects)
+    for(const auto &object_ : qAsConst(objects))
     {
         anyProcessed |= object_->calculate(variables_);
     }

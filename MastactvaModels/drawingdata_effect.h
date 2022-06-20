@@ -29,6 +29,10 @@
 class DrawingDataEffectObjects;
 
 
+/*
+ * implementation of drawing effect data that extend effect data.
+ * implement interfaces quiz image object initializer, effect GUI addon
+*/
 class DrawingDataEffect :
         public EffectData,
         public IDefaultData<drawing_data::QuizImageObjects>,
@@ -39,8 +43,17 @@ public:
     DrawingDataEffect(EffectData &&data_);
 
     // DIP initializer
+    // {
+    /*
+     * set up IFileSource dependency
+    */
     void init(std::shared_ptr<drawingdata::IFileSource> filesources_);
+
+    /*
+     * set up IAddonModules dependency
+    */
     void init(std::shared_ptr<IAddonModules> modules_);
+    // }
 
     // IDefaultData<drawing_data::QuizImageObjects>
     // {

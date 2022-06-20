@@ -6,6 +6,9 @@
 #include "../MastactvaBase/drawingdata_utils.h"
 
 
+/*
+ * it is used only as data container
+*/
 class DrawingDataEffectArg :
         public EffectArgData
 {

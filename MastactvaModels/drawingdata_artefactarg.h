@@ -107,6 +107,10 @@ public:
     DrawingDataArtefactArg() = default;
     DrawingDataArtefactArg(EffectArgumentData &&data_);
 
+    /*
+     * implementation of getAddonNames() function: return addons names to start from argument
+     * it it is the special argument (see g_renderAddonNameName)
+    */
     void getAddonNames(
             QStringList &names_
             ) const override
@@ -117,6 +121,15 @@ public:
         }
     }
 
+    /*
+     * implementation of the isGlobalArgument() function: return true
+     * if the argument name is one of the special argument names
+     * (see
+     *      * g_renderFillColor -  object backgroud color that is holded at the image objects level variable
+     *      * g_renderGlobalStatesName - global states names
+     *      * g_renderGlobalCalculationsName - global calculations names (possibly with calculation arguments)
+     * )
+    */
     bool isGlobalArgument(
             ) const override
     {
@@ -135,6 +148,9 @@ public:
         }) != std::end(s_globalArgumnentNames);
     }
 
+    /*
+     * function to set up the global arguments to the image objects data
+    */
     void addGlobalArgument(
             drawing_data::QuizImageObjects &data_,
             const drawingdata::Details &details_
