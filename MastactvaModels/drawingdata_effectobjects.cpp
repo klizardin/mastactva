@@ -133,7 +133,7 @@ void ObjectArtefacts::populate(const QVector<ObjectArtefactData *> &objectArtefa
     m_artefacts.clear();
     m_artefacts.reserve(objectArtefacts_.size());
     // push all artefacts
-    for(const ObjectArtefactData *ptr_ : objectArtefacts_)
+    for(const ObjectArtefactData *ptr_ : qAsConst(objectArtefacts_))
     {
         auto ptr = dynamic_cast<const DrawingDataObjectArtefact *>(ptr_);
         if(!ptr)

@@ -158,7 +158,7 @@ void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     data_.setZ(1.0f);
     std::size_t j = 0;
-    for(const QString &val_: values)
+    for(const QString &val_: qAsConst(values))
     {
         bool ok = false;
         double vald = QVariant::fromValue(val_).toDouble(&ok);
@@ -174,7 +174,7 @@ void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector3D &data_)
 {
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     std::size_t j = 0;
-    for(const QString &val_: values)
+    for(const QString &val_: qAsConst(values))
     {
         bool ok = false;
         double vald = QVariant::fromValue(val_).toDouble(&ok);
@@ -189,12 +189,12 @@ void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector3D &data_)
 void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
 {
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
-    for(const QString &val_: values)
+    for(const QString &val_: qAsConst(values))
     {
         QStringList faceItems = val_.split(QChar('/'), Qt::KeepEmptyParts);
         std::size_t j = 0;
         Vector3di val;
-        for(const QString &fval_: faceItems)
+        for(const QString &fval_: qAsConst(faceItems))
         {
             bool ok = false;
             int vali = QVariant::fromValue(fval_).toInt(&ok);
@@ -215,7 +215,7 @@ void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector<Vector3di
 void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector<int> &data_)
 {
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
-    for(const QString &val_: values)
+    for(const QString &val_: qAsConst(values))
     {
         bool ok = false;
         int vali = QVariant::fromValue(val_).toInt(&ok);
@@ -543,7 +543,7 @@ QJsonDocument WavefrontOBJ::toJsonData() const
     else
     {
         int prevLineNumber = 0;
-        for(const WavefrontOBJObjectName &objectName: m_objectNames)
+        for(const WavefrontOBJObjectName &objectName: qAsConst(m_objectNames))
         {
             QJsonArray vertext;
             QJsonArray normal;
@@ -578,7 +578,7 @@ void buildResultArray(
         )
 {
     int vi = 0;
-    for(const std::vector<std::size_t> &tri : triangles_)
+    for(const std::vector<std::size_t> &tri : qAsConst(triangles_))
     {
         for(const std::size_t &index_ : tri)
         {
@@ -627,7 +627,7 @@ bool WavefrontOBJ::buildObject(
     for(QVector<WavefrontOBJFaceElement>::const_iterator it = fbit; it != feit; ++it)
     {
         int fc = 0;
-        for(const Vector3di &f_ : static_cast<const QVector<Vector3di>&>(*it))
+        for(const Vector3di &f_ : qAsConst(static_cast<const QVector<Vector3di>&>(*it)))
         {
             Vector3di f(f_);
             f.mask(mask_);
@@ -650,7 +650,7 @@ bool WavefrontOBJ::buildObject(
     vertexNormal.resize(unique.size());
 
     int j = 0;
-    for(const Vector3di &f_: unique)
+    for(const Vector3di &f_: qAsConst(unique))
     {
         if(f_.x() >= 0 && f_.x() < m_vertex.size())
         {
@@ -672,7 +672,7 @@ bool WavefrontOBJ::buildObject(
     {
         int fc = 0;
         std::vector<std::size_t> ii;
-        for(const Vector3di &f_ : static_cast<const QVector<Vector3di>&>(*it))
+        for(const Vector3di &f_ : qAsConst(static_cast<const QVector<Vector3di>&>(*it)))
         {
             Vector3di f(f_);
             f.mask(mask_);
@@ -726,7 +726,7 @@ std::unique_ptr<WavefrontOBJ> WavefrontOBJ::parseGraphicsOBJ(const QString &objD
     std::unique_ptr<WavefrontOBJ> res = std::make_unique<WavefrontOBJ>();
     const QStringList lines = objData_.split(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
     int lineNumber = 0;
-    for(const QString &line0 : lines)
+    for(const QString &line0 : qAsConst(lines))
     {
         QString comment;
         const QString line = removeComment(line0, comment);

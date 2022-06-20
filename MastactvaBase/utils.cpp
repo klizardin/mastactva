@@ -696,13 +696,13 @@ bool isSimpleQVariantType(const QVariant::Type &type_)
 QStringList getUniqueValues(const QStringList &values_)
 {
     QSet<QString> unique;
-    for(const QString &value_ : values_)
+    for(const QString &value_ : qAsConst(values_))
     {
         unique.insert(value_);
     }
     QStringList result;
     result.reserve(unique.size());
-    for(const QString &value_ : unique)
+    for(const QString &value_ : qAsConst(unique))
     {
         result.push_back(value_);
     }
@@ -713,7 +713,7 @@ QStringList replace(const QStringList &stringList_, const QString from_, const Q
 {
     QStringList result;
     result.reserve(stringList_.size());
-    for(const QString &str_ : stringList_)
+    for(const QString &str_ : qAsConst(stringList_))
     {
         QString r = str_;
         r.replace(from_, to_);
@@ -726,7 +726,7 @@ QStringList removeEmpty(const QStringList &values_)
 {
     QStringList result;
     result.reserve(values_.size());
-    for(const QString &str_ : values_)
+    for(const QString &str_ : qAsConst(values_))
     {
         if(str_.trimmed().isEmpty())
         {
@@ -741,7 +741,7 @@ QStringList trimmed(const QStringList &values_)
 {
     QStringList result;
     result.reserve(values_.size());
-    for(const QString &str_ : values_)
+    for(const QString &str_ : qAsConst(values_))
     {
         result.push_back(str_.trimmed());
     }

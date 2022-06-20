@@ -353,7 +353,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
 QString toString(const std::vector<QVector2D> &data_)
 {
     QString result;
-    for(const QVector2D &vec_ : data_)
+    for(const QVector2D &vec_ : qAsConst(data_))
     {
         result += QString("%1 %2 ").arg(
                     fmt::toString(vec_.x()),
@@ -366,7 +366,7 @@ QString toString(const std::vector<QVector2D> &data_)
 QString toString(const std::vector<QVector3D> &data_)
 {
     QString result;
-    for(const QVector3D &vec_ : data_)
+    for(const QVector3D &vec_ : qAsConst(data_))
     {
         result += QString("%1 %2 %3 ").arg(
                     fmt::toString(vec_.x()),
@@ -380,7 +380,7 @@ QString toString(const std::vector<QVector3D> &data_)
 QString toString(const std::vector<QVector4D> &data_)
 {
     QString result;
-    for(const QVector4D &vec_ : data_)
+    for(const QVector4D &vec_ : qAsConst(data_))
     {
         result += QString("%1 %2 %3 %4 ").arg(
                     fmt::toString(vec_.x()),
@@ -395,7 +395,7 @@ QString toString(const std::vector<QVector4D> &data_)
 QString toString(const std::vector<float> &data_)
 {
     QString result;
-    for(const float &val_ : data_)
+    for(const float &val_ : qAsConst(data_))
     {
         result += QString("%1 ").arg(val_);
     }
@@ -1108,7 +1108,7 @@ QString createVariablesOfQTLogoJson(
     }
 
     QJsonArray vertexJA;
-    for(const QVector3D &vec_ : vertexData)
+    for(const QVector3D &vec_ : qAsConst(vertexData))
     {
         vertexJA.append(QJsonValue::fromVariant(QVariant::fromValue(vec_.x())));
         vertexJA.append(QJsonValue::fromVariant(QVariant::fromValue(vec_.y())));
@@ -1121,7 +1121,7 @@ QString createVariablesOfQTLogoJson(
         vertexJO.insert(g_jsonDataVariablePositionName, position);
     }
     QJsonArray normalJA;
-    for(const QVector3D &vec_ : normalData)
+    for(const QVector3D &vec_ : qAsConst(normalData))
     {
         normalJA.append(QJsonValue::fromVariant(QVariant::fromValue(vec_.x())));
         normalJA.append(QJsonValue::fromVariant(QVariant::fromValue(vec_.y())));
@@ -1322,7 +1322,7 @@ std::unique_ptr<EffectObjectsData> createEffectObjectWithOneArtefactWithArgument
                 now_,
                 MergeId()
                 );
-    for(const auto &arg_ : arguments_)
+    for(const auto &arg_ : qAsConst(arguments_))
     {
         auto arg = std::make_unique<ArtefactArgData>(
                 std::get<to_underlying(ArgEn::id)>(arg_),
@@ -1804,7 +1804,7 @@ std::unique_ptr<QVector<EffectArgData *>> createEffectArgsData(
 {
     std::unique_ptr<QVector<EffectArgData *>> argsData = std::make_unique<QVector<EffectArgData *>>();
     int idShift = 0;
-    for(const TestDataEffectArgs &arg_ : args_)
+    for(const TestDataEffectArgs &arg_ : qAsConst(args_))
     {
         auto arg = std::make_unique<EffectArgData>();
         static_cast<EffectArgumentData&>(*arg) = static_cast<const EffectArgumentData&>(arg_);
@@ -1854,10 +1854,10 @@ std::unique_ptr<QVector<EffectArgSetData *>> createEffectArgSetsData(
 
     int argValueShiftId = 0;
     int argSetShiftId = 0;
-    for(const QVector<TestArgValue> &args_: argSets_)
+    for(const QVector<TestArgValue> &args_: qAsConst(argSets_))
     {
         auto effectArgSet = std::make_unique<EffectArgSetData>();
-        for(const TestArgValue & arg_ : args_)
+        for(const TestArgValue & arg_ : qAsConst(args_))
         {
             auto effectArgValue = std::make_unique<EffectArgValueData>();
             const auto fit = std::find_if(
@@ -2984,7 +2984,7 @@ bool findDynLibs(const QDir &dir_, QDir &result_)
         return true;
     }
     const QFileInfoList dirs = dir_.entryInfoList(QDir::NoDot | QDir::NoDotDot | QDir::Dirs);
-    for(const QFileInfo &fi_ : dirs)
+    for(const QFileInfo &fi_ : qAsConst(dirs))
     {
         if(!fi_.isDir())
         {

@@ -435,7 +435,7 @@ void opengl_drawing::States::release(const QString &stateStr_, const std::vector
 
 opengl_drawing::State * opengl_drawing::States::find(const QString &stateStr_) const
 {
-    for(const std::unique_ptr<State> &state_ : m_states)
+    for(const std::unique_ptr<State> &state_ : qAsConst(m_states))
     {
         if(!state_)
         {
@@ -491,7 +491,7 @@ void opengl_drawing::Object::init(
                 );
     program->link();
 
-    for(const auto &attribute : m_imageData->attributes)
+    for(const auto &attribute : qAsConst(m_imageData->attributes))
     {
         if(!attribute.operator bool())
         {
@@ -503,7 +503,7 @@ void opengl_drawing::Object::init(
                     );
     }
 
-    for(const auto &uniform : m_imageData->uniforms)
+    for(const auto &uniform : qAsConst(m_imageData->uniforms))
     {
         if(!uniform.operator bool())
         {
@@ -515,7 +515,7 @@ void opengl_drawing::Object::init(
                     );
     }
 
-    for(const drawing_data::Texture &texture_ : m_imageData->textures)
+    for(const drawing_data::Texture &texture_ : qAsConst(m_imageData->textures))
     {
         if(texture_.name.trimmed().isEmpty())
         {
@@ -553,7 +553,7 @@ void opengl_drawing::Object::setUniforms()
         return;
     }
 
-    for(const auto &uniform : m_imageData->uniforms)
+    for(const auto &uniform : qAsConst(m_imageData->uniforms))
     {
         if(!uniform.operator bool())
         {
@@ -568,7 +568,7 @@ void opengl_drawing::Object::setUniforms()
 
         uniform->set(program.get(), uniformId);
     }
-    for(const drawing_data::Texture &texture_ : m_imageData->textures)
+    for(const drawing_data::Texture &texture_ : qAsConst(m_imageData->textures))
     {
         if(texture_.name.trimmed().isEmpty()
                 || textures.find(texture_.name) == std::end(textures)
@@ -589,7 +589,7 @@ void opengl_drawing::Object::enableAttributes()
         return;
     }
 
-    for(const auto &attribute : attributes)
+    for(const auto &attribute : qAsConst(attributes))
     {
         if(!isIdValid(attribute))
         {
@@ -607,7 +607,7 @@ void opengl_drawing::Object::disableAttributes()
         return;
     }
 
-    for(const auto &attribute : attributes)
+    for(const auto &attribute : qAsConst(attributes))
     {
         if(!isIdValid(attribute))
         {
@@ -625,7 +625,7 @@ void opengl_drawing::Object::setAttributeArray()
         return;
     }
 
-    for(const auto &attribute : m_imageData->attributes)
+    for(const auto &attribute : qAsConst(m_imageData->attributes))
     {
         if(!attribute.operator bool())
         {
@@ -648,7 +648,7 @@ void opengl_drawing::Object::setAttributeArray()
 
 void opengl_drawing::Object::bindTextures(QOpenGLFunctions *f_)
 {
-    for(const drawing_data::Texture &texture_ : m_imageData->textures)
+    for(const drawing_data::Texture &texture_ : qAsConst(m_imageData->textures))
     {
         if(texture_.name.trimmed().isEmpty()
                 || textures.find(texture_.name) == std::cend(textures)
@@ -820,13 +820,13 @@ void opengl_drawing::Object::initStates()
     const std::vector<GLfloat> emptyArgs;
     if(!m_imageData->objectStates.empty() && m_states)
     {
-        for(const QString &stateStr_ : m_imageData->objectStates)
+        for(const QString &stateStr_ : qAsConst(m_imageData->objectStates))
         {
             m_states->init(stateStr_, emptyArgs);
         }
     }
     const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
-    for(const QString &argumentName_ : argumentNames)
+    for(const QString &argumentName_ : qAsConst(argumentNames))
     {
         if(argumentName_.startsWith(g_renderObjectsStateStartName)
                 && argumentName_ != g_renderObjectsStatesName
@@ -862,13 +862,13 @@ void opengl_drawing::Object::releaseStates()
     const std::vector<GLfloat> emptyArgs;
     if(!m_imageData->objectStates.empty() && m_states)
     {
-        for(const QString &stateStr_ : m_imageData->objectStates)
+        for(const QString &stateStr_ : qAsConst(m_imageData->objectStates))
         {
             m_states->release(stateStr_, emptyArgs);
         }
     }
     const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
-    for(const QString &argumentName_ : argumentNames)
+    for(const QString &argumentName_ : qAsConst(argumentNames))
     {
         if(argumentName_.startsWith(g_renderObjectsStateStartName)
                 && argumentName_ != g_renderObjectsStatesName
@@ -898,7 +898,7 @@ void opengl_drawing::Object::releaseStates()
 void opengl_drawing::Object::setTextureIndexes()
 {
     int textureIndex = 0;
-    for(const drawing_data::Texture &texture_ : m_imageData->textures)
+    for(const drawing_data::Texture &texture_ : qAsConst(m_imageData->textures))
     {
         if(texture_.name.trimmed().isEmpty()
                 || textures.find(texture_.name) == std::end(textures)
@@ -920,7 +920,7 @@ bool opengl_drawing::Object::isIdValid(int idValue_)
 
 QString opengl_drawing::Object::getTextureStateName(const QString &argumentName_) const
 {
-    for(const TexturesMap::value_type &val_ : textures)
+    for(const TexturesMap::value_type &val_ : qAsConst(textures))
     {
         if(argumentName_.startsWith(val_.first))
         {
@@ -1191,7 +1191,7 @@ void opengl_drawing::Objects::reinit()
     QVector<double> currentT;
     const bool tExist = get(g_renderTName, currentT);
     m_objects.reserve(m_imageData->objects.size());
-    for(const auto &object : m_imageData->objects)
+    for(const auto &object : qAsConst(m_imageData->objects))
     {
         if(tExist
                 && !object->allowedForTime(currentT[0])
@@ -1210,7 +1210,7 @@ void opengl_drawing::Objects::reinit()
             opengl_drawing::IEffectCalculation *newCalc_
             )->bool
     {
-        for(const auto &calc_ : objects_->calculations)
+        for(const auto &calc_ : qAsConst(objects_->calculations))
         {
             if(!calc_.operator bool())
             {
@@ -1259,7 +1259,7 @@ bool opengl_drawing::Objects::needToReinit(double tNew_) const
     {
         return false;
     }
-    for(const auto &object : m_imageData->objects)
+    for(const auto &object : qAsConst(m_imageData->objects))
     {
         if(object->changeAllowedForTime(currentT[0], tNew_))
         {
@@ -1335,7 +1335,7 @@ void opengl_drawing::Objects::initStates()
     if(m_imageData && !m_imageData->globalStates.empty() && m_states)
     {
         const std::vector<GLfloat> emptyArgs;
-        for(const QString &stateStr_ : m_imageData->globalStates)
+        for(const QString &stateStr_ : qAsConst(m_imageData->globalStates))
         {
             m_states->init(stateStr_, emptyArgs);
         }
@@ -1350,7 +1350,7 @@ void opengl_drawing::Objects::initStates()
     if(m_imageData)
     {
         const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
-        for(const QString &argumentName_ : argumentNames)
+        for(const QString &argumentName_ : qAsConst(argumentNames))
         {
             if(!argumentName_.startsWith(g_renderGlobalStatesName)
                     || argumentName_ == g_renderGlobalStatesName
@@ -1371,7 +1371,7 @@ void opengl_drawing::Objects::releaseStates()
     if(m_imageData && !m_imageData->globalStates.empty() && m_states)
     {
         const std::vector<GLfloat> emptyArgs;
-        for(const QString &stateStr_ : m_imageData->globalStates)
+        for(const QString &stateStr_ : qAsConst(m_imageData->globalStates))
         {
             m_states->release(stateStr_, emptyArgs);
         }
@@ -1384,7 +1384,7 @@ void opengl_drawing::Objects::releaseStates()
     if(m_imageData)
     {
         const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
-        for(const QString &argumentName_ : argumentNames)
+        for(const QString &argumentName_ : qAsConst(argumentNames))
         {
             if(!argumentName_.startsWith(g_renderGlobalStatesName)
                     || argumentName_ == g_renderGlobalStatesName
@@ -1429,7 +1429,7 @@ bool opengl_drawing::Objects::getTextureSize(
         QSize &size_
         ) const
 {
-    for(const std::unique_ptr<Object> &object_ : m_objects)
+    for(const std::unique_ptr<Object> &object_ : qAsConst(m_objects))
     {
         if(object_->getTextureSize(name_, size_))
         {
@@ -1521,7 +1521,7 @@ QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, co
 
 bool opengl_drawing::Objects::isUpdated(const QSet<QString> &vars_, IVariables *base_) const
 {
-    for(const QString &var_ : m_updated)
+    for(const QString &var_ : qAsConst(m_updated))
     {
         if(vars_.contains(var_))
         {

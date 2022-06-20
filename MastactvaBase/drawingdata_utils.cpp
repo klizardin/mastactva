@@ -605,7 +605,7 @@ void Variables::addVariables(
         )
 {
     const QStringList keys = rootObject_.keys();
-    for(const QString &key_ : keys)
+    for(const QString &key_ : qAsConst(keys))
     {
         const QJsonValue var = rootObject_[key_];
         if(var.isUndefined()
@@ -730,7 +730,7 @@ void Variables::addAliases(const QJsonDocument &data_, const IPosition *position
     }
     QJsonObject rootObject = data_.object();
     const QStringList keys = rootObject.keys();
-    for(const QString &key_ : keys)
+    for(const QString &key_ : qAsConst(keys))
     {
         VariablesMap::const_iterator fit = std::cend(m_variables);
         if(!find(key_, position_, fit) || std::cend(m_variables) == fit)

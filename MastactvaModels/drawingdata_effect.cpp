@@ -45,7 +45,7 @@ void DrawingDataEffect::init(std::shared_ptr<IAddonModules> modules_)
 std::set<QString> getUnique(const QStringList &list_)
 {
     std::set<QString> result;
-    for(const QString &key_ : list_)
+    for(const QString &key_ : qAsConst(list_))
     {
         result.insert(key_);
     }
@@ -55,7 +55,7 @@ std::set<QString> getUnique(const QStringList &list_)
 std::map<QString, int> setupShifts(const std::set<QString> &unique_)
 {
     std::map<QString, int> result;
-    for(const QString &key_ : unique_)
+    for(const QString &key_ : qAsConst(unique_))
     {
         result.insert({key_, 0});
     }
@@ -195,7 +195,7 @@ void DrawingDataEffect::extractMainObjects(
         SortedByProgrammerNameEffectObjects &sortedByProgrammerNameEffectObjects_
         ) const
 {
-    for(const EffectObjectsData *effectObject_ : *m_effectObjectsData)
+    for(const EffectObjectsData *effectObject_ : qAsConst(*m_effectObjectsData))
     {
         const DrawingDataEffectObjects *effectObject = dynamic_cast<const DrawingDataEffectObjects *>(effectObject_);
         if(!effectObject)
@@ -220,7 +220,7 @@ void DrawingDataEffect::runObjects(
         bool mainObjects_ /*= false*/
         ) const
 {
-    for(const SortedEffectObjects::value_type &v_ : objects_)
+    for(const SortedEffectObjects::value_type &v_ : qAsConst(objects_))
     {
         if(!v_.second)
         {
@@ -237,7 +237,7 @@ void DrawingDataEffect::addArguments(
         ) const
 {
     argSetsAndArgs_.setObjectLocalPosition(local_);
-    for(const SortedEffectObjects::value_type &v_ : objects_)
+    for(const SortedEffectObjects::value_type &v_ : qAsConst(objects_))
     {
         if(!v_.second)
         {
@@ -257,7 +257,7 @@ void DrawingDataEffect::processByObjectListOrder(
     auto objectsToRunUnique = getUnique(objectsToRun_);
     // set up index shifts
     std::map<QString, int> stepIndexShifts = setupShifts(objectsToRunUnique);
-    for(const QString &objectName_ : objectsToRun_)
+    for(const QString &objectName_ : qAsConst(objectsToRun_))
     {
         // get all template objects for the given object name in the objects list
         // it can be several template objects with the same name
@@ -282,7 +282,7 @@ void DrawingDataEffect::getAddonNames(
         QStringList &names_
         ) const
 {
-    for(const SortedEffectObjects::value_type &v_ : objects_)
+    for(const SortedEffectObjects::value_type &v_ : qAsConst(objects_))
     {
         if(!v_.second)
         {
@@ -299,7 +299,7 @@ void DrawingDataEffect::runObjectsAndAddons(
         const QStringList &addonNames_
         ) const
 {
-    for(const SortedEffectObjects::value_type &v_ : objects_)
+    for(const SortedEffectObjects::value_type &v_ : qAsConst(objects_))
     {
         if(!v_.second)
         {
