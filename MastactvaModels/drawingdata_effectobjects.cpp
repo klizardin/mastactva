@@ -151,8 +151,7 @@ void ObjectArtefacts::populate(const QVector<ObjectArtefactData *> &objectArtefa
         return left_ && right_ && *left_ < *right_;
     });
     // initialize iterators
-    m_objectBegin = std::cend(m_artefacts);
-    m_objectEnd = std::cend(m_artefacts);
+    first();
 }
 
 bool ObjectArtefacts::isEnd() const
