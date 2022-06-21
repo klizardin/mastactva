@@ -23,10 +23,20 @@
 static const int g_luaStartIndex = 1;
 
 
+/*
+ * base static functionality for LUA scripting
+*/
 class LuaAPIUtils
 {
 public:
+    /*
+     * for debug purpose
+    */
     static QString type2String(int type_);
+
+    /*
+     * for debug purpose
+    */
     static void dumpStack(lua_State *luaState_);
 };
 
