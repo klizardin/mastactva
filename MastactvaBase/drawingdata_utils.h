@@ -109,6 +109,9 @@ namespace utils
         }
     }
 
+    /*
+     * create copy of data vector
+    */
     template<class DataTypeSrc_, class DataTypeDest_> inline
     void copy(
         const std::shared_ptr<QVector<DataTypeSrc_ *>> &data_,
@@ -130,6 +133,10 @@ namespace utils
         }
     }
 
+    /*
+     * base function to convert string to uniform type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void toUniform(const QString &str_, Type_ &)
     {
@@ -137,6 +144,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert vector of items to uniform type
+     * it is stub for unused types
+    */
     template<typename Type_, typename ItemType_> inline
     void vecToUniform(const QVector<ItemType_> &vec_, Type_ &)
     {
@@ -144,6 +155,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert string to attribute type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void toAttribute(const QString &val_, std::vector<Type_> &)
     {
@@ -151,6 +166,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert vector of float to attribute type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void vecToAttribute(const QVector<float> &vec_, std::vector<Type_> &)
     {
@@ -158,6 +177,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert vector of double to attribute type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void vecToAttribute(const QVector<double> &vec_, std::vector<Type_> &)
     {
@@ -165,6 +188,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert vector of float to attribute type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void vecToAttribute(const std::vector<float> &vec_, std::vector<Type_> &)
     {
@@ -174,7 +201,9 @@ namespace utils
 
     namespace details
     {
-
+        /*
+         * convert string to the array of type
+        */
         template<typename Type_> inline
         bool getArray(const QString &str_, std::vector<Type_> &array_)
         {
@@ -521,12 +550,15 @@ namespace utils
 }
 
 
+/*
+ * Dependency Injection Interface of texts and images for specific file source path
+*/
 class IFileSource
 {
 public:
     virtual ~IFileSource() = default;
-    virtual QString getText(const FileSource &filename_) const = 0;
-    virtual QImage getImage(const FileSource &filename_) const = 0;
+    virtual QString getText(const FileSource &filename_) const = 0; // return text by file name
+    virtual QImage getImage(const FileSource &filename_) const = 0; // return image by file name
 };
 
 
