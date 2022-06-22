@@ -22,6 +22,9 @@
 #include "../MastactvaModels/objectinfo_data.h"
 
 
+/*
+ * simple data holder
+*/
 class DrawingDataObjectInfo : public ObjectInfoData
 {
 public:
