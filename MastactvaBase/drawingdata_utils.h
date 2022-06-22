@@ -69,6 +69,8 @@ namespace utils
                     continue;
                 }
                 auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
+                // note: no need to delete ptr_ because we already moved data from the *ptr_
+                // just replace ptr_ with new pointer if any
                 if(ptr)
                 {
                     ptr_ = static_cast<DataType_ *>(ptr.release());
@@ -81,6 +83,10 @@ namespace utils
         }
     }
 
+    /*
+     * version of rebuild with creation of the new vector
+     * it is a copy of the original, not implace operations
+    */
     template<class DataType_, class DrawingDataType_> inline
     void rebuild(
         const std::shared_ptr<QVector<DataType_ *>> &data_,
@@ -98,6 +104,9 @@ namespace utils
                 }
                 auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
                 result_->push_back(ptr.release());
+                // TODO: should we do
+                // ptr_ = nullptr;
+                // ?
             }
         }
     }
