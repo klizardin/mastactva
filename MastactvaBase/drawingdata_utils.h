@@ -45,12 +45,18 @@ namespace drawingdata
 
 namespace utils
 {
+    /*
+     * to specify constrains of creation of a drawing data type from a data type
+    */
     template<class DrawingDataType_, class DataType_> inline
     std::unique_ptr<DrawingDataType_> factory(DataType_ &&data_, const DrawingDataType_ *)
     {
         return std::make_unique<DrawingDataType_>(std::move(data_));
     }
 
+    /*
+     * rebuild items of the vector of the data types into the vector of the drawing data type
+    */
     template<class DataType_, class DrawingDataType_> inline
     void rebuild(const std::shared_ptr<QVector<DataType_ *>> &data_, DrawingDataType_ *)
     {
