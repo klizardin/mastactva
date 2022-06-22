@@ -104,9 +104,7 @@ namespace utils
                 }
                 auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
                 result_->push_back(ptr.release());
-                // TODO: should we do
-                // ptr_ = nullptr;
-                // ?
+                ptr_ = nullptr; // clear source vector pointers
             }
         }
     }
