@@ -45,12 +45,18 @@ namespace drawingdata
 
 namespace utils
 {
+    /*
+     * to specify constrains of creation of a drawing data type from a data type
+    */
     template<class DrawingDataType_, class DataType_> inline
     std::unique_ptr<DrawingDataType_> factory(DataType_ &&data_, const DrawingDataType_ *)
     {
         return std::make_unique<DrawingDataType_>(std::move(data_));
     }
 
+    /*
+     * rebuild items of the vector of the data types into the vector of the drawing data type
+    */
     template<class DataType_, class DrawingDataType_> inline
     void rebuild(const std::shared_ptr<QVector<DataType_ *>> &data_, DrawingDataType_ *)
     {
@@ -63,7 +69,9 @@ namespace utils
                     continue;
                 }
                 auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
-                if(static_cast<DataType_ *>(ptr.get()))
+                // note: no need to delete ptr_ because we already moved data from the *ptr_
+                // just replace ptr_ with new pointer if any
+                if(ptr)
                 {
                     ptr_ = static_cast<DataType_ *>(ptr.release());
                 }
@@ -75,6 +83,10 @@ namespace utils
         }
     }
 
+    /*
+     * version of rebuild with creation of the new vector
+     * it is a copy of the original, not implace operations
+    */
     template<class DataType_, class DrawingDataType_> inline
     void rebuild(
         const std::shared_ptr<QVector<DataType_ *>> &data_,
@@ -92,10 +104,14 @@ namespace utils
                 }
                 auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
                 result_->push_back(ptr.release());
+                ptr_ = nullptr; // clear source vector pointers
             }
         }
     }
 
+    /*
+     * create copy of data vector
+    */
     template<class DataTypeSrc_, class DataTypeDest_> inline
     void copy(
         const std::shared_ptr<QVector<DataTypeSrc_ *>> &data_,
@@ -117,6 +133,10 @@ namespace utils
         }
     }
 
+    /*
+     * base function to convert string to uniform type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void toUniform(const QString &str_, Type_ &)
     {
@@ -124,6 +144,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert vector of items to uniform type
+     * it is stub for unused types
+    */
     template<typename Type_, typename ItemType_> inline
     void vecToUniform(const QVector<ItemType_> &vec_, Type_ &)
     {
@@ -131,6 +155,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert string to attribute type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void toAttribute(const QString &val_, std::vector<Type_> &)
     {
@@ -138,6 +166,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert vector of float to attribute type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void vecToAttribute(const QVector<float> &vec_, std::vector<Type_> &)
     {
@@ -145,6 +177,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert vector of double to attribute type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void vecToAttribute(const QVector<double> &vec_, std::vector<Type_> &)
     {
@@ -152,6 +188,10 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    /*
+     * base function to convert vector of float to attribute type
+     * it is stub for unused types
+    */
     template<typename Type_> inline
     void vecToAttribute(const std::vector<float> &vec_, std::vector<Type_> &)
     {
@@ -161,7 +201,9 @@ namespace utils
 
     namespace details
     {
-
+        /*
+         * convert string to the array of type
+        */
         template<typename Type_> inline
         bool getArray(const QString &str_, std::vector<Type_> &array_)
         {
@@ -508,12 +550,15 @@ namespace utils
 }
 
 
+/*
+ * Dependency Injection Interface of texts and images for specific file source path
+*/
 class IFileSource
 {
 public:
     virtual ~IFileSource() = default;
-    virtual QString getText(const FileSource &filename_) const = 0;
-    virtual QImage getImage(const FileSource &filename_) const = 0;
+    virtual QString getText(const FileSource &filename_) const = 0; // return text by file name
+    virtual QImage getImage(const FileSource &filename_) const = 0; // return image by file name
 };
 
 
