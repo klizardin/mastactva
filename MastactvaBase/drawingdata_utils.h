@@ -566,18 +566,21 @@ class IPosition
 {
 public:
     virtual ~IPosition() = default;
-    virtual void setObject(const QString &name_, int objectStepIndex_) = 0;
-    virtual void resetArtefactStepIndex(int stepIndex_) = 0;
-    virtual void setArtefactStepIndex(int stepIndex_) = 0;
-    virtual const QString &getObjectName() const = 0;
-    virtual bool hasObjectName() const { return !getObjectName().isEmpty(); };
-    virtual int getObjectStepIndex() const = 0;
-    virtual bool hasObjectStepIndex() const = 0;
-    virtual int getArtefactStepIndex() const = 0;
-    virtual bool hasArtefactStepIndex() const = 0;
-    virtual void clear() = 0;
-    virtual std::unique_ptr<IPosition> getCopyClearObjectIndex() const = 0;
-    virtual std::unique_ptr<IPosition> getCopy() const = 0;
+    virtual void setObject(const QString &name_, int objectStepIndex_) = 0;     // set object name
+    virtual void resetArtefactStepIndex(int stepIndex_) = 0;                    // reset artefact step index
+                                                                                // do not need check for current step index >= the last one
+    virtual void setArtefactStepIndex(int stepIndex_) = 0;                      // set artefact step index
+                                                                                // check that the current step index >= the last step index
+    virtual const QString &getObjectName() const = 0;                           // return the current object name
+    virtual bool hasObjectName() const { return !getObjectName().isEmpty(); };  // return true if we have the object name
+    virtual int getObjectStepIndex() const = 0;                                 // return object step index
+    virtual bool hasObjectStepIndex() const = 0;                                // return true if the object's step index is initialized
+    virtual int getArtefactStepIndex() const = 0;                               // return artefact's step index
+    virtual bool hasArtefactStepIndex() const = 0;                              // return true if the artefact's step index is initialized
+    virtual void clear() = 0;                                                   // clear position. fields are marked as uninitialized
+    virtual std::unique_ptr<IPosition> getCopyClearObjectIndex() const = 0;     // return a copy of the current position with object's step
+                                                                                // index unitialized
+    virtual std::unique_ptr<IPosition> getCopy() const = 0;                     // return a copy of the current position
 };
 
 
