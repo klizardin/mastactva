@@ -566,13 +566,15 @@ class IPosition
 {
 public:
     virtual ~IPosition() = default;
-    virtual void setObject(const QString &name_, int objectStepIndex_) = 0;     // set object name
+    virtual void setObject(const QString &name_, int objectStepIndex_, int objectNameIndex_) = 0;     // set object name
     virtual void resetArtefactStepIndex(int stepIndex_) = 0;                    // reset artefact step index
                                                                                 // do not need check for current step index >= the last one
     virtual void setArtefactStepIndex(int stepIndex_) = 0;                      // set artefact step index
                                                                                 // check that the current step index >= the last step index
     virtual const QString &getObjectName() const = 0;                           // return the current object name
     virtual bool hasObjectName() const { return !getObjectName().isEmpty(); };  // return true if we have the object name
+    virtual int getObjectNameIndex() const = 0;                                 // return object name index
+    virtual bool hasObjectNameIndex() const { return true; }                    // always true
     virtual int getObjectStepIndex() const = 0;                                 // return object step index
     virtual bool hasObjectStepIndex() const = 0;                                // return true if the object's step index is initialized
     virtual int getArtefactStepIndex() const = 0;                               // return artefact's step index
@@ -606,10 +608,10 @@ public:
     bool add(const IPosition *position_, const std::map<QString, QStringList> &variables_);
     bool add(const IPosition *position_, std::map<QString, QStringList> &&variables_);
 
-    bool add(const QString &name_, const QString &objectName_, int objectIndex, int artefactIndex_, const QVector<double> &data_);
-    bool add(const QString &name_, const QString &objectName_, int objectIndex, int artefactIndex_, QVector<double> &&data_);
-    bool add(const QString &name_, const QString &objectName_, int objectIndex, int artefactIndex_, const QStringList &data_);
-    bool add(const QString &name_, const QString &objectName_, int objectIndex, int artefactIndex_, QStringList &&data_);
+    bool add(const QString &name_, const QString &objectName_, int objectIndex, int objectNameIndex_, int artefactIndex_, const QVector<double> &data_);
+    bool add(const QString &name_, const QString &objectName_, int objectIndex, int objectNameIndex_, int artefactIndex_, QVector<double> &&data_);
+    bool add(const QString &name_, const QString &objectName_, int objectIndex, int objectNameIndex_, int artefactIndex_, const QStringList &data_);
+    bool add(const QString &name_, const QString &objectName_, int objectIndex, int objectNameIndex_, int artefactIndex_, QStringList &&data_);
 
 private:
     template<typename DataType_>
@@ -677,10 +679,11 @@ struct VariablePosition
     static VariablePosition fromCurrent(const IPosition *position_);
 
 private:
-    static VariablePosition fromInfo(const QString &objectName, int objectStepIndex_, int artefactStepIndex_);
+    static VariablePosition fromInfo(const QString &objectName, int objectStepIndex_, int objectNameIndex_, int artefactStepIndex_);
 
 private:
     std::tuple<QString, bool> objectName = std::make_tuple(QString{}, false);
+    std::tuple<int, bool> objectNameIndex = std::make_tuple(0, false);
     std::tuple<int, bool> objectStepIndex = std::make_tuple(0, false);
     std::tuple<int, bool> artefactStepIndex = std::make_tuple(0, false);
 
@@ -818,10 +821,11 @@ class Position : public IPosition
 public:
     Position() = default;
 
-    void setObject(const QString &name_, int objectStepIndex_) override;
+    void setObject(const QString &name_, int objectStepIndex_, int objectNameIndex_) override;
     void resetArtefactStepIndex(int stepIndex_) override;
     void setArtefactStepIndex(int stepIndex_) override;
     const QString &getObjectName() const override;
+    int getObjectNameIndex() const override;
     int getObjectStepIndex() const override;
     bool hasObjectStepIndex() const override;
     int getArtefactStepIndex() const override;
@@ -830,10 +834,11 @@ public:
     std::unique_ptr<IPosition> getCopyClearObjectIndex() const override;
     std::unique_ptr<IPosition> getCopy() const  override;
     static Position fromPosition(IPosition *pos_);
-    static Position fromInfo(const QString &name_, int objectStepIndex_, int artefactStepIndex_);
+    static Position fromInfo(const QString &name_, int objectStepIndex_, int objectNameIndex_, int artefactStepIndex_);
 
 private:
     QString objectName;
+    int objectNameIndex = 0;
     int objectStepIndex = std::numeric_limits<decltype (objectStepIndex)>::max();
     int artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
 };

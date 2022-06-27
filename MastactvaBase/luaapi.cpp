@@ -356,10 +356,11 @@ void LuaAPI::setVariableWithPositionImpl() const
     std::tuple<QVector<double>, QStringList> values;
     QString objectName;
     double objectPosition = 0;
+    double objectNamePosition = 0;
     double artefactPosition = 0;
-    if(!getArguments(m_luaState, name, values, objectName, objectPosition, artefactPosition))
+    if(!getArguments(m_luaState, name, values, objectName, objectPosition, objectNamePosition, artefactPosition))
     {
-        processStack(5, 0);
+        processStack(6, 0);
         return;
     }
     const bool hasNumbers = !std::get<0>(values).isEmpty();
@@ -370,6 +371,7 @@ void LuaAPI::setVariableWithPositionImpl() const
                     name,
                     objectName,
                     int(objectPosition),
+                    int(objectNamePosition),
                     int(artefactPosition),
                     std::move(std::get<0>(values))
                     );
@@ -380,11 +382,12 @@ void LuaAPI::setVariableWithPositionImpl() const
                     name,
                     objectName,
                     int(objectPosition),
+                    int(objectNamePosition),
                     int(artefactPosition),
                     std::move(std::get<1>(values))
                     );
     }
-    processStack(5, 0);
+    processStack(6, 0);
 }
 
 void LuaAPI::testImpl() const
@@ -1339,7 +1342,7 @@ void LuaAPI::initFunctions() const
     static const FunctionInfo functions[] = {
         {"getVariable", l_implementation<LuaAPI::FunctionImplEn::getVariable, 1, 1>},
         {"setVariable", l_implementation<LuaAPI::FunctionImplEn::setVariable, 2, 0>},
-        {"setVariableWithPosition", l_implementation<LuaAPI::FunctionImplEn::setVariableWithPosition, 5, 0>},
+        {"setVariableWithPosition", l_implementation<LuaAPI::FunctionImplEn::setVariableWithPosition, 6, 0>},
         {"test", l_implementation<LuaAPI::FunctionImplEn::test, 2, 0>},
     };
 

@@ -80,6 +80,9 @@ private:
      * set up position in the details data
     */
     void setupPosition(const drawingdata::Details &details_, int stepIndexShift_) const;
+
+private:
+    int m_objectNameIndex = 0;
 };
 
 

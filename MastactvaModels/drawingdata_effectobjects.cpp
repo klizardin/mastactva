@@ -508,5 +508,5 @@ void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details
     {
         return;
     }
-    details_.position->setObject(getProgrammerName(), m_stepIndex + stepIndexShift_);
+    details_.position->setObject(getProgrammerName(), m_stepIndex + stepIndexShift_, m_objectNameIndex);
 }
