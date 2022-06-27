@@ -204,6 +204,7 @@ Q_DECL_UNUSED static const char * g_defaultFragmentShaderName = ":/Shaders/Shade
 Q_DECL_UNUSED static const char * g_jsonDataVariableValueName = "value";
 Q_DECL_UNUSED static const char * g_jsonDataVariableObjectNameName = "objectName";
 Q_DECL_UNUSED static const char * g_jsonDataVariableObjectStepIndexName = "objectStepIndex";
+Q_DECL_UNUSED static const char * g_jsonDataVariableObjectNameIndexName = "objectNameIndex";
 Q_DECL_UNUSED static const char * g_jsonDataVariableArtefactStepIndexName = "artefactStepIndex";
 Q_DECL_UNUSED static const char * g_jsonDataVariablePositionName = "position";
 Q_DECL_UNUSED static const char * g_jsonDataVariableNamesName = "names";

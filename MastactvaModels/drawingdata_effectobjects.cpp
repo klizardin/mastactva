@@ -24,6 +24,42 @@
 #include "../MastactvaModels/drawingdata_argsetsandargs.h"
 
 
+void ObjectNamesIndexes::cleanIndexies()
+{
+    for(QMap<QString, int>::iterator it = std::begin(m_indexes); it != std::end(m_indexes); ++it)
+    {
+        it.value() = 0;
+    }
+}
+
+int ObjectNamesIndexes::getIndex(const QString &objectName_) const
+{
+    QMap<QString, int>::const_iterator it = m_indexes.find(objectName_);
+    if(std::end(m_indexes) == it)
+    {
+        return 0;
+    }
+    else
+    {
+        return it.value();
+    }
+}
+
+int ObjectNamesIndexes::addIndex(const QString &objectName_)
+{
+    QMap<QString, int>::iterator it = m_indexes.find(objectName_);
+    if(std::end(m_indexes) == it)
+    {
+        m_indexes.insert(objectName_, 0);
+    }
+    else
+    {
+        it.value() = it.value() + 1;
+    }
+    return getIndex(objectName_);
+}
+
+
 DrawingDataEffectObjects::DrawingDataEffectObjects(EffectObjectsData &&data_)
     : EffectObjectsData(std::move(data_))
 {
@@ -393,6 +429,7 @@ void ObjectArtefacts::checkArtefactStepIndex(
 void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
         const drawingdata::Details &details_,
+        ObjectNamesIndexes &indexes_,
         int stepIndexShift_ /*= 0*/,
         const QStringList &addonNames_ /*= QStringList{}*/,
         bool mainObjects_ /*= false*/
@@ -403,12 +440,12 @@ void DrawingDataEffectObjects::addObjects(
         return;
     }
 
-    setupPosition(details_, stepIndexShift_);
-
     ObjectArtefacts list;
     list.populate(*m_objectArtefactData);
     for(list.first(); !list.isEnd(); list.next())
     {
+        setupPosition(details_, stepIndexShift_, indexes_);
+
         // iterate through step indexes
         // add separate image object for each step index of the artefacts of the current drawing object
         if(isMain())
@@ -434,6 +471,7 @@ void DrawingDataEffectObjects::addObjects(
 void DrawingDataEffectObjects::addArgs(
         const drawingdata::Details &details_,
         DrawingDataArgSetsAndArgs &argSetsAndArgs_,
+        ObjectNamesIndexes &indexes_,
         int stepIndexShift_ /*= 0*/
         ) const
 {
@@ -442,12 +480,12 @@ void DrawingDataEffectObjects::addArgs(
         return;
     }
 
-    setupPosition(details_, stepIndexShift_);
-
     ObjectArtefacts list;
     list.populate(*m_objectArtefactData);
     for(list.first(); !list.isEnd(); list.next())
     {
+        setupPosition(details_, stepIndexShift_, indexes_);
+
         list.addArgs(details_, argSetsAndArgs_);
     }
 }
@@ -502,11 +540,16 @@ QString DrawingDataEffectObjects::getProgrammerName() const
     }
 }
 
-void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details_, int stepIndexShift_) const
+void DrawingDataEffectObjects::setupPosition(
+        const drawingdata::Details &details_,
+        int stepIndexShift_,
+        ObjectNamesIndexes &indexes_
+        ) const
 {
     if(!details_.position.operator bool())
     {
         return;
     }
-    details_.position->setObject(getProgrammerName(), m_stepIndex + stepIndexShift_);
+    indexes_.addIndex(getProgrammerName());
+    details_.position->setObject(getProgrammerName(), m_stepIndex + stepIndexShift_, indexes_.getIndex(getProgrammerName()));
 }

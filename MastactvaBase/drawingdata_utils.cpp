@@ -30,12 +30,13 @@ bool IVariables::add(
         const QString &name_,
         const QString &objectName_,
         int objectIndex_,
+        int objectNameIndex_,
         int artefactIndex_,
         const QVector<double> &data_
         )
 {
     const Position pos =
-            Position::fromInfo(objectName_, objectIndex_, artefactIndex_);
+            Position::fromInfo(objectName_, objectIndex_, objectNameIndex_, artefactIndex_);
     return add(name_, &pos, data_);
 }
 
@@ -43,12 +44,13 @@ bool IVariables::add(
         const QString &name_,
         const QString &objectName_,
         int objectIndex_,
+        int objectNameIndex_,
         int artefactIndex_,
         QVector<double> &&data_
         )
 {
     const Position pos =
-            Position::fromInfo(objectName_, objectIndex_, artefactIndex_);
+            Position::fromInfo(objectName_, objectIndex_, objectNameIndex_, artefactIndex_);
     return add(name_, &pos, std::move(data_));
 }
 
@@ -56,12 +58,13 @@ bool IVariables::add(
         const QString &name_,
         const QString &objectName_,
         int objectIndex_,
+        int objectNameIndex_,
         int artefactIndex_,
         const QStringList &data_
         )
 {
     const Position pos =
-            Position::fromInfo(objectName_, objectIndex_, artefactIndex_);
+            Position::fromInfo(objectName_, objectIndex_, objectNameIndex_, artefactIndex_);
     return add(name_, &pos, data_);
 }
 
@@ -69,12 +72,13 @@ bool IVariables::add(
         const QString &name_,
         const QString &objectName_,
         int objectIndex_,
+        int objectNameIndex_,
         int artefactIndex_,
         QStringList &&data_
         )
 {
     const Position pos =
-            Position::fromInfo(objectName_, objectIndex_, artefactIndex_);
+            Position::fromInfo(objectName_, objectIndex_, objectNameIndex_, artefactIndex_);
     return add(name_, &pos, std::move(data_));
 }
 
@@ -109,6 +113,16 @@ VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
             has_value(result.objectStepIndex) = true;
         }
     }
+    if(position_.contains(g_jsonDataVariableObjectNameIndexName))
+    {
+        const QJsonValue objectNameIndexJV = position_[g_jsonDataVariableObjectNameIndexName];
+        if(!objectNameIndexJV.isUndefined()
+                && objectNameIndexJV.isDouble())
+        {
+            value(result.objectNameIndex) = static_cast<int>(objectNameIndexJV.toDouble());
+            has_value(result.objectNameIndex) = true;
+        }
+    }
     if(position_.contains(g_jsonDataVariableArtefactStepIndexName))
     {
         const QJsonValue artefactStepIndexJV = position_[g_jsonDataVariableArtefactStepIndexName];
@@ -134,6 +148,8 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
     has_value(result.objectName) = position_->hasObjectName();
     value(result.objectStepIndex) = position_->getObjectStepIndex();
     has_value(result.objectStepIndex) = position_->hasObjectStepIndex();
+    value(result.objectNameIndex) = position_->getObjectNameIndex();
+    has_value(result.objectNameIndex) = position_->hasObjectNameIndex();
     value(result.artefactStepIndex) = position_->getArtefactStepIndex();
     has_value(result.artefactStepIndex) = position_->hasArtefactStepIndex();
 
@@ -143,6 +159,7 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
 VariablePosition VariablePosition::fromInfo(
         const QString &objectName,
         int objectStepIndex_,
+        int objectNameIndex_,
         int artefactStepIndex_
         )
 {
@@ -151,6 +168,8 @@ VariablePosition VariablePosition::fromInfo(
     has_value(result.objectName) = !objectName.isEmpty();
     value(result.objectStepIndex) = objectStepIndex_;
     has_value(result.objectStepIndex) = objectStepIndex_ >= 0;
+    value(result.objectNameIndex) = objectNameIndex_;
+    has_value(result.objectNameIndex) = objectNameIndex_ >= 0;
     value(result.artefactStepIndex) = artefactStepIndex_;
     has_value(result.artefactStepIndex) = artefactStepIndex_ >= 0;
 
@@ -169,12 +188,17 @@ bool operator == (const VariablePosition &left_, const VariablePosition &right_)
     {
         objectIndexesEqual = value(left_.objectStepIndex) == value(right_.objectStepIndex);
     }
+    bool objectNameIndexesEqual = true;
+    if(has_value(left_.objectNameIndex) && has_value(right_.objectNameIndex))
+    {
+        objectNameIndexesEqual = value(left_.objectNameIndex) == value(right_.objectNameIndex);
+    }
     bool artefactIndexesEqual = true;
     if(has_value(left_.artefactStepIndex) && has_value(right_.artefactStepIndex))
     {
         artefactIndexesEqual = value(left_.artefactStepIndex) == value(right_.artefactStepIndex);
     }
-    return objectsEqual && objectIndexesEqual && artefactIndexesEqual;
+    return objectsEqual && objectIndexesEqual && objectNameIndexesEqual && artefactIndexesEqual;
 }
 
 
@@ -845,10 +869,11 @@ void Variables::setObjectsList(QStringList &&list_)
 }
 
 
-void Position::setObject(const QString &name_, int objectStepIndex_)
+void Position::setObject(const QString &name_, int objectStepIndex_, int objectNameIndex_)
 {
     objectName = name_;
     objectStepIndex = objectStepIndex_;
+    objectNameIndex = objectNameIndex_;
     artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
 #if defined(TRACE_EFFECT_OBJECT_POSITION)
     qDebug() << objectName << objectStepIndex << artefactStepIndex;
@@ -877,6 +902,11 @@ void Position::setArtefactStepIndex(int stepIndex_)
 const QString &Position::getObjectName() const
 {
     return objectName;
+}
+
+int Position::getObjectNameIndex() const
+{
+    return objectNameIndex;
 }
 
 int Position::getObjectStepIndex() const
@@ -909,14 +939,22 @@ void Position::clear()
 std::unique_ptr<IPosition> Position::getCopyClearObjectIndex() const
 {
     auto ptr = std::make_unique<Position>();
-    *ptr = Position::fromInfo(getObjectName(), std::numeric_limits<decltype (objectStepIndex)>::max(), getArtefactStepIndex());
+    *ptr = Position::fromInfo(getObjectName(),
+                              std::numeric_limits<decltype (objectStepIndex)>::max(),
+                              getObjectNameIndex(),
+                              getArtefactStepIndex()
+                              );
     return ptr;
 }
 
 std::unique_ptr<IPosition> Position::getCopy() const
 {
     auto ptr = std::make_unique<Position>();
-    *ptr = Position::fromInfo(getObjectName(), getObjectStepIndex(), getArtefactStepIndex());
+    *ptr = Position::fromInfo(getObjectName(),
+                              getObjectStepIndex(),
+                              getObjectNameIndex(),
+                              getArtefactStepIndex()
+                              );
     return ptr;
 }
 
@@ -925,19 +963,20 @@ Position Position::fromPosition(IPosition *pos_)
     Position pos;
     if(pos_)
     {
-        pos.setObject(pos_->getObjectName(),pos_->getObjectStepIndex());
+        pos.setObject(pos_->getObjectName(),pos_->getObjectStepIndex(), pos_->getObjectNameIndex());
         pos.setArtefactStepIndex(pos_->getArtefactStepIndex());
     }
     return pos;
 }
 
-Position Position::fromInfo(const QString &name_, int objectStepIndex_, int artefactStepIndex_)
+Position Position::fromInfo(const QString &name_, int objectStepIndex_, int objectNameIndex_, int artefactStepIndex_)
 {
     Position pos;
     pos.setObject(name_,
                   objectStepIndex_ >= 0
                   ? objectStepIndex_
-                  : std::numeric_limits<decltype (objectStepIndex)>::max()
+                  : std::numeric_limits<decltype (objectStepIndex)>::max(),
+                  objectNameIndex_
                   );
     pos.setArtefactStepIndex(
                 artefactStepIndex_ >= 0
