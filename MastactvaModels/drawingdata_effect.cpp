@@ -220,13 +220,14 @@ void DrawingDataEffect::runObjects(
         bool mainObjects_ /*= false*/
         ) const
 {
+    ObjectNamesIndexes indexes;
     for(const SortedEffectObjects::value_type &v_ : qAsConst(objects_))
     {
         if(!v_.second)
         {
             continue;
         }
-        v_.second->addObjects(data_, m_details, 0, QStringList{}, mainObjects_);
+        v_.second->addObjects(data_, m_details, indexes, 0, QStringList{}, mainObjects_);
     }
 }
 
@@ -237,13 +238,14 @@ void DrawingDataEffect::addArguments(
         ) const
 {
     argSetsAndArgs_.setObjectLocalPosition(local_);
+    ObjectNamesIndexes indexes;
     for(const SortedEffectObjects::value_type &v_ : qAsConst(objects_))
     {
         if(!v_.second)
         {
             continue;
         }
-        v_.second->addArgs(m_details, argSetsAndArgs_);
+        v_.second->addArgs(m_details, argSetsAndArgs_, indexes);
     }
 }
 
@@ -253,12 +255,14 @@ void DrawingDataEffect::processByObjectListOrder(
         const SortedByProgrammerNameEffectObjects &sortedByProgrammerNameEffectObjects_
         ) const
 {
+    ObjectNamesIndexes indexes;
     // list of objects that are used in the object list
     auto objectsToRunUnique = getUnique(objectsToRun_);
     // set up index shifts
     std::map<QString, int> stepIndexShifts = setupShifts(objectsToRunUnique);
     for(const QString &objectName_ : qAsConst(objectsToRun_))
     {
+        indexes.cleanIndexies();
         // get all template objects for the given object name in the objects list
         // it can be several template objects with the same name
         const auto fitb = sortedByProgrammerNameEffectObjects_.lower_bound(objectName_);
@@ -270,7 +274,7 @@ void DrawingDataEffect::processByObjectListOrder(
         for(auto it = fitb; it != fite; ++it)
         {
             // add objects from the template objects
-            it->second->addObjects(data_, m_details, stepIndexShift);
+            it->second->addObjects(data_, m_details, indexes, stepIndexShift);
         }
         // correct index shift for the current object name
         stepIndexShifts[objectName_] += objectsInPack;
@@ -299,12 +303,13 @@ void DrawingDataEffect::runObjectsAndAddons(
         const QStringList &addonNames_
         ) const
 {
+    ObjectNamesIndexes indexes;
     for(const SortedEffectObjects::value_type &v_ : qAsConst(objects_))
     {
         if(!v_.second)
         {
             continue;
         }
-        v_.second->addObjects(data_, m_details, 0, addonNames_);
+        v_.second->addObjects(data_, m_details, indexes, 0, addonNames_);
     }
 }

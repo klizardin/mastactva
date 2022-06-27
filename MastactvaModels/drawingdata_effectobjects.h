@@ -25,6 +25,18 @@
 #include "../MastactvaBase/utils.h"
 
 
+class ObjectNamesIndexes
+{
+public:
+    void cleanIndexies();
+    int getIndex(const QString &objectName_) const;
+    int addIndex(const QString &objectName_);
+
+private:
+    QMap<QString, int> m_indexes;
+};
+
+
 class DrawingDataEffectObjects :
         public EffectObjectsData
 {
@@ -38,6 +50,7 @@ public:
     void addObjects(
             drawing_data::QuizImageObjects &data_,      // image objects data
             const drawingdata::Details &details_,       // details from the parent class
+            ObjectNamesIndexes &indexes_,
             int stepIndexShift_ = 0,                    // shift index for the objects to add
             const QStringList &addonNames_ = QStringList{}, // addon names to run
             bool mainObjects_ = false                   // is it the main object
@@ -49,6 +62,7 @@ public:
     void addArgs(
             const drawingdata::Details &details_,       // details from the parent class
             DrawingDataArgSetsAndArgs &argSetsAndArgs_, // arg sets
+            ObjectNamesIndexes &indexes_,
             int stepIndexShift_ = 0                     // shift of the objects
             ) const;
 
@@ -79,10 +93,11 @@ private:
     /*
      * set up position in the details data
     */
-    void setupPosition(const drawingdata::Details &details_, int stepIndexShift_) const;
-
-private:
-    int m_objectNameIndex = 0;
+    void setupPosition(
+            const drawingdata::Details &details_,
+            int stepIndexShift_,
+            ObjectNamesIndexes &indexes_
+            ) const;
 };
 
 
