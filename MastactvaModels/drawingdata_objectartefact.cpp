@@ -122,7 +122,7 @@ void DrawingDataObjectArtefact::addVariables(
 {
     if(argSetsAndArgs_)
     {
-        argSetsAndArgs_->setObjectArtefactId(m_id);
+        argSetsAndArgs_->setObjectArtefactId(m_artefactId);
     }
 
     (void) forArtefacts([&details_, argSetsAndArgs_](const DrawingDataArtefact *artefact_)->bool
