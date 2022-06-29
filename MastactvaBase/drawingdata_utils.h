@@ -590,24 +590,50 @@ class IVariables
 {
 public:
     virtual ~IVariables() = default;
+
+    /*
+     * get variable value
+    */
     virtual bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<double> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QStringList &data_) const = 0;
+
+    /*
+     * add variable value
+    */
     virtual void add(const QJsonDocument &data_) = 0;
     virtual bool add(const QString &name_, const IPosition *position_, const QVector<double> &data_) = 0;
     virtual bool add(const QString &name_, const IPosition *position_, QVector<double> &&data_) = 0;
     virtual bool add(const QString &name_, const IPosition *position_, const QStringList &data_) = 0;
     virtual bool add(const QString &name_, const IPosition *position_, QStringList &&data_) = 0;
+
+    /*
+     * add aliases of the variables
+    */
     virtual void addAliases(const QJsonDocument &data_, const IPosition *position_) = 0;
+
+    /*
+     * process special variable objectsToRun, see g_jsonDataVariableNameObjectListName
+    */
     virtual bool getObjectsList(QStringList &objects_) const = 0;
+
+    /*
+     * clear
+    */
     virtual void clear() = 0;
 
+    /*
+     * helper functions to process several variables at the same time
+    */
     bool add(const IPosition *position_, const std::map<QString, QVector<double>> &variables_);
     bool add(const IPosition *position_, std::map<QString, QVector<double>> &&variables_);
     bool add(const IPosition *position_, const std::map<QString, QStringList> &variables_);
     bool add(const IPosition *position_, std::map<QString, QStringList> &&variables_);
 
+    /*
+     * helper functions to process variables with explicite positions
+    */
     bool add(const QString &name_, const QString &objectName_, int objectIndex, int objectNameIndex_, int artefactIndex_, const QVector<double> &data_);
     bool add(const QString &name_, const QString &objectName_, int objectIndex, int objectNameIndex_, int artefactIndex_, QVector<double> &&data_);
     bool add(const QString &name_, const QString &objectName_, int objectIndex, int objectNameIndex_, int artefactIndex_, const QStringList &data_);
@@ -671,14 +697,20 @@ bool IVariables::add(const IPosition *position_, std::map<QString, QStringList> 
 namespace details
 {
 
+/*
+ * position for the variable
+*/
 struct VariablePosition
 {
     VariablePosition() = default;
 
-    static VariablePosition fromJson(const QJsonObject &position_);
-    static VariablePosition fromCurrent(const IPosition *position_);
+    static VariablePosition fromJson(const QJsonObject &position_);     // convert from json
+    static VariablePosition fromCurrent(const IPosition *position_);    // convert from IPosition
 
 private:
+    /*
+     * convert from explicite values
+    */
     static VariablePosition fromInfo(const QString &objectName, int objectStepIndex_, int objectNameIndex_, int artefactStepIndex_);
 
 private:
@@ -687,11 +719,14 @@ private:
     std::tuple<int, bool> objectStepIndex = std::make_tuple(0, false);
     std::tuple<int, bool> artefactStepIndex = std::make_tuple(0, false);
 
-    friend bool operator == (const VariablePosition &left_, const VariablePosition &right_);
+    friend bool operator == (const VariablePosition &left_, const VariablePosition &right_);    // to find position
     friend class ::drawingdata::IVariables;
 };
 
 
+/*
+ * datas for the variable
+*/
 class ValiableData
 {
 public:
@@ -711,14 +746,17 @@ public:
     void get(QStringList &data_) const;
 
 private:
-    QJsonArray m_jsonArray;
-    QVector<double> m_doubleData;
-    QVector<float> m_floatData;
-    QVector<int> m_intData;
-    QStringList m_stringsList;
+    QJsonArray m_jsonArray;             // represent as a json array
+    QVector<double> m_doubleData;       // as vector of doubles
+    QVector<float> m_floatData;         // as vector of floats
+    QVector<int> m_intData;             // as vector of ints
+    QStringList m_stringsList;          // as vector of strings
 };
 
 
+/*
+ * the variable's class
+*/
 struct Variable
 {
 public:
@@ -739,7 +777,7 @@ public:
     void get(QVector<int> &data_) const;
     void get(QVector<double> &data_) const;
     void get(QStringList &data_) const;
-    bool match(const VariablePosition &pos_) const;
+    bool match(const VariablePosition &pos_) const;     // check if the position of the variable matches the VariablePosition
 
 private:
     std::shared_ptr<ValiableData> m_data = std::make_shared<ValiableData>();
@@ -747,12 +785,15 @@ private:
 };
 
 
+/*
+ * class of a name of variable
+*/
 struct VariableName
 {
     VariableName(const QString &name_ = QString(),int index_ = 0, bool hasIndex_ = true);
 
-    QString name;
-    int index = 0;
+    QString name;               // name of a variable
+    int index = 0;              // is used to order variables by it's life longness
     bool hasIndex = true;
 
     friend bool operator == (const VariableName &left_, const VariableName &right_);
@@ -765,6 +806,9 @@ bool operator < (const VariableName &left_, const VariableName &right_);
 }
 
 
+/*
+ * implementation of IVariables interface
+*/
 class Variables : public IVariables
 {
     using VariablesMap = std::multimap<details::VariableName, details::Variable>;
@@ -816,6 +860,9 @@ private:
 };
 
 
+/*
+ * implementation of IPosition interface
+*/
 class Position : public IPosition
 {
 public:
@@ -844,6 +891,9 @@ private:
 };
 
 
+/*
+ * drawing data detail class - data that is shared between steps
+*/
 class Details
 {
 public:
@@ -858,6 +908,9 @@ public:
 };
 
 
+/*
+ * interface for the textures support
+*/
 class ITextures
 {
 public:
