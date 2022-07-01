@@ -40,12 +40,12 @@ public:
 
 public:
     int m_id = -1;
-    int m_effectId = -1;
-    int m_objectArtefactId = -1;
+    int m_effectId = -1;                            // reference to the effect id
+    int m_objectArtefactId = -1;                    // reference to the object artefact id
     // args are unique by name inside artefact id
-    QString m_description;
-    QDateTime m_created;
-    MergeId m_mergeid;
+    QString m_description;                          // description
+    QDateTime m_created;                            // creation date and time
+    MergeId m_mergeid;                              // unique id to merge
 
     EffectArgData(const EffectArgData &data_) = delete;
     EffectArgData &operator = (const EffectArgData &data_) = delete;

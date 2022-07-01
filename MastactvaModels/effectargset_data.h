@@ -36,13 +36,13 @@ private:
 
 public:
     int m_id = -1;
-    int m_effectId = -1;
-    int m_easingTypeId = -1;
-    QString m_description;
-    QDateTime m_created;
-    MergeId m_mergeid;
+    int m_effectId = -1;                // effect id
+    int m_easingTypeId = -1;            // easing type
+    QString m_description;              // description
+    QDateTime m_created;                // creation date and time
+    MergeId m_mergeid;                  // unique id to merge
 
-    std::shared_ptr<QVector<EffectArgValueData *>> m_effectArgValuesData;
+    std::shared_ptr<QVector<EffectArgValueData *>> m_effectArgValuesData;   // effect arguments' values
 
     EffectArgSetData(const EffectArgData &data_) = delete;
     EffectArgSetData &operator = (const EffectArgData &data_) = delete;

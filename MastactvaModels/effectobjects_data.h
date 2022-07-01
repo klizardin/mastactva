@@ -28,6 +28,10 @@
 #include "../MastactvaBase/quizimagedrawingdata.h"
 
 
+/*
+ * structure of the effect object data
+ * (data holder)
+*/
 struct EffectObjectsData
 {
 public:
@@ -57,8 +61,8 @@ public:
     int m_stepIndex = -1;
     MergeId m_mergeid;
 
-    std::shared_ptr<QVector<ObjectInfoData *>> m_objectInfoData;
-    std::shared_ptr<QVector<ObjectArtefactData *>> m_objectArtefactData;
+    std::shared_ptr<QVector<ObjectInfoData *>> m_objectInfoData;            // object info (1:1)
+    std::shared_ptr<QVector<ObjectArtefactData *>> m_objectArtefactData;    // vector of artefacts of the object (1:N)
 
     EffectObjectsData(const EffectObjectsData &data_) = delete;
     EffectObjectsData & operator = (const EffectObjectsData &data_) = delete;
