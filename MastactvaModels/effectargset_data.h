@@ -10,7 +10,7 @@
 #include "../MastactvaModels/effectargvalue_data.h"
 
 
-class EffectArgSetData
+struct EffectArgSetData
 {
 public:
     EffectArgSetData();

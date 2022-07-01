@@ -9,9 +9,9 @@
 
 
 /*
- * effect argument holder
+ * Seffect argument holder
 */
-class EffectArgumentData
+struct EffectArgumentData
 {
 public:
     EffectArgumentData() = default;

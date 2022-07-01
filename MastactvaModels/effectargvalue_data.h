@@ -11,7 +11,7 @@
 #include "../MastactvaBase/imagesource.h"
 
 
-class EffectArgValueData
+struct EffectArgValueData
 {
 public:
     EffectArgValueData();
