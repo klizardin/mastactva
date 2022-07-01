@@ -12,7 +12,7 @@
 
 /*
  * structure of effect arguments set data
- * data holder
+ * (data holder)
 */
 struct EffectArgSetData
 {

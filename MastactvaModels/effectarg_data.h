@@ -12,7 +12,7 @@
 
 /*
  * structure that scontains effect argument data
- * data holder
+ * (data holder)
 */
 struct EffectArgData : public EffectArgumentData
 {

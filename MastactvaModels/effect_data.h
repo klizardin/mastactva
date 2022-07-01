@@ -30,7 +30,7 @@
 
 /*
  * structure that contains effect data
- * data holder
+ * (data holder)
 */
 struct EffectData
 {
