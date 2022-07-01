@@ -9,7 +9,8 @@
 
 
 /*
- * Seffect argument holder
+ * structure of effect argument data
+ * (data holder)
 */
 struct EffectArgumentData
 {
