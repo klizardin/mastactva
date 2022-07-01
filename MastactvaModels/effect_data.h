@@ -28,6 +28,10 @@
 #include "../MastactvaModels/effectargset_data.h"
 
 
+/*
+ * structure that contains effect data
+ * data holder
+*/
 struct EffectData
 {
 public:
