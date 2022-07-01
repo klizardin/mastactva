@@ -10,6 +10,10 @@
 #include "../MastactvaModels/effectargvalue_data.h"
 
 
+/*
+ * structure of effect arguments set data
+ * data holder
+*/
 struct EffectArgSetData
 {
 public:
