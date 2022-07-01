@@ -10,6 +10,10 @@
 #include "../MastactvaBase/imagesource.h"
 
 
+/*
+ * structure that scontains effect argument data
+ * data holder
+*/
 class EffectArgData : public EffectArgumentData
 {
 public:
