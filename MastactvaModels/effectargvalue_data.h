@@ -11,7 +11,11 @@
 #include "../MastactvaBase/imagesource.h"
 
 
-class EffectArgValueData
+/*
+ * structure of the effect argument value
+ * (data holder)
+*/
+struct EffectArgValueData
 {
 public:
     EffectArgValueData();
@@ -35,19 +39,19 @@ public:
 
 public:
     int m_id = -1;
-    int m_argSetId = -1;
-    int m_argId = -1;
-    QString m_value;
-    QString m_description;
-    QDateTime m_created;
-    MergeId m_mergeid;
-    bool m_hasFileReference = false;
-    bool m_hasFile = false;
-    FileSourceReference m_file;
-    QString m_fileHash;
+    int m_argSetId = -1;                // argumengt set id
+    int m_argId = -1;                   // argument id
+    QString m_value;                    // value
+    QString m_description;              // description
+    QDateTime m_created;                // creation date and time
+    MergeId m_mergeid;                  // unique id to merge
+    bool m_hasFileReference = false;    // has file reference TODO: explain (why we need duplications)
+    bool m_hasFile = false;             // has file TODO: explain (why we need duplications)
+    FileSourceReference m_file;         // file source TODO: explain (why we need duplications)
+    QString m_fileHash;                 // file hash value TODO: explain (why we need duplications)
 
-    std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;
-    std::shared_ptr<QVector<EffectArgumentData *>> m_effectArgValuesData;
+    std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;              // reference to the effect argument data
+    std::shared_ptr<QVector<EffectArgumentData *>> m_effectArgValuesData;    // effect argument default values
 
     EffectArgValueData(const EffectArgValueData &data_) = delete;
     EffectArgValueData &operator = (const EffectArgValueData &data_) = delete;

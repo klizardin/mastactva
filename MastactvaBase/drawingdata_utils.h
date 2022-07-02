@@ -731,19 +731,19 @@ class ValiableData
 {
 public:
     ValiableData() = default;
-    void set(const QJsonArray &jsonArray_);
-    void set(const QVector<double> &data_);
-    void set(QVector<double> &&data_);
-    void set(const QStringList &data_);
-    void set(QStringList &&data_);
-    void prepare(QVector<float> &);
-    void prepare(QVector<int> &);
-    void prepare(QVector<double> &);
-    void prepare(QStringList &);
-    void get(QVector<float> &data_) const;
-    void get(QVector<int> &data_) const;
-    void get(QVector<double> &data_) const;
-    void get(QStringList &data_) const;
+    void set(const QJsonArray &jsonArray_);         // set up from json data - from artefact's json data
+    void set(const QVector<double> &data_);         // set up as vector of doubles
+    void set(QVector<double> &&data_);              // set up as vector of doubles
+    void set(const QStringList &data_);             // set up as vector of strings (for string types variables)
+    void set(QStringList &&data_);                  // set up as vector of strings (for string types variables)
+    void prepare(QVector<float> &);                 // prepare to get as vector of floats
+    void prepare(QVector<int> &);                   // prepere to get at vector of ints
+    void prepare(QVector<double> &);                // prepare to get as vector of doubles
+    void prepare(QStringList &);                    // prepare to get as vector of strings
+    void get(QVector<float> &data_) const;          // get as vector of floats
+    void get(QVector<int> &data_) const;            // get as vector of int
+    void get(QVector<double> &data_) const;         // get as vector of double
+    void get(QStringList &data_) const;             // get as vector of strings
 
 private:
     QJsonArray m_jsonArray;             // represent as a json array
@@ -761,6 +761,10 @@ struct Variable
 {
 public:
     Variable() = default;
+    /*
+     * representation of VariableData methods
+     * {
+    */
     void set(const QJsonArray &jsonArray_);
     void set(const QVector<double> &data_);
     void set(QVector<double> &&data_);
@@ -777,6 +781,8 @@ public:
     void get(QVector<int> &data_) const;
     void get(QVector<double> &data_) const;
     void get(QStringList &data_) const;
+    // }
+
     bool match(const VariablePosition &pos_) const;     // check if the position of the variable matches the VariablePosition
 
 private:

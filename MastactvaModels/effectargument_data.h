@@ -9,9 +9,10 @@
 
 
 /*
- * effect argument holder
+ * structure of effect argument data
+ * (data holder)
 */
-class EffectArgumentData
+struct EffectArgumentData
 {
 public:
     EffectArgumentData() = default;

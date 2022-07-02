@@ -28,6 +28,10 @@
 #include "../MastactvaModels/effectargset_data.h"
 
 
+/*
+ * structure that contains effect data
+ * (data holder)
+*/
 struct EffectData
 {
 public:
@@ -52,14 +56,14 @@ private:
 
 public:
     int m_id = -1;
-    QString m_name;
-    QString m_description;
-    QDateTime m_created;
-    MergeId m_mergeid;
+    QString m_name;                 // effect name
+    QString m_description;          // effect description
+    QDateTime m_created;            // creation date and time
+    MergeId m_mergeid;              // unique id to merge items
 
-    std::shared_ptr<QVector<EffectObjectsData *>> m_effectObjectsData;
-    std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;
-    std::shared_ptr<QVector<EffectArgSetData *>> m_effectArgSetsData;
+    std::shared_ptr<QVector<EffectObjectsData *>> m_effectObjectsData;  // vector of objects
+    std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;         // vector of effect arguments
+    std::shared_ptr<QVector<EffectArgSetData *>> m_effectArgSetsData;   // vector of effect arguments' sets
 
     EffectData(const EffectData &data_) = delete;
     EffectData &operator = (const EffectData &data_) = delete;

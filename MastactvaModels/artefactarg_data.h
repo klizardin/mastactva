@@ -30,7 +30,8 @@
 
 
 /*
- * argument of the artefact
+ * structure of argument of the artefact data
+ * (data holder)
 */
 struct ArtefactArgData : public EffectArgumentData
 {
