@@ -1333,7 +1333,9 @@ void pushTable(
 
 } // namespace detail
 
-
+/*
+ * API functions interface
+*/
 template<typename ... Args_> inline
 bool getArguments(lua_State *luaState_, Args_ &... args_)
 {
