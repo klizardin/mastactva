@@ -1016,6 +1016,14 @@ void getStructFromTableWithLayoutTraits(
                 );
 }
 
+/*
+ * JsonObject can contain array, because json API can return array as object
+ * also the appliocation can interpretate json object as array for simpilicity
+ * so it is requred to have function that check if it posible to convert
+ * json object to the array
+ * (we do not know how to interpret lua table so by default interpret it
+ * as object and after reading try to convert to the json array)
+*/
 inline
 bool isArray(const QJsonObject &obj_)
 {
@@ -1049,6 +1057,9 @@ bool isArray(const QJsonObject &obj_)
     return true;
 }
 
+/*
+ * convert json object to the array if it is possible
+*/
 inline
 QJsonArray convertToArray(const QJsonObject &obj_)
 {
@@ -1076,6 +1087,9 @@ QJsonArray convertToArray(const QJsonObject &obj_)
     return result;
 }
 
+/*
+ * return lua table as json object
+*/
 inline
 QJsonObject getObjectFromTable(
         lua_State *luaState_,
@@ -1170,6 +1184,9 @@ QJsonObject getObjectFromTable(
     return obj;
 }
 
+/*
+ * read lua table at the position as a json document
+*/
 inline
 void getTable(
         lua_State *luaState_,
