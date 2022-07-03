@@ -93,40 +93,61 @@ void LuaAPIUtils::dumpStack(lua_State *luaState_)
 }
 
 
+/*
+ * layout of a field of a data structure or a class data
+*/
 template<class DataType_, typename Arg_>
 struct FieldLayout
 {
-    using DataType = DataType_;
-    using FieldType = Arg_;
+    using DataType = DataType_; // type of the structure or class
+    using FieldType = Arg_;     // type of the field
 
+    /*
+     * specify name of the field
+     * and pointer to the class member of the field
+    */
     FieldLayout(const char *name_, Arg_ DataType_::* field_)
         : m_name(name_),
           m_field(field_)
     {
     }
 
+    /*
+     * return name
+    */
     const char * getName() const
     {
         return m_name;
     }
 
+    /*
+     * return reference to the field data by pointer to the structure or class
+    */
     Arg_ & getDataRef(DataType_ &data_) const
     {
         return data_.*m_field;
     }
 
 private:
-    const char *m_name = nullptr;
-    Arg_ DataType_::*m_field;
+    const char *m_name = nullptr;       // name
+    Arg_ DataType_::*m_field;           // field member pointer
 };
 
 
+/*
+ * a data layout for the specific arguments
+ * (template specialization)
+*/
 template<typename ... Args_>
 struct DataLayout
 {
     using NextLayout = void *;
 };
 
+/*
+ * a data layout for the specific arguments
+ * specialization for the argument and the argument list
+*/
 template<typename Arg_, typename ... Args_>
 struct DataLayout<Arg_, Args_ ...> : public DataLayout<Args_ ...>
 {
@@ -140,25 +161,39 @@ struct DataLayout<Arg_, Args_ ...> : public DataLayout<Args_ ...>
     {
     }
 
+    /*
+     * return field name for the argument
+    */
     const char * getName() const
     {
         return m_field.getName();
     }
 
+    /*
+     * return field reference for the specific data reference
+    */
     FieldType & getDataRef(DataType &data_) const
     {
         return m_field.getDataRef(data_);
     }
 
+    /*
+     * helper function to stop iteration over the arguments
+     * int the data layout template
+    */
     operator void * () const
     {
         return nullptr;
     }
 
 private:
-    Arg_ m_field;
+    Arg_ m_field;       // field member
 };
 
+/*
+ * a data layout for the specific arguments
+ * specialization for the argument without an argument list
+*/
 template<typename Arg_>
 struct DataLayout<Arg_>
 {
@@ -171,16 +206,26 @@ struct DataLayout<Arg_>
     {
     }
 
+    /*
+     * return field name for the argument
+    */
     const char * getName() const
     {
         return m_field.getName();
     }
 
+    /*
+     * return field reference for the specific data reference
+    */
     FieldType & getDataRef(DataType &data_) const
     {
         return m_field.getDataRef(data_);
     }
 
+    /*
+     * helper function to stop iteration over the arguments
+     * int the data layout template
+    */
     operator void * () const
     {
         return nullptr;
@@ -191,18 +236,28 @@ private:
 };
 
 
+/*
+ * helper function to create field layout
+*/
 template<class DataType_, typename Arg_>
 FieldLayout<DataType_, Arg_> makeFieldLayout(const char *name_, Arg_ DataType_::* field_)
 {
     return FieldLayout<DataType_, Arg_>(name_, field_);
 }
 
+/*
+ * helper function to create data layout
+*/
 template<typename Arg_, typename ... Args_>
 DataLayout<Arg_, Args_ ...> makeDataLayout(Arg_ &&field_, Args_ &&...values_)
 {
     return DataLayout<Arg_, Args_ ...>(std::move(field_), std::move(values_) ...);
 }
 
+/*
+ * helper function to create data layout
+ * specialization for an one argument
+*/
 template<typename Arg_>
 DataLayout<Arg_> makeDataLayout(Arg_ &&field_)
 {
@@ -210,19 +265,30 @@ DataLayout<Arg_> makeDataLayout(Arg_ &&field_)
 }
 
 
+/*
+ * traits class for the data layout
+ * about C++ traits see: https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Traits
+*/
 template<class DataType_>
 class DataLayoutTraits
 {
 public:
-    using DataType = DataType_;
-    using IsSimpleType = std::true_type;
-    using DataTypeLayout = void *;
+    using DataType = DataType_;             // data type
+    using IsSimpleType = std::true_type;    // is simple type
+    using DataTypeLayout = void *;          // data layout type
 
 public:
+    /*
+     * return data layout class
+    */
     static DataTypeLayout getLayout()
     {
         return nullptr;
     }
+
+    /*
+     * return true if the data layout type is simple
+    */
     static bool isSimpleType()
     {
         return IsSimpleType::value;
@@ -249,6 +315,11 @@ public:                                                                         
 };                                                                              \
 /* end of macro DECLARE_DATA_LAYOUT */
 
+/*
+ * helper class to get static layout type object for the specific data type
+ * data layout objects containt field members so we need a object of the
+ * data layout type
+*/
 template<typename DataType_> inline
 const DataLayoutTraits<DataType_> getLayout()
 {
@@ -260,6 +331,9 @@ const DataLayoutTraits<DataType_> getLayout()
 namespace detail
 {
 
+/*
+ * template to count argument types
+*/
 template<typename ... Args_>
 struct countOf;
 
@@ -276,6 +350,9 @@ struct countOf<Arg_, Args_ ...>
 };
 
 
+/*
+ * return argument from the lua stack of the specific type
+*/
 template<typename Arg_> inline
 bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_)
 //{
@@ -286,6 +363,9 @@ bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_)
 //}
 ;
 
+/*
+ * trace argument from the lua stack of the specific type
+*/
 template<typename Arg_> inline
 void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_)
 //{
@@ -295,6 +375,9 @@ void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_)
 //}
 ;
 
+/*
+ * push argument of the specific type to the lua stack
+*/
 template<typename Arg_> inline
 void pushArgument(lua_State *luaState_, const Arg_ &arg_)
 //{
@@ -703,6 +786,9 @@ void pushArguments(lua_State *luaState_, const Arg_ &arg_, const Args_ &... args
     pushArguments(luaState_, args_ ...);
 }
 
+/*
+ * get data layout field from the lua stack
+*/
 template<typename DataType_, typename LayoutArg_> inline
 void getStructItemFromTable(
         lua_State *luaState_,
@@ -720,6 +806,9 @@ void getStructItemFromTable(
     lua_pop(luaState_, 1);
 }
 
+/*
+ * stop getting data layout fields from the lua stack
+*/
 template<typename DataType_> inline
 void getStructItemFromTable(
         lua_State *luaState_,
@@ -733,6 +822,9 @@ void getStructItemFromTable(
     Q_UNUSED(data_);
 }
 
+/*
+ * stop getting data layouts from the lua stack
+*/
 template<typename DataType_, typename ... LayoutArgs_> inline
 void getStructFromTable(
         lua_State *luaState_,
@@ -746,6 +838,9 @@ void getStructFromTable(
     Q_UNUSED(data_);
 }
 
+/*
+ * get data layout item from the lua stack
+*/
 template<typename DataType_, typename ... LayoutArgs_> inline
 void getStructFromTable(
         lua_State *luaState_,
@@ -768,6 +863,9 @@ void getStructFromTableWithLayoutTraits(
         const DataLayoutTraits<DataType_> &layout_
         );
 
+/*
+ * get layout item for the simple layout types
+*/
 template<typename DataType_, class LayoutType_> inline
 void getStructItemFromTableFieldGet(
         lua_State *luaState_,
@@ -786,6 +884,9 @@ void getStructItemFromTableFieldGet(
     lua_pop(luaState_, 1);
 }
 
+/*
+ * get layout item for the complex layout types -- structures' and classes' objects
+*/
 template<typename DataType_, class LayoutType_> inline
 void getStructItemFromTableFieldGet(
         lua_State *luaState_,
@@ -801,11 +902,13 @@ void getStructItemFromTableFieldGet(
                 >::type
             >::type
         ;
+    // unpack table to the stack
     const char *name = layoutArg_.getName();
     if(!lua_getfield(luaState_, position_, name))
     {
         return;
     }
+    // get fields
     getStructFromTableWithLayoutTraits(
                 luaState_,
                 -1,
@@ -815,6 +918,9 @@ void getStructItemFromTableFieldGet(
     lua_pop(luaState_, 1);
 }
 
+/*
+ * get layout item for layout types
+*/
 template<typename DataType_, class Layout_> inline
 void getStructItemFromTableField(
         lua_State *luaState_,
@@ -910,6 +1016,14 @@ void getStructFromTableWithLayoutTraits(
                 );
 }
 
+/*
+ * JsonObject can contain array, because json API can return array as object
+ * also the appliocation can interpretate json object as array for simpilicity
+ * so it is requred to have function that check if it posible to convert
+ * json object to the array
+ * (we do not know how to interpret lua table so by default interpret it
+ * as object and after reading try to convert to the json array)
+*/
 inline
 bool isArray(const QJsonObject &obj_)
 {
@@ -943,6 +1057,9 @@ bool isArray(const QJsonObject &obj_)
     return true;
 }
 
+/*
+ * convert json object to the array if it is possible
+*/
 inline
 QJsonArray convertToArray(const QJsonObject &obj_)
 {
@@ -970,6 +1087,9 @@ QJsonArray convertToArray(const QJsonObject &obj_)
     return result;
 }
 
+/*
+ * return lua table as json object
+*/
 inline
 QJsonObject getObjectFromTable(
         lua_State *luaState_,
@@ -1064,6 +1184,9 @@ QJsonObject getObjectFromTable(
     return obj;
 }
 
+/*
+ * read lua table at the position as a json document
+*/
 inline
 void getTable(
         lua_State *luaState_,
@@ -1072,7 +1195,15 @@ void getTable(
         )
 {
     const QJsonObject obj = getObjectFromTable(luaState_, position_);
-    doc_ = QJsonDocument(obj);
+    if(isArray(obj))
+    {
+        const QJsonArray array = convertToArray(obj);
+        doc_ = QJsonDocument(array);
+    }
+    else
+    {
+        doc_ = QJsonDocument(obj);
+    }
 }
 
 inline
@@ -1202,7 +1333,9 @@ void pushTable(
 
 } // namespace detail
 
-
+/*
+ * API functions interface
+*/
 template<typename ... Args_> inline
 bool getArguments(lua_State *luaState_, Args_ &... args_)
 {

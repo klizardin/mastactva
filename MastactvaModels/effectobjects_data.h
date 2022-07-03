@@ -55,11 +55,11 @@ private:
     void createArrays();
 
 public:
-    int m_id = -1;
-    int m_effectId = -1;
-    int m_objectInfoId = -1;
-    int m_stepIndex = -1;
-    MergeId m_mergeid;
+    int m_id = -1;              //
+    int m_effectId = -1;        // effect id to reference this object
+    int m_objectInfoId = -1;    // object info id to reference to
+    int m_stepIndex = -1;       // step index of the object
+    MergeId m_mergeid;          // unique id for merging
 
     std::shared_ptr<QVector<ObjectInfoData *>> m_objectInfoData;            // object info (1:1)
     std::shared_ptr<QVector<ObjectArtefactData *>> m_objectArtefactData;    // vector of artefacts of the object (1:N)

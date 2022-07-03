@@ -30,10 +30,20 @@
 #include "../MastactvaBase/addonmodulelist.h"
 
 
+/*
+ * interface to test LUA API functionality
+*/
 class LuaAPITest
 {
 public:
+    /*
+     * return name of the test
+    */
     virtual QString getName() const = 0;
+
+    /*
+     * run test for the data of the lua state in the stack at the position
+    */
     virtual bool test(lua_State *luaState_, int position_) const = 0;
 };
 
