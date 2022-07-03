@@ -1195,7 +1195,15 @@ void getTable(
         )
 {
     const QJsonObject obj = getObjectFromTable(luaState_, position_);
-    doc_ = QJsonDocument(obj);
+    if(isArray(obj))
+    {
+        const QJsonArray array = convertToArray(obj);
+        doc_ = QJsonDocument(array);
+    }
+    else
+    {
+        doc_ = QJsonDocument(obj);
+    }
 }
 
 inline
