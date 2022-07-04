@@ -48,24 +48,33 @@ public:
 };
 
 
+/*
+ * LuaAPITest interface simple implementaion
+*/
 template<typename DataType_>
 class LuaAPIDataTest : public LuaAPITest
 {
 public:
     LuaAPIDataTest(
-            const QString &name_,
-            const DataType_ &data_
+            const QString &name_,   // test name
+            const DataType_ &data_  // test data that should be places in the lua stack
             )
         : m_name(name_),
           m_data(data_)
     {
     }
 
+    /*
+     * name of test
+    */
     QString getName() const override
     {
         return m_name;
     }
 
+    /*
+     * test with check the data structure item in the lua stack
+    */
     bool test(lua_State *luaState_, int position_) const override
     {
         DataType_ data{};
@@ -79,9 +88,17 @@ private:
 };
 
 
+/*
+ * interface to notifyu about tests results
+*/
 class TestObserver
 {
 public:
+    /*
+     * test with name is passed or is not
+     * name_ - name of test
+     * result_ - result of test with a name name_
+    */
     virtual void onTest(const QString &name_, bool result_) const = 0;
 };
 
