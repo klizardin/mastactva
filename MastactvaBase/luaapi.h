@@ -108,39 +108,39 @@ class LuaAPI : public LuaAPIUtils
 private:
     enum class FunctionImplEn
     {
-        getVariable,
-        setVariable,
-        setVariableWithPosition,
-        test,
-        matrixIdentity,
-        matrixIsIdentity,
-        matrixDeterminant,
-        matrixInverted,
-        matrixIsInvertible,
-        matrixRotate,
-        matrixScale,
-        matrixShear,
-        matrixTranslate,
-        matrixFrustrum,
-        matrixIsAphine,
-        matrixLookAt,
-        matrixNormal,
-        matrixOrtho,
-        matrixPerspective,
-        matrixViewport,
-        effectGetFromImageUrl,
-        effectGetToImageUrl,
-        effectGetCurrent,
-        effectFindObject,
-        effectFindObjectArtefact,
-        effectAddArgSet,
-        effectGetArgSetArguments,
-        effectAddArgValue,
-        addonCall,
-        addonGetNames,
-        addonHasName,
-        setTextureFileName,
-        setTextureFromCurrentFrameBuffer
+        getVariable,                // get variable from variables data and put it to the lua stck
+        setVariable,                // get value from the lua stack and put it to the variable
+        setVariableWithPosition,    // set variable with position from the stack
+        test,                       // run test with name and data from lua stack
+        matrixIdentity,             // put identity matrix to the lua stack
+        matrixIsIdentity,           // put true to the lua stack if matrix in the lua stack is identity matrix
+        matrixDeterminant,          // put true to the lua stack if matrix in the lua stack has determinant
+        matrixInverted,             // put interted matrix to the lua stack from the original matrix in the lua stack
+        matrixIsInvertible,         // put true to the lua stack if matrix in the lua stack is invertible matrix
+        matrixRotate,               // put rotate matrix to the lua stack from the argument from the lua stack
+        matrixScale,                // put scale matrix to the lua stack from the argument from the lua stack
+        matrixShear,                // put shear matrix to the lua stack from the argument from the lua stack TODO: implement?
+        matrixTranslate,            // put translate matrix to the lua stack from the argument from the lua stack
+        matrixFrustrum,             // put frustum matrix to the lua stack from the argument from the lua stack
+        matrixIsAphine,             // put true to the lua stack if matrix in the lua stack is afine matrix
+        matrixLookAt,               // put look at matrix to the lua stack from the argument from the lua stack
+        matrixNormal,               // put normal matrix to the lua stack from the argument from the lua stack
+        matrixOrtho,                // put ortho matrix to the lua stack from the argument from the lua stack
+        matrixPerspective,          // put perspective matrix to the lua stack from the argument from the lua stack
+        matrixViewport,             // put viewport matrix to the lua stack from the argument from the lua stack
+        effectGetFromImageUrl,      // put name of the from image to the lua stack
+        effectGetToImageUrl,        // put name of the to image to the lua stack
+        effectGetCurrent,           // put current effect info to the table in the lua stack
+        effectFindObject,           // put object's info to the lua stack as a table
+        effectFindObjectArtefact,   // put object's artefact's info to the lua stack as a table
+        effectAddArgSet,            // set arg set value from the arguments in the lua stack
+        effectGetArgSetArguments,   // put arg set arguments value info to the lua stack as a table
+        effectAddArgValue,          // put arg set arguments value to the lua stack as a table
+        addonCall,                  // call addon from lua with arguments from the lua stack
+        addonGetNames,              // put addons names to the lua stack
+        addonHasName,               // put true if addons has name specified in the lua stack
+        setTextureFileName,         // set texture file for the specific texture name from the arguments from the lua stack
+        setTextureFromCurrentFrameBuffer    // set up texture with argument name with the current frame buffer
     };
 
 public:
