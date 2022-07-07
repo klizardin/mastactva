@@ -108,59 +108,59 @@ class LuaAPI : public LuaAPIUtils
 private:
     enum class FunctionImplEn
     {
-        getVariable,
-        setVariable,
-        setVariableWithPosition,
-        test,
-        matrixIdentity,
-        matrixIsIdentity,
-        matrixDeterminant,
-        matrixInverted,
-        matrixIsInvertible,
-        matrixRotate,
-        matrixScale,
-        matrixShear,
-        matrixTranslate,
-        matrixFrustrum,
-        matrixIsAphine,
-        matrixLookAt,
-        matrixNormal,
-        matrixOrtho,
-        matrixPerspective,
-        matrixViewport,
-        effectGetFromImageUrl,
-        effectGetToImageUrl,
-        effectGetCurrent,
-        effectFindObject,
-        effectFindObjectArtefact,
-        effectAddArgSet,
-        effectGetArgSetArguments,
-        effectAddArgValue,
-        addonCall,
-        addonGetNames,
-        addonHasName,
-        setTextureFileName,
-        setTextureFromCurrentFrameBuffer
+        getVariable,                // get variable from variables data and put it to the lua stck
+        setVariable,                // get value from the lua stack and put it to the variable
+        setVariableWithPosition,    // set variable with position from the stack
+        test,                       // run test with name and data from lua stack
+        matrixIdentity,             // put identity matrix to the lua stack
+        matrixIsIdentity,           // put true to the lua stack if matrix in the lua stack is identity matrix
+        matrixDeterminant,          // put true to the lua stack if matrix in the lua stack has determinant
+        matrixInverted,             // put interted matrix to the lua stack from the original matrix in the lua stack
+        matrixIsInvertible,         // put true to the lua stack if matrix in the lua stack is invertible matrix
+        matrixRotate,               // put rotate matrix to the lua stack from the argument from the lua stack
+        matrixScale,                // put scale matrix to the lua stack from the argument from the lua stack
+        matrixShear,                // put shear matrix to the lua stack from the argument from the lua stack TODO: implement?
+        matrixTranslate,            // put translate matrix to the lua stack from the argument from the lua stack
+        matrixFrustrum,             // put frustum matrix to the lua stack from the argument from the lua stack
+        matrixIsAphine,             // put true to the lua stack if matrix in the lua stack is afine matrix
+        matrixLookAt,               // put look at matrix to the lua stack from the argument from the lua stack
+        matrixNormal,               // put normal matrix to the lua stack from the argument from the lua stack
+        matrixOrtho,                // put ortho matrix to the lua stack from the argument from the lua stack
+        matrixPerspective,          // put perspective matrix to the lua stack from the argument from the lua stack
+        matrixViewport,             // put viewport matrix to the lua stack from the argument from the lua stack
+        effectGetFromImageUrl,      // put name of the from image to the lua stack
+        effectGetToImageUrl,        // put name of the to image to the lua stack
+        effectGetCurrent,           // put current effect info to the table in the lua stack
+        effectFindObject,           // put object's info to the lua stack as a table
+        effectFindObjectArtefact,   // put object's artefact's info to the lua stack as a table
+        effectAddArgSet,            // set arg set value from the arguments in the lua stack
+        effectGetArgSetArguments,   // put arg set arguments value info to the lua stack as a table
+        effectAddArgValue,          // put arg set arguments value to the lua stack as a table
+        addonCall,                  // call addon from lua with arguments from the lua stack
+        addonGetNames,              // put addons names to the lua stack
+        addonHasName,               // put true if addons has name specified in the lua stack
+        setTextureFileName,         // set texture file for the specific texture name from the arguments from the lua stack
+        setTextureFromCurrentFrameBuffer    // set up texture with argument name with the current frame buffer
     };
 
 public:
     LuaAPI();
     ~LuaAPI();
 
-    bool load(const QString &script_) const;
+    bool load(const QString &script_) const;                // load script and initialize lua api class for this script
     bool call(
-            const QString &functionName_,
-            drawingdata::IPosition *position_,
-            std::map<QString, QVector<double>> &result_,
-            std::map<QString, QStringList> &resultStrs_
-            ) const;
-    bool callArtefact(drawingdata::IPosition *position_);
-    bool callArtefactAtRuntime(drawingdata::IPosition *position_) const;
-    void set(std::shared_ptr<drawingdata::IVariables> variables_);
-    void set(std::shared_ptr<drawingdata::ITextures> textures_);
-    void addTest(std::unique_ptr<LuaAPITest> &&test_);
-    void setTestObserver(std::shared_ptr<TestObserver> testObserver_);
-    void set(std::shared_ptr<IAddonModules> addons_);
+            const QString &functionName_,                   // function name to call
+            drawingdata::IPosition *position_,              // current position in the effect drawing data
+            std::map<QString, QVector<double>> &result_,    // result as vectors of double
+            std::map<QString, QStringList> &resultStrs_     // result as vectors of strings
+            ) const;                                        // make call to the script
+    bool callArtefact(drawingdata::IPosition *position_);                   // call lua artefact -- with modification of variables by result
+    bool callArtefactAtRuntime(drawingdata::IPosition *position_) const;    // call lua artefact in the runtime -- ignore result
+    void set(std::shared_ptr<drawingdata::IVariables> variables_);          // set up shred interface
+    void set(std::shared_ptr<drawingdata::ITextures> textures_);            // set up shared interface
+    void addTest(std::unique_ptr<LuaAPITest> &&test_);                      // add test to the test's set
+    void setTestObserver(std::shared_ptr<TestObserver> testObserver_);      // set up test observer interface
+    void set(std::shared_ptr<IAddonModules> addons_);                       // set up addons interface
 
 private:
     bool initAddonFunctions(const QStringList &names_);
@@ -217,15 +217,15 @@ private:
     void initFunctions() const;
 
 private:
-    lua_State *m_luaState = nullptr;
-    std::shared_ptr<drawingdata::IVariables> m_variables;
-    std::shared_ptr<drawingdata::ITextures> m_textures;
-    mutable drawingdata::IPosition *m_artefactPosition = nullptr;
-    static QHash<lua_State *, LuaAPI *> s_apis;
-    std::vector<std::unique_ptr<LuaAPITest>> m_tests;
-    std::shared_ptr<TestObserver> m_testObserver;
-    QStringList m_addonsNames;
-    std::shared_ptr<IAddonModules> m_addons;
+    lua_State *m_luaState = nullptr;                                // the current lua state
+    std::shared_ptr<drawingdata::IVariables> m_variables;           // interface to the IVariables
+    std::shared_ptr<drawingdata::ITextures> m_textures;             // interface to the ITextures
+    mutable drawingdata::IPosition *m_artefactPosition = nullptr;   // position in the effect drawing data
+    static QHash<lua_State *, LuaAPI *> s_apis;                     // static list of all APIs to serach implementation details by lua_State pointer
+    std::vector<std::unique_ptr<LuaAPITest>> m_tests;               // tests
+    std::shared_ptr<TestObserver> m_testObserver;                   // test's observer
+    QStringList m_addonsNames;                                      // addon names
+    std::shared_ptr<IAddonModules> m_addons;                        // addon interface
 
     template<FunctionImplEn impl_, int inputArgs_, int outputArgs_>
     friend int l_implementation(lua_State *luaState_);

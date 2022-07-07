@@ -24,6 +24,10 @@
 #include "../MastactvaBase/utils.h"
 
 
+/*
+ * simple IFileSource implementation
+ * (for test purpose)
+*/
 class MapFileSource : public drawingdata::IFileSource
 {
 public:
@@ -48,108 +52,126 @@ namespace drawing_objects
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class MultipleObjectsTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class DefaultTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class DataTestBase : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class DataTestPosition : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class DataTestObjectsList : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class DataTest3DObjectSwift : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class DataTest3DObjectCube : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class DataTestAlias : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class LuaScriptTestNewVariable : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class LuaScriptTestSetVariable : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class LuaScriptTestRuntime : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class LuaScriptArgTest0 : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class LuaScriptArgTest1 : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class ArgSetBaseTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class AlphaBlendingMultipleObjectsTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class WalkEffectTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 
     class WalkEffectDrawingBufferTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
     };
 }
 
