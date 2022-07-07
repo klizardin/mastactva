@@ -147,20 +147,20 @@ public:
     LuaAPI();
     ~LuaAPI();
 
-    bool load(const QString &script_) const;
+    bool load(const QString &script_) const;                // load script and initialize lua api class for this script
     bool call(
-            const QString &functionName_,
-            drawingdata::IPosition *position_,
-            std::map<QString, QVector<double>> &result_,
-            std::map<QString, QStringList> &resultStrs_
-            ) const;
-    bool callArtefact(drawingdata::IPosition *position_);
-    bool callArtefactAtRuntime(drawingdata::IPosition *position_) const;
-    void set(std::shared_ptr<drawingdata::IVariables> variables_);
-    void set(std::shared_ptr<drawingdata::ITextures> textures_);
-    void addTest(std::unique_ptr<LuaAPITest> &&test_);
-    void setTestObserver(std::shared_ptr<TestObserver> testObserver_);
-    void set(std::shared_ptr<IAddonModules> addons_);
+            const QString &functionName_,                   // function name to call
+            drawingdata::IPosition *position_,              // current position in the effect drawing data
+            std::map<QString, QVector<double>> &result_,    // result as vectors of double
+            std::map<QString, QStringList> &resultStrs_     // result as vectors of strings
+            ) const;                                        // make call to the script
+    bool callArtefact(drawingdata::IPosition *position_);                   // call lua artefact -- with modification of variables by result
+    bool callArtefactAtRuntime(drawingdata::IPosition *position_) const;    // call lua artefact in the runtime -- ignore result
+    void set(std::shared_ptr<drawingdata::IVariables> variables_);          // set up shred interface
+    void set(std::shared_ptr<drawingdata::ITextures> textures_);            // set up shared interface
+    void addTest(std::unique_ptr<LuaAPITest> &&test_);                      // add test to the test's set
+    void setTestObserver(std::shared_ptr<TestObserver> testObserver_);      // set up test observer interface
+    void set(std::shared_ptr<IAddonModules> addons_);                       // set up addons interface
 
 private:
     bool initAddonFunctions(const QStringList &names_);
@@ -217,15 +217,15 @@ private:
     void initFunctions() const;
 
 private:
-    lua_State *m_luaState = nullptr;
-    std::shared_ptr<drawingdata::IVariables> m_variables;
-    std::shared_ptr<drawingdata::ITextures> m_textures;
-    mutable drawingdata::IPosition *m_artefactPosition = nullptr;
-    static QHash<lua_State *, LuaAPI *> s_apis;
-    std::vector<std::unique_ptr<LuaAPITest>> m_tests;
-    std::shared_ptr<TestObserver> m_testObserver;
-    QStringList m_addonsNames;
-    std::shared_ptr<IAddonModules> m_addons;
+    lua_State *m_luaState = nullptr;                                // the current lua state
+    std::shared_ptr<drawingdata::IVariables> m_variables;           // interface to the IVariables
+    std::shared_ptr<drawingdata::ITextures> m_textures;             // interface to the ITextures
+    mutable drawingdata::IPosition *m_artefactPosition = nullptr;   // position in the effect drawing data
+    static QHash<lua_State *, LuaAPI *> s_apis;                     // static list of all APIs to serach implementation details by lua_State pointer
+    std::vector<std::unique_ptr<LuaAPITest>> m_tests;               // tests
+    std::shared_ptr<TestObserver> m_testObserver;                   // test's observer
+    QStringList m_addonsNames;                                      // addon names
+    std::shared_ptr<IAddonModules> m_addons;                        // addon interface
 
     template<FunctionImplEn impl_, int inputArgs_, int outputArgs_>
     friend int l_implementation(lua_State *luaState_);
