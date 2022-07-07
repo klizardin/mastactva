@@ -24,6 +24,10 @@
 #include "../MastactvaBase/utils.h"
 
 
+/*
+ * simple IFileSource implementation
+ * (for test purpose)
+*/
 class MapFileSource : public drawingdata::IFileSource
 {
 public:
