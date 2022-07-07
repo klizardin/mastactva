@@ -3398,6 +3398,11 @@ void BaseTest::initialize(drawing_data::QuizImageObjects &data_,
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> BaseTest::getDescription() const
+{
+    return {"BaseTest", ""};
+}
+
 void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
                                      int argsSetIndex_ /*= 0*/) const
 {
@@ -3408,6 +3413,11 @@ void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> MultipleObjectsTest::getDescription() const
+{
+    return {"MultipleObjectsTest", ""};
 }
 
 void DefaultTest::initialize(drawing_data::QuizImageObjects &data_,
@@ -3422,6 +3432,11 @@ void DefaultTest::initialize(drawing_data::QuizImageObjects &data_,
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> DefaultTest::getDescription() const
+{
+    return {"DefaultTest", ""};
+}
+
 void DataTestBase::initialize(drawing_data::QuizImageObjects &data_,
                               int argsSetIndex_ /*= 0*/) const
 {
@@ -3432,6 +3447,11 @@ void DataTestBase::initialize(drawing_data::QuizImageObjects &data_,
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> DataTestBase::getDescription() const
+{
+    return {"DataTestBase", ""};
 }
 
 void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_,
@@ -3446,6 +3466,11 @@ void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_,
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> DataTestPosition::getDescription() const
+{
+    return {"DataTestPosition", ""};
+}
+
 void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_,
                                      int argsSetIndex_ /*= 0*/) const
 {
@@ -3456,6 +3481,11 @@ void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_,
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> DataTestObjectsList::getDescription() const
+{
+    return {"DataTestObjectsList", ""};
 }
 
 void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_,
@@ -3474,6 +3504,11 @@ void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_,
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> DataTest3DObjectSwift::getDescription() const
+{
+    return {"DataTest3DObjectSwift", ""};
+}
+
 void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_,
                                       int argsSetIndex_ /*= 0*/) const
 {
@@ -3488,6 +3523,11 @@ void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_,
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> DataTest3DObjectCube::getDescription() const
+{
+    return {"DataTest3DObjectCube", ""};
 }
 
 void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_,
@@ -3506,6 +3546,11 @@ void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_,
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> DataTestAlias::getDescription() const
+{
+    return {"DataTestAlias", ""};
+}
+
 void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_,
                                           int argsSetIndex_ /*= 0*/) const
 {
@@ -3522,6 +3567,11 @@ void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_,
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> LuaScriptTestNewVariable::getDescription() const
+{
+    return {"LuaScriptTestNewVariable", ""};
+}
+
 void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_,
                                           int argsSetIndex_ /*= 0*/) const
 {
@@ -3536,6 +3586,11 @@ void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_,
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> LuaScriptTestSetVariable::getDescription() const
+{
+    return {"LuaScriptTestSetVariable", ""};
 }
 
 void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
@@ -3574,6 +3629,11 @@ void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> LuaScriptTestRuntime::getDescription() const
+{
+    return {"LuaScriptTestRuntime", ""};
+}
+
 void LuaScriptArgTest0::initialize(
         drawing_data::QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
@@ -3586,6 +3646,11 @@ void LuaScriptArgTest0::initialize(
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> LuaScriptArgTest0::getDescription() const
+{
+    return {"LuaScriptArgTest0", ""};
 }
 
 void LuaScriptArgTest1::initialize(
@@ -3602,6 +3667,11 @@ void LuaScriptArgTest1::initialize(
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> LuaScriptArgTest1::getDescription() const
+{
+    return {"LuaScriptArgTest1", ""};
+}
+
 void ArgSetBaseTest::initialize(
         drawing_data::QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
@@ -3616,6 +3686,11 @@ void ArgSetBaseTest::initialize(
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> ArgSetBaseTest::getDescription() const
+{
+    return {"ArgSetBaseTest", ""};
+}
+
 void AlphaBlendingMultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
                                      int argsSetIndex_ /*= 0*/) const
 {
@@ -3626,6 +3701,11 @@ void AlphaBlendingMultipleObjectsTest::initialize(drawing_data::QuizImageObjects
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> AlphaBlendingMultipleObjectsTest::getDescription() const
+{
+    return {"AlphaBlendingMultipleObjectsTest", ""};
 }
 
 void WalkEffectTest::initialize(
@@ -3643,6 +3723,11 @@ void WalkEffectTest::initialize(
     drawingDataEffect->initialize(data_);
 }
 
+std::pair<const char *, const char *> WalkEffectTest::getDescription() const
+{
+    return {"WalkEffectTest", ""};
+}
+
 void WalkEffectDrawingBufferTest::initialize(
         drawing_data::QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
@@ -3656,6 +3741,11 @@ void WalkEffectDrawingBufferTest::initialize(
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> WalkEffectDrawingBufferTest::getDescription() const
+{
+    return {"WalkEffectDrawingBufferTest", ""};
 }
 
 }
