@@ -7,6 +7,9 @@
 #include "../MastactvaBase/layout_enums.h"
 
 
+/*
+ * class with unique id to merge data items
+*/
 class MergeId : public QString
 {
 public:
@@ -15,6 +18,10 @@ public:
     void reset();
 };
 
+
+/*
+ * layout extensions for MergeId
+*/
 namespace layout
 {
     inline void setValue(const QJsonValue &var_, MergeId &dta_)
