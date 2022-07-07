@@ -3400,7 +3400,7 @@ void BaseTest::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> BaseTest::getDescription() const
 {
-    return {"BaseTest", ""};
+    return {"BaseTest", "base test"};
 }
 
 void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
@@ -3417,7 +3417,7 @@ void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> MultipleObjectsTest::getDescription() const
 {
-    return {"MultipleObjectsTest", ""};
+    return {"MultipleObjectsTest", "test drawing multiple objects"};
 }
 
 void DefaultTest::initialize(drawing_data::QuizImageObjects &data_,
@@ -3434,7 +3434,7 @@ void DefaultTest::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> DefaultTest::getDescription() const
 {
-    return {"DefaultTest", ""};
+    return {"DefaultTest", "default test"};
 }
 
 void DataTestBase::initialize(drawing_data::QuizImageObjects &data_,
@@ -3485,7 +3485,7 @@ void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> DataTestObjectsList::getDescription() const
 {
-    return {"DataTestObjectsList", ""};
+    return {"DataTestObjectsList", "using of the objects list to set up drawing objects"};
 }
 
 void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_,
@@ -3506,7 +3506,7 @@ void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> DataTest3DObjectSwift::getDescription() const
 {
-    return {"DataTest3DObjectSwift", ""};
+    return {"DataTest3DObjectSwift", "test of 3d object drawing"};
 }
 
 void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_,
@@ -3527,7 +3527,7 @@ void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> DataTest3DObjectCube::getDescription() const
 {
-    return {"DataTest3DObjectCube", ""};
+    return {"DataTest3DObjectCube", "test should draw a cube"};
 }
 
 void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_,
@@ -3569,7 +3569,7 @@ void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> LuaScriptTestNewVariable::getDescription() const
 {
-    return {"LuaScriptTestNewVariable", ""};
+    return {"LuaScriptTestNewVariable", "test lua script creation of variables"};
 }
 
 void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_,
@@ -3590,7 +3590,7 @@ void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> LuaScriptTestSetVariable::getDescription() const
 {
-    return {"LuaScriptTestSetVariable", ""};
+    return {"LuaScriptTestSetVariable", "test of lua script set variable"};
 }
 
 void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
@@ -3631,7 +3631,7 @@ void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> LuaScriptTestRuntime::getDescription() const
 {
-    return {"LuaScriptTestRuntime", ""};
+    return {"LuaScriptTestRuntime", "lua script runtimer test"};
 }
 
 void LuaScriptArgTest0::initialize(
@@ -3650,7 +3650,7 @@ void LuaScriptArgTest0::initialize(
 
 std::pair<const char *, const char *> LuaScriptArgTest0::getDescription() const
 {
-    return {"LuaScriptArgTest0", ""};
+    return {"LuaScriptArgTest0", "test lua script args - generate argument values by lua script"};
 }
 
 void LuaScriptArgTest1::initialize(
@@ -3669,7 +3669,7 @@ void LuaScriptArgTest1::initialize(
 
 std::pair<const char *, const char *> LuaScriptArgTest1::getDescription() const
 {
-    return {"LuaScriptArgTest1", ""};
+    return {"LuaScriptArgTest1", "test lua script args, using variables from the json data to set up values"};
 }
 
 void ArgSetBaseTest::initialize(
@@ -3688,7 +3688,7 @@ void ArgSetBaseTest::initialize(
 
 std::pair<const char *, const char *> ArgSetBaseTest::getDescription() const
 {
-    return {"ArgSetBaseTest", ""};
+    return {"ArgSetBaseTest", "test of using arg sets for the values of arguments"};
 }
 
 void AlphaBlendingMultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
@@ -3705,7 +3705,7 @@ void AlphaBlendingMultipleObjectsTest::initialize(drawing_data::QuizImageObjects
 
 std::pair<const char *, const char *> AlphaBlendingMultipleObjectsTest::getDescription() const
 {
-    return {"AlphaBlendingMultipleObjectsTest", ""};
+    return {"AlphaBlendingMultipleObjectsTest", "alpha blending of objects (using drawing states)"};
 }
 
 void WalkEffectTest::initialize(
@@ -3725,7 +3725,7 @@ void WalkEffectTest::initialize(
 
 std::pair<const char *, const char *> WalkEffectTest::getDescription() const
 {
-    return {"WalkEffectTest", ""};
+    return {"WalkEffectTest", "walk effect base version"};
 }
 
 void WalkEffectDrawingBufferTest::initialize(
@@ -3745,7 +3745,8 @@ void WalkEffectDrawingBufferTest::initialize(
 
 std::pair<const char *, const char *> WalkEffectDrawingBufferTest::getDescription() const
 {
-    return {"WalkEffectDrawingBufferTest", ""};
+    return {"WalkEffectDrawingBufferTest", "the walk effect test for using of rendering to the framebuffer "
+        "and than moving framebuffer to the textures and than using these textures"};
 }
 
 }
