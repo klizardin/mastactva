@@ -3451,7 +3451,7 @@ void DataTestBase::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> DataTestBase::getDescription() const
 {
-    return {"DataTestBase", ""};
+    return {"DataTestBase", "test using of json data"};
 }
 
 void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_,
@@ -3468,7 +3468,7 @@ void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> DataTestPosition::getDescription() const
 {
-    return {"DataTestPosition", ""};
+    return {"DataTestPosition", "using json data for variables"};
 }
 
 void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_,
@@ -3548,7 +3548,7 @@ void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_,
 
 std::pair<const char *, const char *> DataTestAlias::getDescription() const
 {
-    return {"DataTestAlias", ""};
+    return {"DataTestAlias", "using json data test alias"};
 }
 
 void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_,
