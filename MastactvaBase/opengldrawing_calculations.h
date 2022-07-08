@@ -15,6 +15,9 @@ namespace opengl_drawing
 {
     class Objects;
 
+/*
+ * simple walk effect matrix calculations
+*/
 class WalkEffectRectMatrixCalculation
         : public IEffectCalculation
 {
@@ -35,6 +38,9 @@ private:
 };
 
 
+/*
+ * simple walk effect clip rect calculations
+*/
 class WalkEffectClipRectCalculation
         : public IEffectCalculation
 {
@@ -59,6 +65,9 @@ private:
 };
 
 
+/*
+ * image geometry matrix calculations
+*/
 class ImagesGeometryMatrixCalculation
         : public IEffectCalculation
 {
