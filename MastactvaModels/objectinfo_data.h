@@ -25,6 +25,10 @@
 #include "../MastactvaBase/mergeid.h"
 
 
+/*
+ * structure of the object info
+ * (data holder)
+*/
 struct ObjectInfoData
 {
 public:
@@ -43,11 +47,11 @@ public:
 
 public:
     int m_id = -1;
-    QString m_name;
-    QString m_programmerName;
-    QString m_description;
-    QDateTime m_created;
-    MergeId m_mergeid;
+    QString m_name;             // object's name (for user)
+    QString m_programmerName;   // object's programmer name (for algorithms)
+    QString m_description;      // object's description (for user)
+    QDateTime m_created;        // date time of object's creation
+    MergeId m_mergeid;          // unique id to merge
 
     ObjectInfoData(const ObjectInfoData &) = delete;
     ObjectInfoData & operator = (const ObjectInfoData &) = delete;

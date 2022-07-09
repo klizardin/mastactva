@@ -25,6 +25,10 @@
 #include "../MastactvaModels/artefact_data.h"
 
 
+/*
+ * structure of object's artefact data
+ * (data holder)
+*/
 struct ObjectArtefactData
 {
 public:
@@ -48,12 +52,12 @@ private:
 
 public:
     int m_id = -1;
-    int m_objectInfoId = -1;
-    int m_artefactId = -1;
-    int m_stepIndex = -1;
-    MergeId m_mergeid;
+    int m_objectInfoId = -1;        // object info id reference
+    int m_artefactId = -1;          // artefact id
+    int m_stepIndex = -1;           // step index
+    MergeId m_mergeid;              // unique id to merge
 
-    std::shared_ptr<QVector<ArtefactData *>> m_artefactData;
+    std::shared_ptr<QVector<ArtefactData *>> m_artefactData;    // an artefact 1:1
 
     ObjectArtefactData(const ObjectArtefactData &) = delete;
     ObjectArtefactData & operator = (const ObjectArtefactData &) = delete;

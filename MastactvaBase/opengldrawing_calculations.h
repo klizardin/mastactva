@@ -7,10 +7,17 @@
 #include "../MastactvaBase/utils.h"
 
 
+/*
+ * open gl drawing calculation (runtime)
+ * and helper classes for calculations
+*/
 namespace opengl_drawing
 {
     class Objects;
 
+/*
+ * simple walk effect matrix calculations
+*/
 class WalkEffectRectMatrixCalculation
         : public IEffectCalculation
 {
@@ -31,6 +38,9 @@ private:
 };
 
 
+/*
+ * simple walk effect clip rect calculations
+*/
 class WalkEffectClipRectCalculation
         : public IEffectCalculation
 {
@@ -55,6 +65,9 @@ private:
 };
 
 
+/*
+ * image geometry matrix calculations
+*/
 class ImagesGeometryMatrixCalculation
         : public IEffectCalculation
 {
@@ -83,12 +96,21 @@ private:
 };
 
 
+/*
+ * base class for a factory of calculations
+*/
 class IEffectCalculationFactory
 {
 public:
+    /*
+     * return calculation if there is any
+    */
     virtual std::unique_ptr<IEffectCalculation> get(const QString &effectCalculationName_) const = 0;
 
 protected:
+    /*
+     * extract calculation function name and its arguments
+    */
     static QStringList splitOnNameAndArgs(const QString &effectCalculationName_)
     {
         QStringList result;
@@ -96,16 +118,21 @@ protected:
         const int fb = effectCalculationName_.indexOf(g_startArguments);
         if(fb > 0)
         {
+            // name has arguments
             result.push_back(effectCalculationName_.mid(0, fb));
             result.push_back(effectCalculationName_.mid(fb+1));
         }
         else
         {
+            // name is without arguments
             result.push_back(effectCalculationName_);
         }
         return result;
     }
 
+    /*
+     * impelmentation of the get functions of this interface
+    */
     template<typename EffectCalculationClass_>
     std::unique_ptr<IEffectCalculation> getImpl(const QString &effectCalculationName_) const
     {
@@ -113,15 +140,21 @@ protected:
         const QStringList args = splitOnNameAndArgs(effectCalculationName_);
         if(args.size() < 1)
         {
+            // no name
             return nullptr;
         }
+        // base name check
         if(effectCalcTempl.getFilename() != args[0])
         {
+            // it is not the current calculation to use
             return nullptr;
         }
+        // create object of calculation
+        // not it can have more detailed name
         std::unique_ptr<EffectCalculationClass_> result = std::make_unique<EffectCalculationClass_>();
         if(args.size() > 1)
         {
+            // if we have arguments process them
             QString effectCalculationArgs = args[1].trimmed();
             if(effectCalculationArgs.length() > 0
                     && effectCalculationArgs.at(effectCalculationArgs.length() - 1) == g_endArguments)
@@ -130,6 +163,7 @@ protected:
             }
             if(!result->init(effectCalculationArgs))
             {
+                // if it is failed to init exit
                 return nullptr;
             }
         }
@@ -138,6 +172,9 @@ protected:
 };
 
 
+/*
+ * factory template of base interfaces from the arguments list
+*/
 template<class ... EffectCalculationClasses_>
 class EffectCalculationFactoryTmpl;
 
@@ -174,6 +211,9 @@ public:
 };
 
 
+/*
+ * factory impl
+*/
 using EffectCalculationFactory = EffectCalculationFactoryTmpl<
     WalkEffectRectMatrixCalculation,
     WalkEffectClipRectCalculation,
@@ -181,6 +221,9 @@ using EffectCalculationFactory = EffectCalculationFactoryTmpl<
     >;
 
 
+/*
+ * helper function to get factory impl
+*/
 inline
 const opengl_drawing::EffectCalculationFactory& getEffectCalculationFactory()
 {
