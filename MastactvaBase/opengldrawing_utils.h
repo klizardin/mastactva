@@ -30,27 +30,42 @@
 #include <QSet>
 
 
+/*
+ * namespace for drawing utils under opengl
+*/
 namespace opengl_drawing
 {
 
+/*
+ * IVariables interface for the drawing data objects under opengl
+*/
 class IVariables
 {
 public:
     virtual ~IVariables() = default;
-    virtual bool get(const QString &name_, QVector<double> &data_) const = 0;
-    virtual void set(const QString &name_, const QVector<double> &data_) = 0;
-    virtual void set(const QString &name_, QVector<double> &&data_) = 0;
-    virtual bool get(const QString &name_, QStringList &data_) const = 0;
-    virtual void set(const QString &name_, const QStringList &data_) = 0;
-    virtual void set(const QString &name_, QStringList &&data_) = 0;
-    virtual bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const = 0;
-    virtual const IVariables * getRoot() const;
-    virtual IVariables * getRoot();
+    virtual bool get(const QString &name_, QVector<double> &data_) const = 0;   // return the current value of the variable as the vector of double
+    virtual void set(const QString &name_, const QVector<double> &data_) = 0;   // set the current variable value as the vector of double
+    virtual void set(const QString &name_, QVector<double> &&data_) = 0;        // set the current variable value as the vector of double (move semantic)
+    virtual bool get(const QString &name_, QStringList &data_) const = 0;       // get the current variable value as the vector of strings
+    virtual void set(const QString &name_, const QStringList &data_) = 0;       // set the current variable value as the vector of strings
+    virtual void set(const QString &name_, QStringList &&data_) = 0;            // set the current variable value as the vector of strings (move sematics)
+    virtual bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const = 0;    // is the any of variables updated
+    virtual const IVariables * getRoot() const;                                 // return const root of the variables tree
+    virtual IVariables * getRoot();                                             // return root of the variables tree
+                                                                                // variables can be for all objects - root variable
+                                                                                // and for a concrete object - leaf variables
 };
 
+/*
+ * helper interface to deal with root variables correctly
+*/
 class VariablesExtended : public IVariables
 {
 public:
+    /*
+     * first return base thah extend pointer
+     * extend is the root pointer
+    */
     VariablesExtended(IVariables *base_, IVariables *extend_);
 
     bool get(const QString &name_, QVector<double> &data_) const override;
@@ -69,19 +84,24 @@ private:
 };
 
 
-// stateless (except this members)
+/*
+ * helper class for the base of calculations
+ * should be stateless (except this members TODO: why)
+ * as the calculation class should not to change itself after creation
+*/
 class IEffectCalculation
 {
 public:
     virtual ~IEffectCalculation() = default;
     virtual void calculate(IVariables *variables_) const = 0;
 
-    const QString &getFilename() const;
-    bool doExtend(const IEffectCalculation *calculation_) const;
-    const QSet<QString> &getRequiredVariables() const;
-    bool doNeedUpdate() const;
-    void setUpdated();
-    void clearUpdated();
+    const QString &getFilename() const;                             // filename to detect calculation
+    bool doExtend(const IEffectCalculation *calculation_) const;    // if this calculation do extend some another
+    const QSet<QString> &getRequiredVariables() const;              // list of required variables if any was changed
+                                                                    // then process we need to process calculate()
+    bool doNeedUpdate() const;                                      // if calculation should be called anywhere
+    void setUpdated();                                              // set updated
+    void clearUpdated();                                            // clear updated (after this calculation will be called anywhere)
 
 protected:
     void setFilename(const QString &filename_);
@@ -93,6 +113,9 @@ private:
     bool m_needUpdate = true;
 };
 
+/*
+ * function to create default geometry for image swap effects
+*/
 /* float width_, float height_, */
 void makeGeometry(
         int geomertyPointsWidth_, int geometryPointsHeight_,
@@ -104,11 +127,17 @@ void makeGeometry(
         std::vector<GLfloat> &textureData_
         );
 
+/*
+ * is not needed now
+*/
 QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const QSize &imageSize_,
         const QSize &rectSize_,
         bool inverse_ = false
         );
+/*
+ * is not needed now
+*/
 QMatrix4x4 calculateTransfromMatrixBy4Points(
         const QVector<QVector2D> &srcPts_,
         const QVector<QVector2D> &destPts_
