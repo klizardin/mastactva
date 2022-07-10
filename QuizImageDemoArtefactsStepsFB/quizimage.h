@@ -26,6 +26,9 @@
 #include "object_tests.h"
 
 
+/*
+ * list of tests
+*/
 using Tests = std::tuple<
     drawing_data::TestMinimalDrawQTLogoQuizImageObject,
     drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject,
@@ -56,6 +59,9 @@ using Tests = std::tuple<
     >;
 
 
+/*
+ * control that wraps the opengl effect drawing
+*/
 class QuizImage : public QQuickFramebufferObject
 {
     Q_OBJECT
