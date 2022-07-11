@@ -606,6 +606,10 @@ namespace drawing_data
     };
 
 
+    /*
+     * attribute variable implementation
+     * add semantic to work with atttribute variables for open gl
+    */
     template<class ItemType_>
     class Attribute : public IAttribute, public ITypeInfoImpl<ItemType_>
     {
@@ -854,6 +858,7 @@ namespace drawing_data
 
     /*
      * implementation of the uniform variables for the drawing data
+     * add semantic to work with uniform variables for open gl
     */
     template<typename ItemType_>
     struct Uniform : public IUniform, public ITypeInfoImpl<ItemType_>
