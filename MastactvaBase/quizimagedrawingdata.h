@@ -838,17 +838,23 @@ namespace drawing_data
     };
 
 
+    /*
+     * interface for the uniform drawing data variables
+    */
     class IUniform : public virtual ITypeInfo
     {
     public:
         virtual ~IUniform() = default;
-        virtual const QString &name() const = 0;
-        virtual void set(QOpenGLShaderProgram *program, int location_) const = 0;
-        virtual void getVector(std::vector<GLfloat> &values_) const = 0;
+        virtual const QString &name() const = 0;        // name of the variable
+        virtual void set(QOpenGLShaderProgram *program, int location_) const = 0;   // (break SOLID) set variable to the program at specific location
+        virtual void getVector(std::vector<GLfloat> &values_) const = 0;            // return verctor of this data (do copy)
         // break SOLID - not a simple data
     };
 
 
+    /*
+     * implementation of the uniform variables for the drawing data
+    */
     template<typename ItemType_>
     struct Uniform : public IUniform, public ITypeInfoImpl<ItemType_>
     {
@@ -873,9 +879,13 @@ namespace drawing_data
                 return;
             }
 
+            // use reloadings of the QT
             program->setUniformValue(location_, *m_data);
         }
 
+        /*
+         * for the same type
+        */
         void set(const ItemType_ &value_)
         {
             createData();
@@ -883,10 +893,14 @@ namespace drawing_data
             *m_data = value_;
         }
 
+        /*
+         * for the different type
+        */
         template<typename ItemType2_>
         void set(const ItemType2_ &value_)
         {
             return setImpl(value_,
+                           // is simply convertible so that we can use static_cast
                             typename std::integral_constant<
                                 bool,
                                 std::is_convertible<
@@ -896,12 +910,18 @@ namespace drawing_data
                                 >::type());
         }
 
+        /*
+         * for different type as a vector of values
+        */
         template<typename ItemType2_>
         void set(const std::vector<ItemType2_> &value_)
         {
             return setImpl(value_, std::true_type());
         }
 
+        /*
+         * for the same type
+        */
         bool get(ItemType_ &value_) const
         {
             if(!m_data.operator bool())
@@ -913,10 +933,14 @@ namespace drawing_data
             return true;
         }
 
+        /*
+         * for the different type
+        */
         template<typename ItemType2_>
         bool get(ItemType2_ &value_) const
         {
             return getImpl(value_,
+                            // can we use simple static_cast
                             typename std::integral_constant<
                                 bool,
                                 std::is_convertible<
@@ -926,6 +950,9 @@ namespace drawing_data
                                 >::type());
         }
 
+        /*
+         * for the different type as a vector of some types
+        */
         template<typename ItemType2_>
         bool get(std::vector<ItemType2_> &value_) const
         {
@@ -938,6 +965,9 @@ namespace drawing_data
         }
 
     private:
+        /*
+         * helper function
+        */
         void createData()
         {
             if(m_data.operator bool())
@@ -945,6 +975,7 @@ namespace drawing_data
                 return;
             }
 
+            // if the data was not initialized from the effect data
             m_data = std::make_shared<ItemType_>();
         }
 
@@ -1000,8 +1031,9 @@ namespace drawing_data
         }
 
     private:
-        QString m_name;
-        std::shared_ptr<ItemType_> m_data;
+        QString m_name;                     // variable name
+        std::shared_ptr<ItemType_> m_data;  // shared data
+                                            // so that we can work with effect datas
     };
 
 
