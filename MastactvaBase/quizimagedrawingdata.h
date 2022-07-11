@@ -1044,6 +1044,9 @@ namespace drawing_data
 
     namespace detail
     {
+        /*
+         * helper template to dispose specific template by the type index
+        */
         template<int index_>
         class ItemTypeBase : public ItemTypeBase<index_ - 1>
         {
