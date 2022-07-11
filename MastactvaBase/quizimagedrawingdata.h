@@ -538,9 +538,9 @@ namespace drawing_data
     DRAWING_DATA_ITEM_TYPE_TRAITS(GLfloat,       1,  void)
     DRAWING_DATA_ITEM_TYPE_TRAITS(GLint,         1,  void)
     DRAWING_DATA_ITEM_TYPE_TRAITS(GLuint,        1,  void)
-    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector2D,     2,  GLfloat)
-    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector3D,     3,  GLfloat)
-    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector4D,     4,  GLfloat)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector2D,     2,  GLfloat)       // has underlaying type
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector3D,     3,  GLfloat)       // has underlaying type
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector4D,     4,  GLfloat)       // has underlaying type
     DRAWING_DATA_ITEM_TYPE_TRAITS(QColor,        3,  void)
     DRAWING_DATA_ITEM_TYPE_TRAITS(QPoint,        2,  void)
     DRAWING_DATA_ITEM_TYPE_TRAITS(QPointF,       2,  void)
