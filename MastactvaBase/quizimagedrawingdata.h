@@ -42,8 +42,8 @@ namespace drawing_data
 {
     enum class ItemTypesEn
     {
-        none,
-        fromItem,
+        none,                   // null item
+        fromItem,               // start enum item
         GLfloat,
         GLint,
         GLuint,
@@ -64,17 +64,29 @@ namespace drawing_data
         QMatrix4x2,
         QMatrix4x3,
         QMatrix4x4,
-        toItem
+        toItem                  // end enum item
     };
 
     namespace details
     {
 
+    /*
+     * convert to item with type from the vector of some type
+     * TODO: maybe optimize there already are such functions with little bit differenet signature
+    */
     template<typename ResultType_, typename ItemType_> inline
     ResultType_ fromVector(const std::vector<ItemType_> &);
+
+    /*
+     * convert from the item type to the vector of some type
+     * TODO: maybe optimize
+    */
     template<typename ResultType_, typename ItemType_> inline
     std::vector<ResultType_> toVector(const ItemType_ &);
 
+    /*
+     * specific implementations...
+    */
     template<> inline
     GLfloat fromVector<GLfloat, GLfloat>(const std::vector<GLfloat> &data_)
     {
@@ -464,14 +476,22 @@ namespace drawing_data
 
     }
 
+
+    /*
+     * helper class with constatnts
+    */
     class ItemTypeConvert
     {
     public:
-        constexpr static int minIndex{ to_underlying(ItemTypesEn::fromItem) + 1 };
-        constexpr static int maxIndex{ to_underlying(ItemTypesEn::toItem) - 1 };
+        constexpr static int minIndex{ to_underlying(ItemTypesEn::fromItem) + 1 };      // to eneumarate types
+        constexpr static int maxIndex{ to_underlying(ItemTypesEn::toItem) - 1 };        // to eneumarate types
+                                                                                        // types should be continues
     };
 
 
+    /*
+     * item type traits
+    */
     template<typename ItemType_>
     class ItemTypeTraits
     {
@@ -482,6 +502,9 @@ namespace drawing_data
     };
 
 
+    /*
+     * item types traits
+    */
     template<std::underlying_type_t<ItemTypesEn> TypeIndex_>
     class ItemTypeIndexTraits
     {
@@ -490,6 +513,9 @@ namespace drawing_data
     };
 
 
+    /*
+     * macro to specific concrete item type traits
+    */
 #define DRAWING_DATA_ITEM_TYPE_TRAITS(ItemType_, tupleSize_, underlayingType_)      \
     template<>                                                                      \
     class ItemTypeTraits<ItemType_>                                                 \
@@ -532,6 +558,10 @@ namespace drawing_data
 
 #undef DRAWING_DATA_ITEM_TYPE_TRAITS
 
+
+    /*
+     * item type traits as virtual functions
+    */
     class ITypeInfo
     {
     public:
@@ -547,6 +577,8 @@ namespace drawing_data
     public:
         int typeIndex() const override
         {
+            // ItemTypeTraits<ItemType_>::typeIndex should be at least int
+            // for compatibility with indexing in other places
             static_assert(
                 sizeof(decltype(ItemTypeTraits<ItemType_>::typeIndex)) <= sizeof(int),
                 "underlying type greater then int"
@@ -561,13 +593,16 @@ namespace drawing_data
     };
 
 
+    /*
+     * IAttribute interface
+    */
     class IAttribute : public virtual ITypeInfo
     {
     public:
         virtual ~IAttribute() = default;
-        virtual const QString &name() const = 0;
-        virtual const GLfloat *constData() const = 0;
-        virtual int size() const = 0;
+        virtual const QString &name() const = 0;        // variable name
+        virtual const GLfloat *constData() const = 0;   // variable const data
+        virtual int size() const = 0;                   // variable data size
     };
 
 
@@ -601,6 +636,9 @@ namespace drawing_data
             return m_data.operator bool() ? m_data->size() : 0;
         }
 
+        // for the vector of the same type
+        // we should specify tuple size == 0
+        // it is tuple size of the array argument
         void set(const std::vector<ItemType_> &value_, int tupleSize_)
         {
             createData();
@@ -615,6 +653,9 @@ namespace drawing_data
             *m_data = value_;
         }
 
+        // for the vector of the same type
+        // we should specify tuple size == 0
+        // it is tuple size of the array argument
         bool get(std::vector<ItemType_> &value_, int tupleSize_) const
         {
             const bool cond = 0 == tupleSize_;
@@ -628,14 +669,17 @@ namespace drawing_data
             return true;
         }
 
+        // for the vector of the different type
         template<typename ItemType2_>
         void set(const std::vector<ItemType2_> &value_, int tupleSize_)
         {
             setImpl(value_, tupleSize_,
+                    // is simply convertible (can we use simple static_cast between types?)
                     typename std::integral_constant<
                         bool
                         ,std::is_convertible<ItemType2_, ItemType_>::value
                         >::type(),
+                    // is underlaying type is the same type
                     typename std::integral_constant<
                         bool
                         , std::is_same<typename ItemTypeTraits<ItemType_>::underlayingType, ItemType2_>::value
@@ -647,10 +691,12 @@ namespace drawing_data
         bool get(std::vector<ItemType2_> &value_, int tupleSize_) const
         {
             return getImpl(value_, tupleSize_,
+                    // is simply convertible (can we use simple static_cast between types?)
                     typename std::integral_constant<
                         bool
                         ,std::is_convertible<ItemType_, ItemType2_>::value
                         >::type(),
+                    // is underlaying type is the same type
                     typename std::integral_constant<
                         bool
                         , std::is_same<typename ItemTypeTraits<ItemType2_>::underlayingType, ItemType_>::value
@@ -718,11 +764,13 @@ namespace drawing_data
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &, int, std::false_type, std::false_type)
         {
+            // imposible combination
         }
 
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &, int, std::true_type, std::true_type)
         {
+            // imposible combination
         }
 
         template<typename ItemType2_>
@@ -771,12 +819,14 @@ namespace drawing_data
         template<typename ItemType2_>
         bool getImpl(std::vector<ItemType2_> &, int, std::false_type, std::false_type) const
         {
+            // imposible combination
             return false;
         }
 
         template<typename ItemType2_>
         bool getImpl(std::vector<ItemType2_> &, int, std::true_type, std::true_type) const
         {
+            // imposible combination
             return false;
         }
 
