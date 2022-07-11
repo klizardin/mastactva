@@ -831,8 +831,10 @@ namespace drawing_data
         }
 
     private:
-        QString m_name;
-        std::shared_ptr<std::vector<ItemType_>> m_data;
+        QString m_name;                                 // name of the attribute
+        std::shared_ptr<std::vector<ItemType_>> m_data; // shared data with a some variable from IVariables of the effect data
+                                                        // so that runtime scripts can work also with effect data
+                                                        // and we do not need extra copying of maybe large data
     };
 
 
