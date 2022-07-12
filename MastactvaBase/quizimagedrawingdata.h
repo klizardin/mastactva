@@ -1172,6 +1172,9 @@ namespace drawing_data
     } // namespace detail
 
 
+    /*
+     * the type definition for dispose of the specific template type for functions get()/set()
+    */
     using ItemTypeBaseSet = detail::ItemTypeBase<ItemTypeConvert::maxIndex>;
 
 
