@@ -483,8 +483,8 @@ namespace drawing_data
     class ItemTypeConvert
     {
     public:
-        constexpr static int minIndex{ to_underlying(ItemTypesEn::fromItem) + 1 };      // to eneumarate types
-        constexpr static int maxIndex{ to_underlying(ItemTypesEn::toItem) - 1 };        // to eneumarate types
+        constexpr static int minIndex{ to_underlying(ItemTypesEn::fromItem) + 1 };      // the first enum item index, to eneumarate types
+        constexpr static int maxIndex{ to_underlying(ItemTypesEn::toItem) - 1 };        // the last enum item index, to eneumarate types
                                                                                         // types should be continues
     };
 
