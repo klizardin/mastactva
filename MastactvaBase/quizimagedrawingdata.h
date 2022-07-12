@@ -1361,18 +1361,25 @@ namespace drawing_data
     };
 
 
+    /*
+     * quiz image drawing objects
+     * bunch of simple drawing steps
+    */
     struct QuizImageObjects : public ::opengl_drawing::IVariables, public detail::Calculations
     {
     public:
+        // global variables: global clear color
         QColor clearColor{255, 255, 255};
-        std::vector<std::shared_ptr<QuizImageObject>> objects;
-        std::vector<QString> globalStates;
-        std::vector<QString> globalCalculations;
+        std::vector<std::shared_ptr<QuizImageObject>> objects;  // drawing object's list
+        std::vector<QString> globalStates;  // global states
+        std::vector<QString> globalCalculations;    // global calculations
 
     public:
         QuizImageObjects();
         void postInitialization();
 
+        // root ::opengl_drawing::IVariables
+        // {
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;
         void set(const QString &name_, QVector<double> &&data_) override;
@@ -1380,7 +1387,11 @@ namespace drawing_data
         void set(const QString &name_, const QStringList &data_) override;
         void set(const QString &name_, QStringList &&data_) override;
         bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
+        // }
 
+        /*
+         * set attribute variable value from root
+        */
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -1397,8 +1408,14 @@ namespace drawing_data
             }
         }
 
+        /*
+         * get attribute variable tuple size value from root
+        */
         int getAttributeTupleSize(const QString &name_) const;
 
+        /*
+         * set uniform variable value from root
+        */
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
@@ -1415,6 +1432,9 @@ namespace drawing_data
             }
         }
 
+        /*
+         * get uniform variable value from root
+        */
         template<typename ItemType_>
         bool getUniform(const QString &name_, ItemType_ &value_) const
         {
@@ -1436,11 +1456,34 @@ namespace drawing_data
             return res;
         }
 
+        /*
+         * set texture to the file name from root
+        */
         void setTexture(const QString &name_, const QString &newFilename_);
+
+        /*
+         * run all calculations for this drawing step
+        */
         void calculate(opengl_drawing::IVariables *variables_);
+
+        /*
+         * return list of all variables from root
+        */
         QStringList getArgumentNames() const;
+
+        /*
+         * return value for the attribute or for the uniform variable as an array of floats from root
+        */
         bool getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
+
+        /*
+         * return list of pseudo variables from root
+        */
         QStringList getPseudoArgumentsNames() const;
+
+        /*
+         * return value for pseudo variable as an array of floats from root
+        */
         bool getPseudoArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
 
     private:
