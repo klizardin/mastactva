@@ -1178,40 +1178,50 @@ namespace drawing_data
     using ItemTypeBaseSet = detail::ItemTypeBase<ItemTypeConvert::maxIndex>;
 
 
+    /*
+     * the structure for the texture datas
+     * (data holder)
+    */
     struct Texture
     {
-        QString name;
-        QString filename;
+        QString name;       // texture name
+        QString filename;   // file name associated with the texture name, maybe empty - no texture file for this texture
     };
 
 
     namespace detail
     {
+        /*
+         * calculation wraper for a drawing opengl object
+        */
         class Calculations
         {
         public:
-            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
+            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;  // calculations list
 
         public:
-            Calculations(::opengl_drawing::IVariables *ivariables_);
-            bool calculate(opengl_drawing::IVariables *variables_);
-            void preCalculation();
-            void postCalculation();
-            void init(const std::vector<QString> &effectCalculationNames_);
-            bool find(const opengl_drawing::IEffectCalculation *calculation_) const;
-            bool hasCalculations() const;
+            Calculations(::opengl_drawing::IVariables *ivariables_);    // set up variables for this drawing object
+            bool calculate(opengl_drawing::IVariables *variables_);     // do calculations, pass root variables
+            void preCalculation();      // pre
+            void postCalculation();     // post steps
+            void init(const std::vector<QString> &effectCalculationNames_); // init calculations by the list of calculations state strings
+                                                                            // state string is a function name and its arguments
+            bool find(const opengl_drawing::IEffectCalculation *calculation_) const; // return true if calculation already exist
+                                                                            // or calculation exists that expands the argument's calculation
+            bool hasCalculations() const;                               // do we need to do any calculations
 
         protected:
-            void setVariable(const QString &name_);
-            bool isUpdated(const QSet<QString> &vars_, ::opengl_drawing::IVariables *base_) const;
+            void setVariable(const QString &name_);                     // variable with specific name was updated
+            bool isUpdated(const QSet<QString> &vars_, ::opengl_drawing::IVariables *base_) const;  // is any of variables from argument's list
+                                                                        // updated
 
         private:
-            void clearUpdated();
+            void clearUpdated();                                        // clear updated variables list
 
         private:
-            QSet<QString> m_updated;
-            ::opengl_drawing::IVariables *m_thisIVariables = nullptr;
-            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
+            QSet<QString> m_updated;                                    // list of updated variable's names
+            ::opengl_drawing::IVariables *m_thisIVariables = nullptr;   // this object's variables
+            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;   // temp data
         };
     }
 
