@@ -1225,23 +1225,33 @@ namespace drawing_data
         };
     }
 
-    struct QuizImageObject : public ::opengl_drawing::IVariables, public detail::Calculations
+
+    /*
+     * quiz image drawing object - simple drawing step
+     * can draw with one vertex and fragment shader
+    */
+    struct QuizImageObject : public ::opengl_drawing::IVariables, public detail::Calculations   // calculations for one drawing step
     {
     public:
-        QByteArray vertexShader;
-        QByteArray fragmentShader;
+        QByteArray vertexShader;        // vertex shader
+        QByteArray fragmentShader;      // fragment shader
 
-        std::vector<std::unique_ptr<IAttribute>> attributes;
-        std::vector<std::unique_ptr<IUniform>> uniforms;
-        std::vector<Texture> textures;
-        std::vector<QString> objectStates;
+        std::vector<std::unique_ptr<IAttribute>> attributes;    // attribute variables that is required for the shaders of calculations
+        std::vector<std::unique_ptr<IUniform>> uniforms;        // uniform variables that is required for the shaders of calculations
+        std::vector<Texture> textures;                          // textures that is required for the shaders of calculations
+        std::vector<QString> objectStates;                      // object's states that is required for the shaders of calculations
+                // object state is a open gl primitives bunch that do simple drawing tuning
         std::vector<QString> objectCalculations;
+                // list of object's calculations
         std::map<QString, QStringList> strVariables;
+                // string variables (required only just by calculations)
 
     public:
         QuizImageObject();
         void postInitialization();
 
+        // ::opengl_drawing::IVariables
+        // {
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;
         void set(const QString &name_, QVector<double> &&data_) override;
@@ -1249,10 +1259,20 @@ namespace drawing_data
         void set(const QString &name_, const QStringList &data_) override;
         void set(const QString &name_, QStringList &&data_) override;
         bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
+        // }
 
+        /*
+         * is this drawing object should be drawn for the time t_
+        */
         bool allowedForTime(double t_) const;
+        /*
+         * update time from told_ to tnew_ for the next drawing step
+        */
         bool changeAllowedForTime(double told_, double tnew_) const;
 
+        /*
+         * set attribute variable value
+        */
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -1272,8 +1292,14 @@ namespace drawing_data
             }
         }
 
+        /*
+         * get attribute variable tuple size value
+        */
         int getAttributeTupleSize(const QString &name_) const;
 
+        /*
+         * set uniform variable value
+        */
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
@@ -1294,6 +1320,9 @@ namespace drawing_data
             }
         }
 
+        /*
+         * get uniform variable value
+        */
         template<typename ItemType_>
         bool getUniform(const QString &name_, ItemType_ &value_) const
         {
@@ -1312,8 +1341,19 @@ namespace drawing_data
             return false;
         }
 
+        /*
+         * set texture to the file name
+        */
         void setTexture(const QString &name_, const QString &newFilename_);
+
+        /*
+         * return list of all variables
+        */
         QStringList getArgumentNames() const;
+
+        /*
+         * return value for the attribute or for the uniform variable as an array of floats
+        */
         bool getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
 
     private:
