@@ -42,8 +42,8 @@ namespace drawing_data
 {
     enum class ItemTypesEn
     {
-        none,                   // null item
-        fromItem,               // start enum item
+        none,                   // null item (special uninitialized value)
+        fromItem,               // start enum item (to enumarate enum items)
         GLfloat,
         GLint,
         GLuint,
@@ -64,7 +64,7 @@ namespace drawing_data
         QMatrix4x2,
         QMatrix4x3,
         QMatrix4x4,
-        toItem                  // end enum item
+        toItem                  // end enum item (to enumarate enum items)
     };
 
     namespace details
