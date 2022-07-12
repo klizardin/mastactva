@@ -1045,16 +1045,21 @@ namespace drawing_data
     namespace detail
     {
         /*
-         * helper template to dispose specific template by the type index
+         * the helper template to dispose a specific template by the type index int value
         */
         template<int index_>
         class ItemTypeBase : public ItemTypeBase<index_ - 1>
         {
         public:
-            using AttributeType = Attribute<typename ItemTypeIndexTraits<index_>::type>;
-            using UniformType = Uniform<typename ItemTypeIndexTraits<index_>::type>;
-            using base = ItemTypeBase<index_ - 1>;
+            using AttributeType = Attribute<typename ItemTypeIndexTraits<index_>::type>;    // the type to dispose for the current index int value
+            using UniformType = Uniform<typename ItemTypeIndexTraits<index_>::type>;        // the type to dispose for the current index int value
+            using base = ItemTypeBase<index_ - 1>;                                          // the base type
 
+            /*
+             * interface_ -- interface to dispose to the source template
+             * itemIndex_ -- item type index int value
+             * value_, tupleSize_ -- arguments for a set function of the disposed template
+            */
             template<typename ItemType_>
             static void set(IAttribute *interface_, int itemIndex_, const std::vector<ItemType_> &value_, int tupleSize_)
             {
@@ -1072,6 +1077,11 @@ namespace drawing_data
                 attr->set(value_, tupleSize_);
             }
 
+            /*
+             * interface_ -- interface to dispose to the source template
+             * itemIndex_ -- item type index int value
+             * value_, tupleSize_ -- arguments for a get function of the disposed template
+            */
             template<typename ItemType_>
             static bool get(const IAttribute *interface_, int itemIndex_, std::vector<ItemType_> &value_, int tupleSize_)
             {
@@ -1088,6 +1098,11 @@ namespace drawing_data
                 return attr->get(value_, tupleSize_);
             }
 
+            /*
+             * interface_ -- interface to dispose to the source template
+             * itemIndex_ -- item type index int value
+             * value_ -- argument for a set function of the disposed template
+            */
             template<typename ItemType_>
             static void set(IUniform *interface_, int itemIndex_, const ItemType_ &value_)
             {
@@ -1105,6 +1120,11 @@ namespace drawing_data
                 uniform->set(value_);
             }
 
+            /*
+             * interface_ -- interface to dispose to the source template
+             * itemIndex_ -- item type index int value
+             * value_ -- argument for a get function of the disposed template
+            */
             template<typename ItemType_>
             static bool get(const IUniform *interface_, int itemIndex_, ItemType_ &value_)
             {
