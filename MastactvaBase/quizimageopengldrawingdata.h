@@ -30,21 +30,74 @@
 #include "../MastactvaBase/drawingdata_utils.h"
 
 
+/*
+ * open gl drawing classes
+*/
 namespace opengl_drawing
 {
+    /*
+     * open gl drawing texture
+    */
     class Texture
     {
     public:
+        /*
+         * set file name of the texture
+         * setTexture()
+        */
         bool setFilename(const QString &fileName_, const QColor &backgroundColor_);
+
+        /*
+         * setTexture() from the open gl frame buffer object
+        */
         bool setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_, const QColor &backgroundColor_);
+
+        /*
+         * set up texture location
+        */
         void setLocation(int location_);
+
+        /*
+         * set up index
+        */
         void setIndex(int index_);
+
+        /*
+         * do setUniform() for the texture
+        */
         void setUniform(QOpenGLShaderProgram *program_) const;
+
+        /*
+         * do bind() for the texture object
+        */
         void bind(QOpenGLFunctions *f_) const;
+
+        /*
+         * return size of the texture
+        */
         bool getSize(QSize &size_) const;
+
+        /*
+         * (for drawing states)
+         * set mode to wrap clamp texture to border
+        */
         void setWrapClampToBorder();
+
+        /*
+         * (for drawing states)
+         * set mode to wrap clamp texture to edge
+        */
         void setWrapClampToEdge();
+
+        /*
+         * (for drawing states)
+         * set border color
+        */
         void setBorderColor(const QColor &backgroundColor_);
+
+        /*
+         * is location valid (is location initialized, if we have correct texture)
+        */
         bool isValidLocation() const;
 
     private:
