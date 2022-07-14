@@ -177,29 +177,100 @@ namespace opengl_drawing
         std::vector<std::unique_ptr<State>> m_states;
     };
 
+
+    /*
+     * open gl drawing object class
+    */
     class Object
     {
     public:
+        /*
+         * release this object and it's open gl datas
+        */
         void free();
+
+        /*
+         * init this object with quiz image opern gl drawing object
+         * TODO: move color to the some argument's set
+        */
         void init(
                 const std::shared_ptr<drawing_data::QuizImageObject> &imageData_,
                 const QColor &backgroundColor_
                 );
-        void bind();
-        void setUniforms();
-        void enableAttributes();
-        void disableAttributes();
-        void setAttributeArray();
-        void bindTextures(QOpenGLFunctions *f_);
-        void drawTriangles(QOpenGLFunctions *f_);
-        void release();
 
+        // pipeline operations
+        // {
+        /*
+         * do open gl bind for arguments and textures and so on in the open gl pipeline
+        */
+        void bind();
+
+        /*
+         * do set uniform for open gl arguments in the open gl pipeline
+        */
+        void setUniforms();
+
+        /*
+         * do enable attributes for open gl arguments in the open gl pipeline
+        */
+        void enableAttributes();
+
+        /*
+         * do disable attributes for open gl arguments in the open gl pipeline
+        */
+        void disableAttributes();
+
+        /*
+         * do set attribute's arrays for open gl arguments in the open gl pipeline
+        */
+        void setAttributeArray();
+
+        /*
+         * do bind textures in the open gl pipeline
+        */
+        void bindTextures(QOpenGLFunctions *f_);
+
+        /*
+         * do draw triangles in the open gl pipeline
+        */
+        void drawTriangles(QOpenGLFunctions *f_);
+
+        /*
+         * do draw release in the open gl pipeline
+        */
+        void release();
+        // }
+
+        /*
+         * set up texture for the drawing object
+        */
         void setTexture(const QString &name_, const QString& newFilename_, const QColor &backgroundColor_);
+
+        /*
+         * set up texture for the drawing object from the frame buffer
+        */
         void setTextureFromFrameBuffer(const QString &name_, QOpenGLFramebufferObject *currentFrameBufferObject_, const QColor &backgroundColor_);
+
+        /*
+         * return texture size
+        */
         bool getTextureSize(const QString &name_, QSize &imageSize_) const;
 
+        /*
+         * is object correctly minimum initialized
+        */
         bool isUsable() const;
+
+        /*
+         * init object's states
+         * switch on all object's states
+        */
         void initStates();
+
+        /*
+         * release object's states
+         * switch off all object's states
+        */
         void releaseStates();
 
     private:
