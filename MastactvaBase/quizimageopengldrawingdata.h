@@ -151,10 +151,26 @@ namespace opengl_drawing
     class States
     {
     public:
+        /*
+         * find state for the state string
+        */
         State * find(const QString &stateStr_) const;
+
+        /*
+         * init open gl drawing state step
+         * switch on state of the state string
+        */
         void init(const QString &stateStr_, const std::vector<GLfloat> &args_);
+
+        /*
+         * release open gl drawing state step
+         * switch off state of the state string
+        */
         void release(const QString &stateStr_, const std::vector<GLfloat> &args_);
 
+        /*
+         * factory method
+        */
         static std::unique_ptr<States> create();
 
     private:
