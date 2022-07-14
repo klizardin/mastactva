@@ -288,18 +288,58 @@ namespace opengl_drawing
         std::unique_ptr<States> m_states;
     };
 
+
+    /*
+     * open gl drawing list of objects class
+    */
     class Objects : public IVariables, public drawingdata::ITextures
     {
     public:
+        /*
+         * release quiz image drawing objects list datas
+        */
         std::unique_ptr<drawing_data::QuizImageObjects> free();
+
+        /*
+         * init from quiz image drawing objcts list datas
+         * capture quiz image objects list datas
+        */
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
+
+        /*
+         * do low level reinitialization
+        */
         void reinit();
+
+        /*
+         * do we need to reinit this objects list for new time value
+        */
         bool needToReinit(double tNew_) const;
+
+        /*
+         * process all required claculations
+        */
         void calculate();
+
+        /*
+         * open gl pipeline operations - draw objects list
+        */
         void draw(QOpenGLFunctions *f_);
+
+        /*
+         * init global states
+         * switch on global states
+        */
         void initStates();
+
+        /*
+         * release global states
+         * switch off global states
+        */
         void releaseStates();
 
+        // variable operations
+        // {
         bool get(const QString &name_, QVector<double> &data_) const override
         {
             if(!m_imageData.operator bool())
@@ -423,19 +463,50 @@ namespace opengl_drawing
             }
             return m_imageData->getArgumentValue(name_, values_);
         }
+        // }
 
+        /*
+         * set texture at the objects root level
+        */
         void setTexture(const QString &textureName_, const QString &newFilename_) override;
         void setTexture(const QString &textureName_, const QString &newFilename_, const QColor &newBackgroundColor_) override;
+
+        /*
+         * set texture from the frame buffer at the objects root level
+        */
         void setTextureFromCurrentFrameBuffer(const QString &textureName_) override;
         void setTextureFromCurrentFrameBuffer(const QString &textureName_, const QColor &newBackgroundColor_) override;
 
+        /*
+         * return clear color
+        */
         QColor getClearColor() const;
+
+        /*
+         * return sttribute variable tuple size
+        */
         int getAttributeTupleSize(const QString &name_) const;
+
+        /*
+         * return texture size
+        */
         bool getTextureSize(const QString &name_, QSize &size_) const;
         QSize getTextureSize(const QString &name_, const QSize &size_) const;
         //void setTexture(const QString &name_, const QString &newFilename_, const QColor &backgroundColor_);
+
+        /*
+         * set up g_renderFromImageName texture
+        */
         void setFromImage(const QString &url_);
+
+        /*
+         * set up g_renderToImageName texture
+        */
         void setToImage(const QString &url_);
+
+        /*
+         * helper function to set up frame buffer object
+        */
         void setCurrentFrameBufferObject(QOpenGLFramebufferObject *currentFrameBufferObject_);
 
     private:
@@ -444,14 +515,14 @@ namespace opengl_drawing
         void clearObjects();
 
     private:
-        std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
-        std::vector<std::unique_ptr<Object>> m_objects;
-        opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;
+        std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;                // quiz image objects list
+        std::vector<std::unique_ptr<Object>> m_objects;                             // objects list
+        opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;         // some default calculations TODO: extract to the separate class
         opengl_drawing::IEffectCalculation *m_geometryMatrixDefault = nullptr;
         opengl_drawing::IEffectCalculation *m_geometryDefault = nullptr;
-        QStringList m_updated;
-        std::unique_ptr<States> m_states;
-        QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;
+        QStringList m_updated;                                                      // list of variable that was updated duiring last calculations
+        std::unique_ptr<States> m_states;                                           // global states
+        QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
     };
 }
 
