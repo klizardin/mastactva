@@ -111,13 +111,40 @@ namespace opengl_drawing
         std::unique_ptr<QOpenGLTexture> m_texture;
     };
 
+
+    /*
+     * open gl drawing state
+    */
     class State
     {
     public:
+        /*
+         * check if the state str represent the current state object
+        */
         virtual bool canProcess(const QString &stateStr_) const = 0;
+
+        /*
+         * init open gl drawing state step
+         * switch on this state
+        */
         virtual void init(const QString &stateStr_, const std::vector<GLfloat> &args_) = 0;
+
+        /*
+         * release open gl drawing state step
+         * switch off this state
+        */
         virtual void release(const QString &stateStr_, const std::vector<GLfloat> &args_) = 0;
+
+        /*
+         * init open gl drawing state step for texture
+         * switch on this state for texture
+        */
         virtual void init(const QString &stateStr_, Texture* texture_, const std::vector<GLfloat> &args_);
+
+        /*
+         * release open gl drawing state step for texture
+         * switch off this state for texture
+        */
         virtual void release(const QString &stateStr_, Texture* texture_, const std::vector<GLfloat> &args_);
     };
 
