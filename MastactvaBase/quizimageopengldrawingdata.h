@@ -151,9 +151,9 @@ namespace opengl_drawing
     class States
     {
     public:
+        State * find(const QString &stateStr_) const;
         void init(const QString &stateStr_, const std::vector<GLfloat> &args_);
         void release(const QString &stateStr_, const std::vector<GLfloat> &args_);
-        State * find(const QString &stateStr_) const;
 
         static std::unique_ptr<States> create();
 
