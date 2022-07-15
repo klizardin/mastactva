@@ -723,20 +723,58 @@ private:
 };
 
 
+/*
+ * frame buffer render im implementation
+*/
 class QuizImageFboRendererImpl
 {
 public:
     QuizImageFboRendererImpl() = default;
 
 protected:
+    /*
+     * run rendering of objects
+    */
     void renderImpl();
+
+    /*
+     * create frame buffer object to render to
+    */
     QOpenGLFramebufferObject *createFramebufferObjectImpl(const QSize &size_);
+
+    /*
+     * return window size
+    */
     const QVector2D &getWindowSize() const;
+
+    /*
+     * set window size
+    */
     void setWindowSize(const QVector2D &windowSize_);
+
+    /*
+     * synchronize variable values
+    */
     void synchronizeImpl(const QVector2D &rectSize_, qreal t_);
+
+    /*
+     * release quiz image objects
+    */
     std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
+
+    /*
+     * set up quiz image objects
+    */
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
+
+    /*
+     * set g_renderFromImageName texture
+    */
     void setFromImage(const QString &url_);
+
+    /*
+     * set g_renderToImageName texture
+    */
     void setToImage(const QString &url_);
 
 private:
