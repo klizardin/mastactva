@@ -527,22 +527,52 @@ namespace opengl_drawing
 }
 
 
+/*
+ * render class
+*/
 class ObjectsRenderer : protected QOpenGLFunctions, public opengl_drawing::IVariables
 {
 public:
     ObjectsRenderer();
     ~ObjectsRenderer();
 
+    /*
+     * set up quiz image data
+    */
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
+
+    /*
+     * release the current quiz image data
+    */
     std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
+
+    /*
+     * render the current objects
+    */
     void render();
+
+    /*
+     * set up g_renderFromImageName texture
+    */
     void setFromImage(const QString &url_);
+
+    /*
+     * set up g_renderToImageName texture
+    */
     void setToImage(const QString &url_);
+
+    /*
+     * update size, time and derived variables
+    */
     void updateVariables(
             const QVector2D &rectSize_,
             qreal t_,
             const QVector2D &windowSize_);
 
+    /*
+     * work with variables
+     * {
+    */
     bool get(const QString &name_, QVector<double> &data_) const override
     {
         if(!m_openglData.operator bool())
@@ -670,8 +700,16 @@ public:
             return defaultValue_;
         }
     }
+    // }
 
+    /*
+     * return attribute variable tuple size
+    */
     int getAttributeTupleSize(const QString &name_) const;
+
+    /*
+     * return texture size
+    */
     QSize getTextureSize(const QString &name_, const QSize &size_) const;
 
 private:
@@ -681,7 +719,7 @@ private:
     static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
 
 private:
-    std::unique_ptr<opengl_drawing::Objects> m_openglData;
+    std::unique_ptr<opengl_drawing::Objects> m_openglData;  // contains opne gl drawing objects
 };
 
 
