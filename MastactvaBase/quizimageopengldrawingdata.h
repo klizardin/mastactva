@@ -30,21 +30,74 @@
 #include "../MastactvaBase/drawingdata_utils.h"
 
 
+/*
+ * open gl drawing classes
+*/
 namespace opengl_drawing
 {
+    /*
+     * open gl drawing texture
+    */
     class Texture
     {
     public:
+        /*
+         * set file name of the texture
+         * setTexture()
+        */
         bool setFilename(const QString &fileName_, const QColor &backgroundColor_);
+
+        /*
+         * setTexture() from the open gl frame buffer object
+        */
         bool setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_, const QColor &backgroundColor_);
+
+        /*
+         * set up texture location
+        */
         void setLocation(int location_);
+
+        /*
+         * set up index
+        */
         void setIndex(int index_);
+
+        /*
+         * do setUniform() for the texture
+        */
         void setUniform(QOpenGLShaderProgram *program_) const;
+
+        /*
+         * do bind() for the texture object
+        */
         void bind(QOpenGLFunctions *f_) const;
+
+        /*
+         * return size of the texture
+        */
         bool getSize(QSize &size_) const;
+
+        /*
+         * (for drawing states)
+         * set mode to wrap clamp texture to border
+        */
         void setWrapClampToBorder();
+
+        /*
+         * (for drawing states)
+         * set mode to wrap clamp texture to edge
+        */
         void setWrapClampToEdge();
+
+        /*
+         * (for drawing states)
+         * set border color
+        */
         void setBorderColor(const QColor &backgroundColor_);
+
+        /*
+         * is location valid (is location initialized, if we have correct texture)
+        */
         bool isValidLocation() const;
 
     private:
@@ -58,52 +111,166 @@ namespace opengl_drawing
         std::unique_ptr<QOpenGLTexture> m_texture;
     };
 
+
+    /*
+     * open gl drawing state
+    */
     class State
     {
     public:
+        /*
+         * check if the state str represent the current state object
+        */
         virtual bool canProcess(const QString &stateStr_) const = 0;
+
+        /*
+         * init open gl drawing state step
+         * switch on this state
+        */
         virtual void init(const QString &stateStr_, const std::vector<GLfloat> &args_) = 0;
+
+        /*
+         * release open gl drawing state step
+         * switch off this state
+        */
         virtual void release(const QString &stateStr_, const std::vector<GLfloat> &args_) = 0;
+
+        /*
+         * init open gl drawing state step for texture
+         * switch on this state for texture
+        */
         virtual void init(const QString &stateStr_, Texture* texture_, const std::vector<GLfloat> &args_);
+
+        /*
+         * release open gl drawing state step for texture
+         * switch off this state for texture
+        */
         virtual void release(const QString &stateStr_, Texture* texture_, const std::vector<GLfloat> &args_);
     };
 
     class States
     {
     public:
-        void init(const QString &stateStr_, const std::vector<GLfloat> &args_);
-        void release(const QString &stateStr_, const std::vector<GLfloat> &args_);
+        /*
+         * find state for the state string
+        */
         State * find(const QString &stateStr_) const;
 
+        /*
+         * init open gl drawing state step
+         * switch on state of the state string
+        */
+        void init(const QString &stateStr_, const std::vector<GLfloat> &args_);
+
+        /*
+         * release open gl drawing state step
+         * switch off state of the state string
+        */
+        void release(const QString &stateStr_, const std::vector<GLfloat> &args_);
+
+        /*
+         * factory method
+        */
         static std::unique_ptr<States> create();
 
     private:
         std::vector<std::unique_ptr<State>> m_states;
     };
 
+
+    /*
+     * open gl drawing object class
+    */
     class Object
     {
     public:
+        /*
+         * release this object and it's open gl datas
+        */
         void free();
+
+        /*
+         * init this object with quiz image opern gl drawing object
+         * TODO: move color to the some argument's set
+        */
         void init(
                 const std::shared_ptr<drawing_data::QuizImageObject> &imageData_,
                 const QColor &backgroundColor_
                 );
-        void bind();
-        void setUniforms();
-        void enableAttributes();
-        void disableAttributes();
-        void setAttributeArray();
-        void bindTextures(QOpenGLFunctions *f_);
-        void drawTriangles(QOpenGLFunctions *f_);
-        void release();
 
+        // pipeline operations
+        // {
+        /*
+         * do open gl bind for arguments and textures and so on in the open gl pipeline
+        */
+        void bind();
+
+        /*
+         * do set uniform for open gl arguments in the open gl pipeline
+        */
+        void setUniforms();
+
+        /*
+         * do enable attributes for open gl arguments in the open gl pipeline
+        */
+        void enableAttributes();
+
+        /*
+         * do disable attributes for open gl arguments in the open gl pipeline
+        */
+        void disableAttributes();
+
+        /*
+         * do set attribute's arrays for open gl arguments in the open gl pipeline
+        */
+        void setAttributeArray();
+
+        /*
+         * do bind textures in the open gl pipeline
+        */
+        void bindTextures(QOpenGLFunctions *f_);
+
+        /*
+         * do draw triangles in the open gl pipeline
+        */
+        void drawTriangles(QOpenGLFunctions *f_);
+
+        /*
+         * do draw release in the open gl pipeline
+        */
+        void release();
+        // }
+
+        /*
+         * set up texture for the drawing object
+        */
         void setTexture(const QString &name_, const QString& newFilename_, const QColor &backgroundColor_);
+
+        /*
+         * set up texture for the drawing object from the frame buffer
+        */
         void setTextureFromFrameBuffer(const QString &name_, QOpenGLFramebufferObject *currentFrameBufferObject_, const QColor &backgroundColor_);
+
+        /*
+         * return texture size
+        */
         bool getTextureSize(const QString &name_, QSize &imageSize_) const;
 
+        /*
+         * is object correctly minimum initialized
+        */
         bool isUsable() const;
+
+        /*
+         * init object's states
+         * switch on all object's states
+        */
         void initStates();
+
+        /*
+         * release object's states
+         * switch off all object's states
+        */
         void releaseStates();
 
     private:
@@ -121,18 +288,58 @@ namespace opengl_drawing
         std::unique_ptr<States> m_states;
     };
 
+
+    /*
+     * open gl drawing list of objects class
+    */
     class Objects : public IVariables, public drawingdata::ITextures
     {
     public:
+        /*
+         * release quiz image drawing objects list datas
+        */
         std::unique_ptr<drawing_data::QuizImageObjects> free();
+
+        /*
+         * init from quiz image drawing objcts list datas
+         * capture quiz image objects list datas
+        */
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
+
+        /*
+         * do low level reinitialization
+        */
         void reinit();
+
+        /*
+         * do we need to reinit this objects list for new time value
+        */
         bool needToReinit(double tNew_) const;
+
+        /*
+         * process all required claculations
+        */
         void calculate();
+
+        /*
+         * open gl pipeline operations - draw objects list
+        */
         void draw(QOpenGLFunctions *f_);
+
+        /*
+         * init global states
+         * switch on global states
+        */
         void initStates();
+
+        /*
+         * release global states
+         * switch off global states
+        */
         void releaseStates();
 
+        // variable operations
+        // {
         bool get(const QString &name_, QVector<double> &data_) const override
         {
             if(!m_imageData.operator bool())
@@ -256,19 +463,50 @@ namespace opengl_drawing
             }
             return m_imageData->getArgumentValue(name_, values_);
         }
+        // }
 
+        /*
+         * set texture at the objects root level
+        */
         void setTexture(const QString &textureName_, const QString &newFilename_) override;
         void setTexture(const QString &textureName_, const QString &newFilename_, const QColor &newBackgroundColor_) override;
+
+        /*
+         * set texture from the frame buffer at the objects root level
+        */
         void setTextureFromCurrentFrameBuffer(const QString &textureName_) override;
         void setTextureFromCurrentFrameBuffer(const QString &textureName_, const QColor &newBackgroundColor_) override;
 
+        /*
+         * return clear color
+        */
         QColor getClearColor() const;
+
+        /*
+         * return sttribute variable tuple size
+        */
         int getAttributeTupleSize(const QString &name_) const;
+
+        /*
+         * return texture size
+        */
         bool getTextureSize(const QString &name_, QSize &size_) const;
         QSize getTextureSize(const QString &name_, const QSize &size_) const;
         //void setTexture(const QString &name_, const QString &newFilename_, const QColor &backgroundColor_);
+
+        /*
+         * set up g_renderFromImageName texture
+        */
         void setFromImage(const QString &url_);
+
+        /*
+         * set up g_renderToImageName texture
+        */
         void setToImage(const QString &url_);
+
+        /*
+         * helper function to set up frame buffer object
+        */
         void setCurrentFrameBufferObject(QOpenGLFramebufferObject *currentFrameBufferObject_);
 
     private:
@@ -277,34 +515,64 @@ namespace opengl_drawing
         void clearObjects();
 
     private:
-        std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
-        std::vector<std::unique_ptr<Object>> m_objects;
-        opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;
+        std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;                // quiz image objects list
+        std::vector<std::unique_ptr<Object>> m_objects;                             // objects list
+        opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;         // some default calculations TODO: extract to the separate class
         opengl_drawing::IEffectCalculation *m_geometryMatrixDefault = nullptr;
         opengl_drawing::IEffectCalculation *m_geometryDefault = nullptr;
-        QStringList m_updated;
-        std::unique_ptr<States> m_states;
-        QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;
+        QStringList m_updated;                                                      // list of variable that was updated duiring last calculations
+        std::unique_ptr<States> m_states;                                           // global states
+        QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
     };
 }
 
 
+/*
+ * render class
+*/
 class ObjectsRenderer : protected QOpenGLFunctions, public opengl_drawing::IVariables
 {
 public:
     ObjectsRenderer();
     ~ObjectsRenderer();
 
+    /*
+     * set up quiz image data
+    */
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
+
+    /*
+     * release the current quiz image data
+    */
     std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
+
+    /*
+     * render the current objects
+    */
     void render();
+
+    /*
+     * set up g_renderFromImageName texture
+    */
     void setFromImage(const QString &url_);
+
+    /*
+     * set up g_renderToImageName texture
+    */
     void setToImage(const QString &url_);
+
+    /*
+     * update size, time and derived variables
+    */
     void updateVariables(
             const QVector2D &rectSize_,
             qreal t_,
             const QVector2D &windowSize_);
 
+    /*
+     * work with variables
+     * {
+    */
     bool get(const QString &name_, QVector<double> &data_) const override
     {
         if(!m_openglData.operator bool())
@@ -432,8 +700,16 @@ public:
             return defaultValue_;
         }
     }
+    // }
 
+    /*
+     * return attribute variable tuple size
+    */
     int getAttributeTupleSize(const QString &name_) const;
+
+    /*
+     * return texture size
+    */
     QSize getTextureSize(const QString &name_, const QSize &size_) const;
 
 private:
@@ -443,24 +719,62 @@ private:
     static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
 
 private:
-    std::unique_ptr<opengl_drawing::Objects> m_openglData;
+    std::unique_ptr<opengl_drawing::Objects> m_openglData;  // contains opne gl drawing objects
 };
 
 
+/*
+ * frame buffer render im implementation
+*/
 class QuizImageFboRendererImpl
 {
 public:
     QuizImageFboRendererImpl() = default;
 
 protected:
+    /*
+     * run rendering of objects
+    */
     void renderImpl();
+
+    /*
+     * create frame buffer object to render to
+    */
     QOpenGLFramebufferObject *createFramebufferObjectImpl(const QSize &size_);
+
+    /*
+     * return window size
+    */
     const QVector2D &getWindowSize() const;
+
+    /*
+     * set window size
+    */
     void setWindowSize(const QVector2D &windowSize_);
+
+    /*
+     * synchronize variable values
+    */
     void synchronizeImpl(const QVector2D &rectSize_, qreal t_);
+
+    /*
+     * release quiz image objects
+    */
     std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
+
+    /*
+     * set up quiz image objects
+    */
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
+
+    /*
+     * set g_renderFromImageName texture
+    */
     void setFromImage(const QString &url_);
+
+    /*
+     * set g_renderToImageName texture
+    */
     void setToImage(const QString &url_);
 
 private:

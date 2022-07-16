@@ -3245,15 +3245,15 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
             int(ArtefactArgStorageEn::uniformStorage),
             int(ArtefactArgTypeEn::stringsType),
             "textureName",
-            "",
-            101
+            "renderGeneratedFromImage", // used value is here
+            101 + 1
         },
         {
             int(ArtefactArgStorageEn::uniformStorage),
             int(ArtefactArgTypeEn::stringsType),
             "textureName",
-            "",
-            102
+            "renderGeneratedToImage", // used value is here
+            102 + 1
         }
     };
     effect->m_effectArgsData = createEffectArgsData(

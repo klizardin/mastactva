@@ -42,8 +42,8 @@ namespace drawing_data
 {
     enum class ItemTypesEn
     {
-        none,
-        fromItem,
+        none,                   // null item (special uninitialized value)
+        fromItem,               // start enum item (to enumarate enum items)
         GLfloat,
         GLint,
         GLuint,
@@ -64,17 +64,29 @@ namespace drawing_data
         QMatrix4x2,
         QMatrix4x3,
         QMatrix4x4,
-        toItem
+        toItem                  // end enum item (to enumarate enum items)
     };
 
     namespace details
     {
 
+    /*
+     * convert to item with type from the vector of some type
+     * TODO: maybe optimize there already are such functions with little bit differenet signature
+    */
     template<typename ResultType_, typename ItemType_> inline
     ResultType_ fromVector(const std::vector<ItemType_> &);
+
+    /*
+     * convert from the item type to the vector of some type
+     * TODO: maybe optimize
+    */
     template<typename ResultType_, typename ItemType_> inline
     std::vector<ResultType_> toVector(const ItemType_ &);
 
+    /*
+     * specific implementations...
+    */
     template<> inline
     GLfloat fromVector<GLfloat, GLfloat>(const std::vector<GLfloat> &data_)
     {
@@ -464,14 +476,22 @@ namespace drawing_data
 
     }
 
+
+    /*
+     * helper class with constatnts
+    */
     class ItemTypeConvert
     {
     public:
-        constexpr static int minIndex{ to_underlying(ItemTypesEn::fromItem) + 1 };
-        constexpr static int maxIndex{ to_underlying(ItemTypesEn::toItem) - 1 };
+        constexpr static int minIndex{ to_underlying(ItemTypesEn::fromItem) + 1 };      // the first enum item index, to eneumarate types
+        constexpr static int maxIndex{ to_underlying(ItemTypesEn::toItem) - 1 };        // the last enum item index, to eneumarate types
+                                                                                        // types should be continues
     };
 
 
+    /*
+     * item type traits
+    */
     template<typename ItemType_>
     class ItemTypeTraits
     {
@@ -482,6 +502,9 @@ namespace drawing_data
     };
 
 
+    /*
+     * item types traits
+    */
     template<std::underlying_type_t<ItemTypesEn> TypeIndex_>
     class ItemTypeIndexTraits
     {
@@ -490,6 +513,9 @@ namespace drawing_data
     };
 
 
+    /*
+     * macro to specific concrete item type traits
+    */
 #define DRAWING_DATA_ITEM_TYPE_TRAITS(ItemType_, tupleSize_, underlayingType_)      \
     template<>                                                                      \
     class ItemTypeTraits<ItemType_>                                                 \
@@ -512,9 +538,9 @@ namespace drawing_data
     DRAWING_DATA_ITEM_TYPE_TRAITS(GLfloat,       1,  void)
     DRAWING_DATA_ITEM_TYPE_TRAITS(GLint,         1,  void)
     DRAWING_DATA_ITEM_TYPE_TRAITS(GLuint,        1,  void)
-    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector2D,     2,  GLfloat)
-    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector3D,     3,  GLfloat)
-    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector4D,     4,  GLfloat)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector2D,     2,  GLfloat)       // has underlaying type
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector3D,     3,  GLfloat)       // has underlaying type
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector4D,     4,  GLfloat)       // has underlaying type
     DRAWING_DATA_ITEM_TYPE_TRAITS(QColor,        3,  void)
     DRAWING_DATA_ITEM_TYPE_TRAITS(QPoint,        2,  void)
     DRAWING_DATA_ITEM_TYPE_TRAITS(QPointF,       2,  void)
@@ -532,6 +558,10 @@ namespace drawing_data
 
 #undef DRAWING_DATA_ITEM_TYPE_TRAITS
 
+
+    /*
+     * item type traits as virtual functions
+    */
     class ITypeInfo
     {
     public:
@@ -547,6 +577,8 @@ namespace drawing_data
     public:
         int typeIndex() const override
         {
+            // ItemTypeTraits<ItemType_>::typeIndex should be at least int
+            // for compatibility with indexing in other places
             static_assert(
                 sizeof(decltype(ItemTypeTraits<ItemType_>::typeIndex)) <= sizeof(int),
                 "underlying type greater then int"
@@ -561,16 +593,23 @@ namespace drawing_data
     };
 
 
+    /*
+     * IAttribute interface
+    */
     class IAttribute : public virtual ITypeInfo
     {
     public:
         virtual ~IAttribute() = default;
-        virtual const QString &name() const = 0;
-        virtual const GLfloat *constData() const = 0;
-        virtual int size() const = 0;
+        virtual const QString &name() const = 0;        // variable name
+        virtual const GLfloat *constData() const = 0;   // variable const data
+        virtual int size() const = 0;                   // variable data size
     };
 
 
+    /*
+     * attribute variable implementation
+     * add semantic to work with atttribute variables for open gl
+    */
     template<class ItemType_>
     class Attribute : public IAttribute, public ITypeInfoImpl<ItemType_>
     {
@@ -601,6 +640,9 @@ namespace drawing_data
             return m_data.operator bool() ? m_data->size() : 0;
         }
 
+        // for the vector of the same type
+        // we should specify tuple size == 0
+        // it is tuple size of the array argument
         void set(const std::vector<ItemType_> &value_, int tupleSize_)
         {
             createData();
@@ -615,6 +657,9 @@ namespace drawing_data
             *m_data = value_;
         }
 
+        // for the vector of the same type
+        // we should specify tuple size == 0
+        // it is tuple size of the array argument
         bool get(std::vector<ItemType_> &value_, int tupleSize_) const
         {
             const bool cond = 0 == tupleSize_;
@@ -628,14 +673,17 @@ namespace drawing_data
             return true;
         }
 
+        // for the vector of the different type
         template<typename ItemType2_>
         void set(const std::vector<ItemType2_> &value_, int tupleSize_)
         {
             setImpl(value_, tupleSize_,
+                    // is simply convertible (can we use simple static_cast between types?)
                     typename std::integral_constant<
                         bool
                         ,std::is_convertible<ItemType2_, ItemType_>::value
                         >::type(),
+                    // is underlaying type is the same type
                     typename std::integral_constant<
                         bool
                         , std::is_same<typename ItemTypeTraits<ItemType_>::underlayingType, ItemType2_>::value
@@ -647,10 +695,12 @@ namespace drawing_data
         bool get(std::vector<ItemType2_> &value_, int tupleSize_) const
         {
             return getImpl(value_, tupleSize_,
+                    // is simply convertible (can we use simple static_cast between types?)
                     typename std::integral_constant<
                         bool
                         ,std::is_convertible<ItemType_, ItemType2_>::value
                         >::type(),
+                    // is underlaying type is the same type
                     typename std::integral_constant<
                         bool
                         , std::is_same<typename ItemTypeTraits<ItemType2_>::underlayingType, ItemType_>::value
@@ -718,11 +768,13 @@ namespace drawing_data
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &, int, std::false_type, std::false_type)
         {
+            // imposible combination
         }
 
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &, int, std::true_type, std::true_type)
         {
+            // imposible combination
         }
 
         template<typename ItemType2_>
@@ -771,32 +823,43 @@ namespace drawing_data
         template<typename ItemType2_>
         bool getImpl(std::vector<ItemType2_> &, int, std::false_type, std::false_type) const
         {
+            // imposible combination
             return false;
         }
 
         template<typename ItemType2_>
         bool getImpl(std::vector<ItemType2_> &, int, std::true_type, std::true_type) const
         {
+            // imposible combination
             return false;
         }
 
     private:
-        QString m_name;
-        std::shared_ptr<std::vector<ItemType_>> m_data;
+        QString m_name;                                 // name of the attribute
+        std::shared_ptr<std::vector<ItemType_>> m_data; // shared data with a some variable from IVariables of the effect data
+                                                        // so that runtime scripts can work also with effect data
+                                                        // and we do not need extra copying of maybe large data
     };
 
 
+    /*
+     * interface for the uniform drawing data variables
+    */
     class IUniform : public virtual ITypeInfo
     {
     public:
         virtual ~IUniform() = default;
-        virtual const QString &name() const = 0;
-        virtual void set(QOpenGLShaderProgram *program, int location_) const = 0;
-        virtual void getVector(std::vector<GLfloat> &values_) const = 0;
+        virtual const QString &name() const = 0;        // name of the variable
+        virtual void set(QOpenGLShaderProgram *program, int location_) const = 0;   // (break SOLID) set variable to the program at specific location
+        virtual void getVector(std::vector<GLfloat> &values_) const = 0;            // return verctor of this data (do copy)
         // break SOLID - not a simple data
     };
 
 
+    /*
+     * implementation of the uniform variables for the drawing data
+     * add semantic to work with uniform variables for open gl
+    */
     template<typename ItemType_>
     struct Uniform : public IUniform, public ITypeInfoImpl<ItemType_>
     {
@@ -821,9 +884,13 @@ namespace drawing_data
                 return;
             }
 
+            // use reloadings of the QT
             program->setUniformValue(location_, *m_data);
         }
 
+        /*
+         * for the same type
+        */
         void set(const ItemType_ &value_)
         {
             createData();
@@ -831,10 +898,14 @@ namespace drawing_data
             *m_data = value_;
         }
 
+        /*
+         * for the different type
+        */
         template<typename ItemType2_>
         void set(const ItemType2_ &value_)
         {
             return setImpl(value_,
+                           // is simply convertible so that we can use static_cast
                             typename std::integral_constant<
                                 bool,
                                 std::is_convertible<
@@ -844,12 +915,18 @@ namespace drawing_data
                                 >::type());
         }
 
+        /*
+         * for different type as a vector of values
+        */
         template<typename ItemType2_>
         void set(const std::vector<ItemType2_> &value_)
         {
             return setImpl(value_, std::true_type());
         }
 
+        /*
+         * for the same type
+        */
         bool get(ItemType_ &value_) const
         {
             if(!m_data.operator bool())
@@ -861,10 +938,14 @@ namespace drawing_data
             return true;
         }
 
+        /*
+         * for the different type
+        */
         template<typename ItemType2_>
         bool get(ItemType2_ &value_) const
         {
             return getImpl(value_,
+                            // can we use simple static_cast
                             typename std::integral_constant<
                                 bool,
                                 std::is_convertible<
@@ -874,6 +955,9 @@ namespace drawing_data
                                 >::type());
         }
 
+        /*
+         * for the different type as a vector of some types
+        */
         template<typename ItemType2_>
         bool get(std::vector<ItemType2_> &value_) const
         {
@@ -886,6 +970,9 @@ namespace drawing_data
         }
 
     private:
+        /*
+         * helper function
+        */
         void createData()
         {
             if(m_data.operator bool())
@@ -893,6 +980,7 @@ namespace drawing_data
                 return;
             }
 
+            // if the data was not initialized from the effect data
             m_data = std::make_shared<ItemType_>();
         }
 
@@ -948,21 +1036,30 @@ namespace drawing_data
         }
 
     private:
-        QString m_name;
-        std::shared_ptr<ItemType_> m_data;
+        QString m_name;                     // variable name
+        std::shared_ptr<ItemType_> m_data;  // shared data
+                                            // so that we can work with effect datas
     };
 
 
     namespace detail
     {
+        /*
+         * the helper template to dispose a specific template by the type index int value
+        */
         template<int index_>
         class ItemTypeBase : public ItemTypeBase<index_ - 1>
         {
         public:
-            using AttributeType = Attribute<typename ItemTypeIndexTraits<index_>::type>;
-            using UniformType = Uniform<typename ItemTypeIndexTraits<index_>::type>;
-            using base = ItemTypeBase<index_ - 1>;
+            using AttributeType = Attribute<typename ItemTypeIndexTraits<index_>::type>;    // the type to dispose for the current index int value
+            using UniformType = Uniform<typename ItemTypeIndexTraits<index_>::type>;        // the type to dispose for the current index int value
+            using base = ItemTypeBase<index_ - 1>;                                          // the base type
 
+            /*
+             * interface_ -- interface to dispose to the source template
+             * itemIndex_ -- item type index int value
+             * value_, tupleSize_ -- arguments for a set function of the disposed template
+            */
             template<typename ItemType_>
             static void set(IAttribute *interface_, int itemIndex_, const std::vector<ItemType_> &value_, int tupleSize_)
             {
@@ -980,6 +1077,11 @@ namespace drawing_data
                 attr->set(value_, tupleSize_);
             }
 
+            /*
+             * interface_ -- interface to dispose to the source template
+             * itemIndex_ -- item type index int value
+             * value_, tupleSize_ -- arguments for a get function of the disposed template
+            */
             template<typename ItemType_>
             static bool get(const IAttribute *interface_, int itemIndex_, std::vector<ItemType_> &value_, int tupleSize_)
             {
@@ -996,6 +1098,11 @@ namespace drawing_data
                 return attr->get(value_, tupleSize_);
             }
 
+            /*
+             * interface_ -- interface to dispose to the source template
+             * itemIndex_ -- item type index int value
+             * value_ -- argument for a set function of the disposed template
+            */
             template<typename ItemType_>
             static void set(IUniform *interface_, int itemIndex_, const ItemType_ &value_)
             {
@@ -1013,6 +1120,11 @@ namespace drawing_data
                 uniform->set(value_);
             }
 
+            /*
+             * interface_ -- interface to dispose to the source template
+             * itemIndex_ -- item type index int value
+             * value_ -- argument for a get function of the disposed template
+            */
             template<typename ItemType_>
             static bool get(const IUniform *interface_, int itemIndex_, ItemType_ &value_)
             {
@@ -1060,63 +1172,86 @@ namespace drawing_data
     } // namespace detail
 
 
+    /*
+     * the type definition for dispose of the specific template type for functions get()/set()
+    */
     using ItemTypeBaseSet = detail::ItemTypeBase<ItemTypeConvert::maxIndex>;
 
 
+    /*
+     * the structure for the texture datas
+     * (data holder)
+    */
     struct Texture
     {
-        QString name;
-        QString filename;
+        QString name;       // texture name
+        QString filename;   // file name associated with the texture name, maybe empty - no texture file for this texture
     };
 
 
     namespace detail
     {
+        /*
+         * calculation wraper for a drawing opengl object
+        */
         class Calculations
         {
         public:
-            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
+            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;  // calculations list
 
         public:
-            Calculations(::opengl_drawing::IVariables *ivariables_);
-            bool calculate(opengl_drawing::IVariables *variables_);
-            void preCalculation();
-            void postCalculation();
-            void init(const std::vector<QString> &effectCalculationNames_);
-            bool find(const opengl_drawing::IEffectCalculation *calculation_) const;
-            bool hasCalculations() const;
+            Calculations(::opengl_drawing::IVariables *ivariables_);    // set up variables for this drawing object
+            bool calculate(opengl_drawing::IVariables *variables_);     // do calculations, pass root variables
+            void preCalculation();      // pre
+            void postCalculation();     // post steps
+            void init(const std::vector<QString> &effectCalculationNames_); // init calculations by the list of calculations state strings
+                                                                            // state string is a function name and its arguments
+            bool find(const opengl_drawing::IEffectCalculation *calculation_) const; // return true if calculation already exist
+                                                                            // or calculation exists that expands the argument's calculation
+            bool hasCalculations() const;                               // do we need to do any calculations
 
         protected:
-            void setVariable(const QString &name_);
-            bool isUpdated(const QSet<QString> &vars_, ::opengl_drawing::IVariables *base_) const;
+            void setVariable(const QString &name_);                     // variable with specific name was updated
+            bool isUpdated(const QSet<QString> &vars_, ::opengl_drawing::IVariables *base_) const;  // is any of variables from argument's list
+                                                                        // updated
 
         private:
-            void clearUpdated();
+            void clearUpdated();                                        // clear updated variables list
 
         private:
-            QSet<QString> m_updated;
-            ::opengl_drawing::IVariables *m_thisIVariables = nullptr;
-            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
+            QSet<QString> m_updated;                                    // list of updated variable's names
+            ::opengl_drawing::IVariables *m_thisIVariables = nullptr;   // this object's variables
+            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;   // temp data
         };
     }
 
-    struct QuizImageObject : public ::opengl_drawing::IVariables, public detail::Calculations
+
+    /*
+     * quiz image drawing object - simple drawing step
+     * can draw with one vertex and fragment shader
+    */
+    struct QuizImageObject : public ::opengl_drawing::IVariables, public detail::Calculations   // calculations for one drawing step
     {
     public:
-        QByteArray vertexShader;
-        QByteArray fragmentShader;
+        QByteArray vertexShader;        // vertex shader
+        QByteArray fragmentShader;      // fragment shader
 
-        std::vector<std::unique_ptr<IAttribute>> attributes;
-        std::vector<std::unique_ptr<IUniform>> uniforms;
-        std::vector<Texture> textures;
-        std::vector<QString> objectStates;
+        std::vector<std::unique_ptr<IAttribute>> attributes;    // attribute variables that is required for the shaders of calculations
+        std::vector<std::unique_ptr<IUniform>> uniforms;        // uniform variables that is required for the shaders of calculations
+        std::vector<Texture> textures;                          // textures that is required for the shaders of calculations
+        std::vector<QString> objectStates;                      // object's states that is required for the shaders of calculations
+                // object state is a open gl primitives bunch that do simple drawing tuning
         std::vector<QString> objectCalculations;
+                // list of object's calculations
         std::map<QString, QStringList> strVariables;
+                // string variables (required only just by calculations)
 
     public:
         QuizImageObject();
         void postInitialization();
 
+        // ::opengl_drawing::IVariables
+        // {
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;
         void set(const QString &name_, QVector<double> &&data_) override;
@@ -1124,10 +1259,20 @@ namespace drawing_data
         void set(const QString &name_, const QStringList &data_) override;
         void set(const QString &name_, QStringList &&data_) override;
         bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
+        // }
 
+        /*
+         * is this drawing object should be drawn for the time t_
+        */
         bool allowedForTime(double t_) const;
+        /*
+         * update time from told_ to tnew_ for the next drawing step
+        */
         bool changeAllowedForTime(double told_, double tnew_) const;
 
+        /*
+         * set attribute variable value
+        */
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -1147,8 +1292,14 @@ namespace drawing_data
             }
         }
 
+        /*
+         * get attribute variable tuple size value
+        */
         int getAttributeTupleSize(const QString &name_) const;
 
+        /*
+         * set uniform variable value
+        */
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
@@ -1169,6 +1320,9 @@ namespace drawing_data
             }
         }
 
+        /*
+         * get uniform variable value
+        */
         template<typename ItemType_>
         bool getUniform(const QString &name_, ItemType_ &value_) const
         {
@@ -1187,8 +1341,19 @@ namespace drawing_data
             return false;
         }
 
+        /*
+         * set texture to the file name
+        */
         void setTexture(const QString &name_, const QString &newFilename_);
+
+        /*
+         * return list of all variables
+        */
         QStringList getArgumentNames() const;
+
+        /*
+         * return value for the attribute or for the uniform variable as an array of floats
+        */
         bool getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
 
     private:
@@ -1196,18 +1361,25 @@ namespace drawing_data
     };
 
 
+    /*
+     * quiz image drawing objects
+     * bunch of simple drawing steps
+    */
     struct QuizImageObjects : public ::opengl_drawing::IVariables, public detail::Calculations
     {
     public:
+        // global variables: global clear color
         QColor clearColor{255, 255, 255};
-        std::vector<std::shared_ptr<QuizImageObject>> objects;
-        std::vector<QString> globalStates;
-        std::vector<QString> globalCalculations;
+        std::vector<std::shared_ptr<QuizImageObject>> objects;  // drawing object's list
+        std::vector<QString> globalStates;  // global states
+        std::vector<QString> globalCalculations;    // global calculations
 
     public:
         QuizImageObjects();
         void postInitialization();
 
+        // root ::opengl_drawing::IVariables
+        // {
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;
         void set(const QString &name_, QVector<double> &&data_) override;
@@ -1215,7 +1387,11 @@ namespace drawing_data
         void set(const QString &name_, const QStringList &data_) override;
         void set(const QString &name_, QStringList &&data_) override;
         bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
+        // }
 
+        /*
+         * set attribute variable value from root
+        */
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -1232,8 +1408,14 @@ namespace drawing_data
             }
         }
 
+        /*
+         * get attribute variable tuple size value from root
+        */
         int getAttributeTupleSize(const QString &name_) const;
 
+        /*
+         * set uniform variable value from root
+        */
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
@@ -1250,6 +1432,9 @@ namespace drawing_data
             }
         }
 
+        /*
+         * get uniform variable value from root
+        */
         template<typename ItemType_>
         bool getUniform(const QString &name_, ItemType_ &value_) const
         {
@@ -1271,11 +1456,34 @@ namespace drawing_data
             return res;
         }
 
+        /*
+         * set texture to the file name from root
+        */
         void setTexture(const QString &name_, const QString &newFilename_);
+
+        /*
+         * run all calculations for this drawing step
+        */
         void calculate(opengl_drawing::IVariables *variables_);
+
+        /*
+         * return list of all variables from root
+        */
         QStringList getArgumentNames() const;
+
+        /*
+         * return value for the attribute or for the uniform variable as an array of floats from root
+        */
         bool getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
+
+        /*
+         * return list of pseudo variables from root
+        */
         QStringList getPseudoArgumentsNames() const;
+
+        /*
+         * return value for pseudo variable as an array of floats from root
+        */
         bool getPseudoArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
 
     private:
