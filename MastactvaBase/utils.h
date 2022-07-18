@@ -497,6 +497,9 @@ private:
 };
 
 
+/*
+ * IDefaultData to setup some data from the implementation of the interface
+*/
 template<typename DataType_>
 class IDefaultData
 {
@@ -508,6 +511,9 @@ public:
 };
 
 
+/*
+ * class to imcapsulate dynamic cast for the types (BaseType_ -> DerivedType_)
+*/
 template<typename DerivedType_, typename BaseType_>
 class DynamicCastPtr
 {
