@@ -35,6 +35,9 @@
 #include <QtGui/QOpenGLShader>
 
 
+/*
+ * Comment item (to parse comments from the shaders and lua code)
+*/
 class Comment
 {
 public:
