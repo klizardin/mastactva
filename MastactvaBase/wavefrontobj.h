@@ -29,6 +29,11 @@
 #include "../MastactvaBase/utils.h"
 
 
+/*
+ * line of the wave front object file
+ * and other wave from item objects
+ * {
+*/
 class WavefrontOBJItem
 {
 public:
@@ -146,8 +151,12 @@ class WavefrontOBJSmoothing :  public WavefrontOBJItem, public Bool
 public:
     WavefrontOBJSmoothing() = default;
 };
+// }
 
 
+/*
+ * wave front object file reader
+*/
 class WavefrontOBJ
 {
 private:
@@ -175,6 +184,9 @@ public:
     bool isValid() const;
     QJsonDocument toJsonData() const;
 
+    /*
+     * main method of the interface
+    */
     static QJsonDocument graphicsOBJtoJson(const QString &objData_);
     static std::unique_ptr<WavefrontOBJ> parseGraphicsOBJ(const QString &objData_);
 
