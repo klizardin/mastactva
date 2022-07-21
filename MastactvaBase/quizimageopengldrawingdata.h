@@ -783,6 +783,9 @@ private:
 };
 
 
+/*
+ * template for implementation type of the quiz image frame buffer object rederer
+*/
 template<typename QuizImageType_>
 class QuizImageFboRenderer :
         public QuizImageFboRendererImpl
@@ -796,11 +799,17 @@ public:
         renderImpl();
     }
 
+    /*
+     * to create fraem buffer object
+    */
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size_) override
     {
         return createFramebufferObjectImpl(size_);
     }
 
+    /*
+     * to synchronize data with quiz image control
+    */
     void synchronize(QQuickFramebufferObject *frameBufferObject_) override
     {
         QuizImageType_ *quizImage = static_cast<QuizImageType_ *>(frameBufferObject_);
@@ -834,6 +843,11 @@ public:
 
 namespace drawing_data
 {
+    /*
+     * default quiz image objects initializer
+     * to create default quiz image objects data
+     * for the quiz image control
+    */
     class DefaultQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:

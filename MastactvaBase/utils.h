@@ -35,6 +35,9 @@
 #include <QtGui/QOpenGLShader>
 
 
+/*
+ * Comment item (to parse comments from the shaders and lua code)
+*/
 class Comment
 {
 public:
@@ -69,48 +72,58 @@ private:
 };
 
 
-QString leftDoubleCR(const QString &str_);
-qreal sqr(qreal val_);
-qreal cube(qreal val_);
-bool isSpace(const QChar &ch_);
-bool isSymbol(const QChar &ch_);
-bool isLetterNumeric(const QChar &ch_);
-bool isNumeric(const QChar &ch_);
-bool isNumeric(const QString &str_);
-void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
-void getLuaComments(const QString &shaderText_, QVector<Comment> &comments_);
-QString calculateHash(const QString &data_);
-QString calculateFileURLHash(const QString &fileUrl_);
-QString loadTextFile(const QString &filename_);
+QString leftDoubleCR(const QString &str_);      // return with doubled \n
+qreal sqr(qreal val_);                          // squre
+qreal cube(qreal val_);                         // cube
+bool isSpace(const QChar &ch_);                 // is the char a space
+bool isSymbol(const QChar &ch_);                // is char a symbol
+bool isLetterNumeric(const QChar &ch_);         // is char somewhat a letter or a number
+bool isNumeric(const QChar &ch_);               // is char a number
+bool isNumeric(const QString &str_);            // is atrinmg is number
+void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);    // return shader's comments
+void getLuaComments(const QString &shaderText_, QVector<Comment> &comments_);       // return lua's comments
+QString calculateHash(const QString &data_);            // return hash value for the text data
+QString calculateFileURLHash(const QString &fileUrl_);  // return hash for the file data
+QString loadTextFile(const QString &filename_);         // load text file
 // TODO: separate utils. it is serverfiles utils
-QString loadTextFileUrl(const QString &filenameUrl_);
-QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
-QByteArray loadBinaryFile(const QString &filename_);
-QByteArray loadBinaryFileUrl(const QString &filenameUrl_);
-QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
-QString getTextFromBinaryData(const QByteArray &data_);
-void saveTextFile(const QString filepath_, const QString &text_);
-bool isSimpleQVariantType(const QVariant::Type &type_);
-QStringList getUniqueValues(const QStringList &values_);
-QStringList replace(const QStringList &stringList_, const QString from_, const QString & to_);
-QStringList removeEmpty(const QStringList &values_);
-QStringList trimmed(const QStringList &values_);
+QString loadTextFileUrl(const QString &filenameUrl_);   // load text file by URL
+QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);    // (TODO: inject dep)  load text file by the server files interface
+QByteArray loadBinaryFile(const QString &filename_);    // load binary file
+QByteArray loadBinaryFileUrl(const QString &filenameUrl_);  // load binary file by URL
+QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);    // (TODO: inject dep) load binary file by the server files interface
+QString getTextFromBinaryData(const QByteArray &data_);     // return text from the binary data
+void saveTextFile(const QString filepath_, const QString &text_);       // save text to the text file
+bool isSimpleQVariantType(const QVariant::Type &type_);     // is type the simple qvariant type
+QStringList getUniqueValues(const QStringList &values_);    // return just unique values (remove repeted values)
+QStringList replace(const QStringList &stringList_, const QString from_, const QString & to_);  // replace string in the string list
+QStringList removeEmpty(const QStringList &values_);    // remove empty strings from the string list
+QStringList trimmed(const QStringList &values_);    // trim string list's strings
 
+/*
+ * open gl help functions
+*/
 #if QT_CONFIG(opengl)
 
-bool set_value(const QString &valStr_, GLint& val_);
-bool set_value(const QString &valStr_, GLfloat& val_);
-bool set_value(const QString &valStr_, QString& val_);
-void generateUniformRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_);
-void generateUniformRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_);
-QStringList getOpenGLErrors();
+bool set_value(const QString &valStr_, GLint& val_);    // set value to GLint from the string
+bool set_value(const QString &valStr_, GLfloat& val_);  // set value to GLfloat from the string
+bool set_value(const QString &valStr_, QString& val_);  // set value to QString from the string
+void generateUniformRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_);   // generate random values
+void generateUniformRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_);       // generate random values
+QStringList getOpenGLErrors();  // return open gl error as list of strings
 
 #endif  // #if QT_CONFIG(opengl)
 
 
+/*
+ * pathes join
+*/
 QString subpathJoin(const QString &relPath_, const QString &namespacePath_);
 
 
+/*
+ * convert QVariantList to the list of values with the template type
+ * with required array size
+*/
 template<typename Type_>
 void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_, int arraySize_)
 {
@@ -136,6 +149,10 @@ void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_, in
     }
 }
 
+/*
+ * convert QString list of values to the array of value with the template type
+ * with required array size
+*/
 template<typename Type_>
 void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int arraySize_)
 {
@@ -155,6 +172,11 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int 
     extractValues(valuesVar, valuesArray_, arraySize_);
 }
 
+
+/*
+ * enum conversions
+ * {
+*/
 template <typename EnumType_> inline
 constexpr auto to_underlying(EnumType_ enumValue_) noexcept
 {
@@ -166,7 +188,13 @@ constexpr auto to_enum(const std::underlying_type_t<EnumType_> &val_) noexcept
 {
     return static_cast<EnumType_>(val_);
 }
+// }
 
+/*
+ * primitives of imitation of the intialized/uninitialized value type
+ * with std::pair or with std::tuple
+ * {
+*/
 template <typename Type_> inline
 constexpr bool has_value(const std::pair<Type_, bool> &data_) noexcept
 {
@@ -262,11 +290,16 @@ constexpr Type_ & value(std::tuple<bool, Type_> &data_) noexcept
 {
     return std::get<1>(data_);
 }
+// }
 
-bool isDefaultImage(const QString &imageURLStr_);
-bool isDefaultImage(const QUrl &imageUrl_);
-QString setDefaultImageIfEmpty(const QString &imageURLStr_);
+bool isDefaultImage(const QString &imageURLStr_);   // is it a default image
+bool isDefaultImage(const QUrl &imageUrl_);         // is it a default image
+QString setDefaultImageIfEmpty(const QString &imageURLStr_);    // setup default image if the URL is empty
 
+/*
+ * return "fish" value
+ * {
+*/
 template<typename ArgType_, typename ReturnType_>
 ReturnType_ &valueOrFish(ArgType_ &value_, const ReturnType_ *)
 {
@@ -280,8 +313,10 @@ SameType_ &valueOrFish(SameType_ &value_, const SameType_ *)
 {
     return value_;
 }
+// }
 
 
+// primitive to simplify the casting
 template<typename TargetType_, typename SrcType_> inline
 std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&ptr_)
 {
@@ -289,6 +324,10 @@ std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&
 }
 
 
+/*
+ * classes and fucntions to convert json data to the types
+ * {
+*/
 class JsonValue : protected QJsonValue
 {
 public:
@@ -492,8 +531,12 @@ public:
 private:
     std::vector<std::unique_ptr<IJsonFieldInfo<JsonObjectType_>>> m_fields;
 };
+// }
 
 
+/*
+ * IDefaultData to setup some data from the implementation of the interface
+*/
 template<typename DataType_>
 class IDefaultData
 {
@@ -505,6 +548,9 @@ public:
 };
 
 
+/*
+ * class to imcapsulate dynamic cast for the types (BaseType_ -> DerivedType_)
+*/
 template<typename DerivedType_, typename BaseType_>
 class DynamicCastPtr
 {
