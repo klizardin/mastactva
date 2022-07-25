@@ -115,7 +115,7 @@ public:
     /*
      * add calculations if the artefact is a calculation
     */
-    virtual void addCalculations(
+    virtual bool addCalculations(
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const = 0;
@@ -123,7 +123,7 @@ public:
     /*
      * add calculations if the artefact is a calculation
     */
-    virtual void addMainCalculations(
+    virtual bool addMainCalculations(
             drawing_data::QuizImageObjects &objects_,
             const drawingdata::Details &details_
             ) const = 0;
@@ -188,11 +188,11 @@ public:
     void addData(
             const drawingdata::Details &details_
             ) const override;
-    void addCalculations(
+    bool addCalculations(
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const override;
-    void addMainCalculations(
+    bool addMainCalculations(
             drawing_data::QuizImageObjects &objects_,
             const drawingdata::Details &details_
             ) const override;

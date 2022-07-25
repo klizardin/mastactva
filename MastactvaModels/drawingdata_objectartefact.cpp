@@ -171,28 +171,32 @@ void DrawingDataObjectArtefact::addData(
     });
 }
 
-void DrawingDataObjectArtefact::addCalculations(
+bool DrawingDataObjectArtefact::addCalculations(
         drawing_data::QuizImageObject &object_,
         const drawingdata::Details &details_
         ) const
 {
-    (void)forArtefacts([&object_, &details_](const DrawingDataArtefact *artefact_)->bool
+    bool anyCalculations = false;
+    (void)forArtefacts([&anyCalculations, &object_, &details_](const DrawingDataArtefact *artefact_)->bool
     {
-        artefact_->addCalculations(object_, details_);
+        anyCalculations |= artefact_->addCalculations(object_, details_);
         return false;   // set up all calculations for all artefacts
     });
+    return anyCalculations;
 }
 
-void DrawingDataObjectArtefact::addMainCalculations(
+bool DrawingDataObjectArtefact::addMainCalculations(
         drawing_data::QuizImageObjects &objects_,
         const drawingdata::Details &details_
         ) const
 {
-    (void)forArtefacts([&objects_, &details_](const DrawingDataArtefact *artefact_)->bool
+    bool anyCalculations = false;
+    (void)forArtefacts([&anyCalculations, &objects_, &details_](const DrawingDataArtefact *artefact_)->bool
     {
-        artefact_->addMainCalculations(objects_, details_);
+        anyCalculations |= artefact_->addMainCalculations(objects_, details_);
         return false;   // set up all main calculations for all artefacts
     });
+    return anyCalculations;
 }
 
 bool DrawingDataObjectArtefact::hasAddon() const

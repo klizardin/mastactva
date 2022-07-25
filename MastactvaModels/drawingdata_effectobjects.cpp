@@ -240,7 +240,10 @@ bool ObjectArtefacts::build(
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
-        (*it)->addCalculations(object_, details_);
+        if((*it)->addCalculations(object_, details_))
+        {
+            (*it)->addArguments(object_, details_);
+        }
     }
     // add data from all the artefacts from the current step index
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
@@ -372,7 +375,11 @@ void ObjectArtefacts::addMainCalculations(
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
-        (*it)->addMainCalculations(objects_, details_);
+        if((*it)->addMainCalculations(objects_, details_))
+        {
+            // add arguments for this shader
+            //(*it)->addArguments(objects_, details_); // TODO: main calculations arguments
+        }
     }
 }
 
