@@ -378,7 +378,7 @@ void ObjectArtefacts::addMainCalculations(
         if((*it)->addMainCalculations(objects_, details_))
         {
             // add arguments for this shader
-            //(*it)->addArguments(objects_, details_); // TODO: main calculations arguments
+            //(*it)->addArguments(objects_, details_); // TODO: add main calculation's arguments
         }
     }
 }
