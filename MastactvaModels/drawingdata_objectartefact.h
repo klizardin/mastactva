@@ -116,7 +116,7 @@ public:
     /*
      * add calculation from the artefacts to the image object if any artefact is a artefact of a calculation data
     */
-    void addCalculations(
+    bool addCalculations(
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const override;
@@ -124,7 +124,7 @@ public:
     /*
      * add main calculation from the artefacts to the image object if any artefact is a artefact of a main calculation data
     */
-    void addMainCalculations(
+    bool addMainCalculations(
             drawing_data::QuizImageObjects &objects_,
             const drawingdata::Details &details_
             ) const override;

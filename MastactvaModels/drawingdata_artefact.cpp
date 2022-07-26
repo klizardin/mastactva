@@ -538,7 +538,7 @@ void LuaRuntimeCalculations::calculate(opengl_drawing::IVariables *variables_) c
 
 
 template<typename DataType_>
-void addCalculationsT(
+bool addCalculationsT(
         const DrawingDataArtefact *artefact_,
         DataType_ &object_,
         const drawingdata::Details &details_
@@ -548,7 +548,7 @@ void addCalculationsT(
             || !details_.filesource
             || !artefact_->m_effectArgData.operator bool())
     {
-        return;
+        return false;
     }
     const ArtefactTypeEn currentType = to_enum<ArtefactTypeEn>(artefact_->m_typeId);
     if(ArtefactTypeEn::scriptLuaRuntime == currentType)
@@ -575,23 +575,25 @@ void addCalculationsT(
                         args
                         )
                     );
+        return true;
     }
+    return false;
 }
 
-void DrawingDataArtefact::addCalculations(
+bool DrawingDataArtefact::addCalculations(
         drawing_data::QuizImageObject &object_,
         const drawingdata::Details &details_
         ) const
 {
-    addCalculationsT(this, object_, details_);
+    return addCalculationsT(this, object_, details_);
 }
 
-void DrawingDataArtefact::addMainCalculations(
+bool DrawingDataArtefact::addMainCalculations(
         drawing_data::QuizImageObjects &objects_,
         const drawingdata::Details &details_
         ) const
 {
-    addCalculationsT(this, objects_, details_);
+    return addCalculationsT(this, objects_, details_);
 }
 
 bool DrawingDataArtefact::hasAddon() const
