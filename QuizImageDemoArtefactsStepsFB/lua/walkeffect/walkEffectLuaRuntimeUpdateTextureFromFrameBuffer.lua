@@ -1,3 +1,3 @@
 function main ()
-    textures.setTextureFromCurrentFrameBuffer(getVariable("textureName")[0])
+    textures.setTextureFromCurrentFrameBuffer(getVariable("textureName")[1])
 end
