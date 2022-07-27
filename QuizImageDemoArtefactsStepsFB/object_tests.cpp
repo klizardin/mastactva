@@ -184,11 +184,11 @@ static const char *g_luaScriptCreateMatrxiVariablesForObjectList =
     "function main ()\n"
     "    local a = getVariable(\"angle\")\n"
     "    local m = getMatrixVariable(a, 0.0)\n"
-    "    setVariableWithPosition(\"%1\", m, \"%2\", 1, -1 )\n"
+    "    setVariableWithPosition(\"%1\", m, \"%2\", 1, 0, -1 )\n"
     "    m = getMatrixVariable(a, 0.25)\n"
-    "    setVariableWithPosition(\"%1\", m, \"%2\", 2, -1 )\n"
+    "    setVariableWithPosition(\"%1\", m, \"%2\", 2, 0, -1 )\n"
     "    m = getMatrixVariable(a, 0.5)\n"
-    "    setVariableWithPosition(\"%1\", m, \"%2\", 3, -1 )\n"
+    "    setVariableWithPosition(\"%1\", m, \"%2\", 3, 0, -1 )\n"
     "    result = {}\n"
     "    return result;\n"
     "end\n";
@@ -765,7 +765,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
         const char *effectObjectName,
         const char *effectObjectProgrammerName,
         const char *object3DName_,
-        const char *shaderFilename_
+        const char *shaderFilename_,
+        const QStringList &filterArgs_ = QStringList{}
         )
 {
     static const int effectObjectId = 1;
@@ -853,6 +854,10 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 );
     for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
     {
+        if(filterArgs_.contains(std::get<to_underlying(ArgEn::name)>(vertexArgs[i])))
+        {
+            continue;
+        }
         auto arg = std::make_unique<ArtefactArgData>(
                 std::get<to_underlying(ArgEn::id)>(vertexArgs[i]),
                 artefactId1,
@@ -2308,7 +2313,8 @@ std::unique_ptr<EffectData> createTestData10(
                 effectObjectName,
                 g_effectObjectQtLogoProgrammerName,
                 "",
-                shaderFilename_
+                shaderFilename_,
+                {g_renderTName,}
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
