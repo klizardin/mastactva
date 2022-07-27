@@ -186,12 +186,12 @@ namespace drawing_objects
 // using TestCaseInitializer = drawing_objects::DataTestAlias;
 // using TestCaseInitializer = drawing_objects::LuaScriptTestNewVariable;
 // using TestCaseInitializer = drawing_objects::LuaScriptTestSetVariable;
-// using TestCaseInitializer = drawing_objects::LuaScriptTestRuntime;
+using TestCaseInitializer = drawing_objects::LuaScriptTestRuntime;
 // using TestCaseInitializer = drawing_objects::LuaScriptArgTest0;
 // using TestCaseInitializer = drawing_objects::LuaScriptArgTest1;
 // using TestCaseInitializer = drawing_objects::ArgSetBaseTest;
 // using TestCaseInitializer = drawing_objects::AlphaBlendingMultipleObjectsTest;
-using TestCaseInitializer = drawing_objects::WalkEffectTest;
+//using TestCaseInitializer = drawing_objects::WalkEffectTest;
 //using TestCaseInitializer = drawing_objects::WalkEffectDrawingBufferTest;
 
 
