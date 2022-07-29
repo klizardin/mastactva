@@ -480,6 +480,15 @@ void opengl_drawing::Object::init(
     free();
 
     m_imageData = imageData_;
+
+    if(!m_imageData
+            || m_imageData->vertexShader.isEmpty()
+            || m_imageData->fragmentShader.isEmpty()
+            )
+    {
+        return;
+    }
+
     program = std::make_unique<QOpenGLShaderProgram>();
     program->addCacheableShaderFromSourceCode(
                 QOpenGLShader::Vertex,
