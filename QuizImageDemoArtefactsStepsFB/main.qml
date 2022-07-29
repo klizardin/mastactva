@@ -48,7 +48,7 @@ ApplicationWindow {
         NumberAnimation { target: renderer; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
         PauseAnimation { duration: 2000 }
         running: true
-        //loops: Animation.Infinite
+        loops: Animation.Infinite
     }
 
     Connections {
