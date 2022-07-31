@@ -243,11 +243,13 @@ namespace opengl_drawing
 
         /*
          * set up texture for the drawing object
+         * Note: can add new textures
         */
         void setTexture(const QString &name_, const QString& newFilename_, const QColor &backgroundColor_);
 
         /*
          * set up texture for the drawing object from the frame buffer
+         * Note: add only to the existing texture, existing texture may be uninitialized
         */
         void setTextureFromFrameBuffer(const QString &name_, QOpenGLFramebufferObject *currentFrameBufferObject_, const QColor &backgroundColor_);
 
@@ -536,6 +538,8 @@ public:
     ObjectsRenderer();
     ~ObjectsRenderer();
 
+    void setCurrentFrameBufferObject(QOpenGLFramebufferObject *fbobj_);
+
     /*
      * set up quiz image data
     */
@@ -720,6 +724,7 @@ private:
 
 private:
     std::unique_ptr<opengl_drawing::Objects> m_openglData;  // contains opne gl drawing objects
+    QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
 };
 
 
