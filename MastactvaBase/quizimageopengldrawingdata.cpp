@@ -28,7 +28,7 @@ bool opengl_drawing::Texture::setFilename(const QString &fileName_, const QColor
     m_texture.reset();
     if(fileName_.isEmpty())
     {
-        return false;
+        return true;
     }
     m_image.load(fileName_);
     if(m_image.isNull())
@@ -79,6 +79,11 @@ void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_) const
 
 void opengl_drawing::Texture::bind(QOpenGLFunctions *f_) const
 {
+    if(!m_texture)
+    {
+        return;
+    }
+
     f_->glActiveTexture(GL_TEXTURE0 + m_index);
     m_texture->bind();
 }
