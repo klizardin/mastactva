@@ -26,6 +26,10 @@
 bool opengl_drawing::Texture::setFilename(const QString &fileName_, const QColor &backgroundColor_)
 {
     m_texture.reset();
+    if(fileName_.isEmpty())
+    {
+        return false;
+    }
     m_image.load(fileName_);
     if(m_image.isNull())
     {
