@@ -243,11 +243,13 @@ namespace opengl_drawing
 
         /*
          * set up texture for the drawing object
+         * Note: can add new textures
         */
         void setTexture(const QString &name_, const QString& newFilename_, const QColor &backgroundColor_);
 
         /*
          * set up texture for the drawing object from the frame buffer
+         * Note: add only to the existing texture, existing texture may be uninitialized
         */
         void setTextureFromFrameBuffer(const QString &name_, QOpenGLFramebufferObject *currentFrameBufferObject_, const QColor &backgroundColor_);
 
