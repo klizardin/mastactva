@@ -538,6 +538,8 @@ public:
     ObjectsRenderer();
     ~ObjectsRenderer();
 
+    void setCurrentFrameBufferObject(QOpenGLFramebufferObject *fbobj_);
+
     /*
      * set up quiz image data
     */
@@ -722,6 +724,7 @@ private:
 
 private:
     std::unique_ptr<opengl_drawing::Objects> m_openglData;  // contains opne gl drawing objects
+    QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
 };
 
 

@@ -49,6 +49,7 @@ bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject 
         return false;
     }
     m_image = frameBufferObject_->toImage();
+    //m_image.save("~/tmp/image.png");
     createTextureFromImage();
     setWrapClampToBorder();
     setBorderColor(backgroundColor_);
@@ -1569,12 +1570,22 @@ ObjectsRenderer::~ObjectsRenderer()
 {
 }
 
+void ObjectsRenderer::setCurrentFrameBufferObject(QOpenGLFramebufferObject *fbobj_)
+{
+    m_currentFrameBufferObject = fbobj_;
+    if(m_openglData)
+    {
+        m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject);
+    }
+}
+
 void ObjectsRenderer::setImageData(
         std::unique_ptr<drawing_data::QuizImageObjects> imageData_
         )
 {
     m_openglData = std::make_unique<opengl_drawing::Objects>();
     m_openglData->init(std::move(imageData_));
+    m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject);
     initialize();
 }
 
@@ -1585,7 +1596,11 @@ std::unique_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageDat
         return {nullptr};
     }
 
-    return m_openglData->free();
+    if(m_openglData)
+    {
+        m_openglData->setCurrentFrameBufferObject(nullptr);
+    }
+    return m_openglData ? m_openglData->free() : std::unique_ptr<drawing_data::QuizImageObjects>{nullptr};
 }
 
 int ObjectsRenderer::getAttributeTupleSize(const QString &name_) const
@@ -1868,7 +1883,9 @@ QOpenGLFramebufferObject *QuizImageFboRendererImpl::createFramebufferObjectImpl(
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
     format.setSamples(4);
-    return new QOpenGLFramebufferObject(size_, format);
+    auto fbobj = new QOpenGLFramebufferObject(size_, format);
+    m_objectRenderer.setCurrentFrameBufferObject(fbobj);
+    return fbobj;
 }
 
 const QVector2D &QuizImageFboRendererImpl::getWindowSize() const
