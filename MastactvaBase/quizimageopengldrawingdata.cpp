@@ -28,7 +28,7 @@ bool opengl_drawing::Texture::setFilename(const QString &fileName_, const QColor
     m_texture.reset();
     if(fileName_.isEmpty())
     {
-        return false;
+        return true;
     }
     m_image.load(fileName_);
     if(m_image.isNull())
@@ -49,7 +49,7 @@ bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject 
         return false;
     }
     m_image = frameBufferObject_->toImage();
-    //m_image.save("~/tmp/image.png");
+    //m_image.save("000-image.PNG");
     createTextureFromImage();
     setWrapClampToBorder();
     setBorderColor(backgroundColor_);
@@ -79,6 +79,11 @@ void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_) const
 
 void opengl_drawing::Texture::bind(QOpenGLFunctions *f_) const
 {
+    if(!m_texture)
+    {
+        return;
+    }
+
     f_->glActiveTexture(GL_TEXTURE0 + m_index);
     m_texture->bind();
 }
