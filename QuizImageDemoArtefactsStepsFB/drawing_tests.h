@@ -31,6 +31,10 @@ void createQTLogoGeometry(
         );
 }
 
+/*
+ * QuizImageObjects tests
+ * to test base functionality of the stage drawing from the QuizImageObjects
+*/
 namespace drawing_data
 {
     class TestMinimalDrawQTLogoQuizImageObject : public IDefaultData<QuizImageObjects>
