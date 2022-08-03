@@ -48,8 +48,11 @@ bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject 
     {
         return false;
     }
-    m_image = frameBufferObject_->toImage();
-    //m_image.save("000-image.PNG");
+    //QOpenGLFramebufferObject fb(frameBufferObject_->size());
+    //QOpenGLFramebufferObject::blitFramebuffer(&fb, frameBufferObject_);
+    //m_image = fb.toImage(true);
+    m_image = frameBufferObject_->toImage(true);
+    qDebug() << m_image.save("000-image.PNG");
     createTextureFromImage();
     setWrapClampToBorder();
     setBorderColor(backgroundColor_);
@@ -1887,7 +1890,7 @@ QOpenGLFramebufferObject *QuizImageFboRendererImpl::createFramebufferObjectImpl(
 {
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
-    format.setSamples(4);
+    //format.setSamples(4);
     auto fbobj = new QOpenGLFramebufferObject(size_, format);
     m_objectRenderer.setCurrentFrameBufferObject(fbobj);
     return fbobj;

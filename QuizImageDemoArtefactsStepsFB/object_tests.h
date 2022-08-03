@@ -46,6 +46,11 @@ private:
 };
 
 
+/*
+ * DrawingDataEffect tests
+ * for testing pipeline of initialization of the QuizImageObjects with DrawingDataEffect data
+ * (data from the storage)
+*/
 namespace drawing_objects
 {
     class BaseTest : public IDefaultData<drawing_data::QuizImageObjects>
