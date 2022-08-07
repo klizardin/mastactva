@@ -166,3 +166,6 @@ opencv addon test
 * document classes
 
 - add objects order
+
+
+- reimplement Renderer
