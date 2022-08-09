@@ -25,6 +25,7 @@ SOURCES += \
 unix: SOURCES +=    \
     quizimagedrawingdata.cpp    \
     quizimageopengldrawingdata.cpp \
+    quickframebufferobjects.cpp \
     opengldrawing_calculations.cpp  \
     effectargument_data.cpp \
     effectarg_data.cpp  \
@@ -70,6 +71,7 @@ HEADERS += \
 unix: HEADERS +=    \
     quizimagedrawingdata.h  \
     quizimageopengldrawingdata.h \
+    quickframebufferobjects.h \
     opengldrawing_calculations.h    \
     effectargument_data.h   \
     effectarg_data.h    \
