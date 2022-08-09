@@ -17,7 +17,7 @@ QML_IMPORT_MAJOR_VERSION = 1
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        ../MastactvaBase/cquickframebufferobject.cpp \
+        ../MastactvaBase/quickframebufferobjects.cpp \
         drawing_tests.cpp \
         main.cpp \
         object_tests.cpp \
@@ -64,7 +64,7 @@ unix: SOURCES +=    \
 
 
 HEADERS += \
-    ../MastactvaBase/cquickframebufferobject.h \
+    ../MastactvaBase/quickframebufferobjects.h \
     drawing_tests.h \
     object_tests.h \
     quizimage.h
