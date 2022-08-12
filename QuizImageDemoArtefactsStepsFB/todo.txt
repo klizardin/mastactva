@@ -170,3 +170,4 @@ opencv addon test
 
 - reimplement Renderer
     - add drawing steps
+    - hold and reinit objects
