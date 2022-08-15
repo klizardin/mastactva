@@ -2,109 +2,6 @@
     {
         "classes": [
             {
-                "className": "QSGFramebufferMultiObjectsNode",
-                "object": true,
-                "qualifiedClassName": "QSGFramebufferMultiObjectsNode",
-                "slots": [
-                    {
-                        "access": "public",
-                        "name": "render",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "handleScreenChange",
-                        "returnType": "void"
-                    }
-                ],
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QSGTextureProvider"
-                    },
-                    {
-                        "access": "public",
-                        "name": "QSGSimpleTextureNode"
-                    }
-                ]
-            },
-            {
-                "className": "QQuickFramebufferObjects",
-                "object": true,
-                "properties": [
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "textureFollowsItemSize",
-                        "notify": "textureFollowsItemSizeChanged",
-                        "read": "textureFollowsItemSize",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "bool",
-                        "user": false,
-                        "write": "setTextureFollowsItemSize"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "mirrorVertically",
-                        "notify": "mirrorVerticallyChanged",
-                        "read": "mirrorVertically",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "bool",
-                        "user": false,
-                        "write": "setMirrorVertically"
-                    }
-                ],
-                "qualifiedClassName": "QQuickFramebufferObjects",
-                "signals": [
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "type": "bool"
-                            }
-                        ],
-                        "name": "textureFollowsItemSizeChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "type": "bool"
-                            }
-                        ],
-                        "name": "mirrorVerticallyChanged",
-                        "returnType": "void"
-                    }
-                ],
-                "slots": [
-                    {
-                        "access": "private",
-                        "name": "invalidateSceneGraph",
-                        "returnType": "void"
-                    }
-                ],
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QQuickItem"
-                    }
-                ]
-            }
-        ],
-        "inputFile": "quickframebufferobjects.h",
-        "outputRevision": 67
-    },
-    {
-        "classes": [
-            {
                 "classInfos": [
                     {
                         "name": "QML.Element",
@@ -253,6 +150,109 @@
             }
         ],
         "inputFile": "quizimage.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "QSGFramebufferMultiObjectsNode",
+                "object": true,
+                "qualifiedClassName": "QSGFramebufferMultiObjectsNode",
+                "slots": [
+                    {
+                        "access": "public",
+                        "name": "render",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "handleScreenChange",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QSGTextureProvider"
+                    },
+                    {
+                        "access": "public",
+                        "name": "QSGSimpleTextureNode"
+                    }
+                ]
+            },
+            {
+                "className": "QQuickFramebufferObjects",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "textureFollowsItemSize",
+                        "notify": "textureFollowsItemSizeChanged",
+                        "read": "textureFollowsItemSize",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setTextureFollowsItemSize"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "mirrorVertically",
+                        "notify": "mirrorVerticallyChanged",
+                        "read": "mirrorVertically",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setMirrorVertically"
+                    }
+                ],
+                "qualifiedClassName": "QQuickFramebufferObjects",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "bool"
+                            }
+                        ],
+                        "name": "textureFollowsItemSizeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "bool"
+                            }
+                        ],
+                        "name": "mirrorVerticallyChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "name": "invalidateSceneGraph",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QQuickItem"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "quickframebufferobjects.h",
         "outputRevision": 67
     }
 ]
