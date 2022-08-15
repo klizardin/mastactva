@@ -10,22 +10,6 @@
 #include <QSGRendererInterface>
 
 
-class QQuickFramebufferObjectsPrivate //: public QQuickItemPrivate
-{
-    //Q_DECLARE_PUBLIC(QQuickFramebufferObjects)
-public:
-    QQuickFramebufferObjectsPrivate()
-        : followsItemSize(true)
-        , mirrorVertically(false)
-        , node(nullptr)
-    {
-    }
-
-    bool followsItemSize;
-    bool mirrorVertically;
-    mutable QSGFramebufferMultiObjectsNode *node;
-};
-
 QSGFramebufferMultiObjectsNode::QSGFramebufferMultiObjectsNode()
     : window(nullptr)
     , fbo(nullptr)

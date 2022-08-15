@@ -11,6 +11,7 @@ class QQuickFramebufferObjectsPrivate;
 class QQuickFramebufferObjects;
 class QQuickFramebufferObjectsRenderer;
 
+
 class QSGFramebufferMultiObjectsNode : public QSGTextureProvider, public QSGSimpleTextureNode
 {
     Q_OBJECT
@@ -37,6 +38,23 @@ public:
     bool invalidatePending;
 
     qreal devicePixelRatio;
+};
+
+
+class QQuickFramebufferObjectsPrivate //: public QQuickItemPrivate
+{
+    //Q_DECLARE_PUBLIC(QQuickFramebufferObjects)
+public:
+    QQuickFramebufferObjectsPrivate()
+        : followsItemSize(true)
+        , mirrorVertically(false)
+        , node(nullptr)
+    {
+    }
+
+    bool followsItemSize;
+    bool mirrorVertically;
+    mutable QSGFramebufferMultiObjectsNode *node;
 };
 
 
