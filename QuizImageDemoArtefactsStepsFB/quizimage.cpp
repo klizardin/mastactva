@@ -38,7 +38,7 @@ QuizImage::QuizImage()
     initDefaultDrawingData();
 }
 
-QQuickFramebufferObject::Renderer *QuizImage::createRenderer() const
+QQuickFramebufferObjectsRenderer *QuizImage::createRenderer() const
 {
     return new QuizImageFboRenderer<QuizImage>();
 }

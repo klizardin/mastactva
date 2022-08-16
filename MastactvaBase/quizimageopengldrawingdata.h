@@ -24,7 +24,8 @@
 #include <QtGui/qopenglfunctions.h>
 #include <QtGui/QOpenGLFramebufferObject>
 #include <QtQuick/QQuickWindow>
-#include <QQuickFramebufferObject>
+//#include <QQuickFramebufferObject>
+#include "../MastactvaBase/quickframebufferobjects.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/opengldrawing_utils.h"
 #include "../MastactvaBase/drawingdata_utils.h"
@@ -794,7 +795,7 @@ private:
 template<typename QuizImageType_>
 class QuizImageFboRenderer :
         public QuizImageFboRendererImpl
-        , public QQuickFramebufferObject::Renderer
+        , public QQuickFramebufferObjectsRenderer
 {
 public:
     QuizImageFboRenderer() = default;
@@ -815,7 +816,7 @@ public:
     /*
      * to synchronize data with quiz image control
     */
-    void synchronize(QQuickFramebufferObject *frameBufferObject_) override
+    void synchronize(QQuickFramebufferObjects *frameBufferObject_) override
     {
         QuizImageType_ *quizImage = static_cast<QuizImageType_ *>(frameBufferObject_);
         if(!quizImage)
