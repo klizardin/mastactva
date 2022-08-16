@@ -20,7 +20,8 @@
 
 
 #include <memory>
-#include <QtQuick/QQuickFramebufferObject>
+//#include <QtQuick/QQuickFramebufferObject>
+#include "../MastactvaBase/quickframebufferobjects.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "drawing_tests.h"
 #include "object_tests.h"
@@ -62,7 +63,7 @@ using Tests = std::tuple<
 /*
  * control that wraps the opengl effect drawing
 */
-class QuizImage : public QQuickFramebufferObject
+class QuizImage : public QQuickFramebufferObjects
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(QuizImageDemo)
@@ -80,7 +81,7 @@ public:
     Q_INVOKABLE void updateProject();
 
 public:
-    virtual Renderer *createRenderer() const override;
+    virtual QQuickFramebufferObjectsRenderer *createRenderer() const override;
 
 public:
     qreal t() const;
