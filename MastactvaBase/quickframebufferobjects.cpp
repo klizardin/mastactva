@@ -146,6 +146,10 @@ QSGNode *QQuickFramebufferObjects::updatePaintNode(QSGNode *node, UpdatePaintNod
     //QQuickFramebufferObjectsPrivate * const d = d_func()
 
     if (!n) {
+        Q_ASSERT(window());
+        if(window()->isSceneGraphInitialized() && nullptr == window()->openglContext()) {
+            return nullptr;
+        }
         //if (!isOpenGL(d->sceneGraphRenderContext()))
         //    return nullptr;
         if (!d->node)
