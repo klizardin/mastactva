@@ -123,7 +123,7 @@ void QQuickFramebufferObjects::geometryChanged(const QRectF &newGeometry, const 
         update();
 }
 
-//static inline bool isOpenGL(QSGRenderContext *rc)
+//static inline bool isOpenGL(QOpenGLContext *rc)
 //{
 //    QSGRendererInterface *rif = rc->sceneGraphContext()->rendererInterface(rc);
 //    return rif && (rif->graphicsApi() == QSGRendererInterface::OpenGL
@@ -147,7 +147,10 @@ QSGNode *QQuickFramebufferObjects::updatePaintNode(QSGNode *node, UpdatePaintNod
 
     if (!n) {
         Q_ASSERT(window());
-        if(window()->isSceneGraphInitialized() && nullptr == window()->openglContext()) {
+        if(window()->isSceneGraphInitialized()
+                && nullptr == window()->openglContext()
+                //&& !isOpenGL(window()->openglContext())
+                ) {
             return nullptr;
         }
         //if (!isOpenGL(d->sceneGraphRenderContext()))
