@@ -172,3 +172,4 @@ opencv addon test
     - add drawing steps
     - hold and reinit objects
     - debug original code
+    - original version for next steps
