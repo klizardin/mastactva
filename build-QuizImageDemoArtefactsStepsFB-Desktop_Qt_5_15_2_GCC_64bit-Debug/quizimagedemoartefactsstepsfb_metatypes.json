@@ -144,7 +144,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "QQuickFramebufferObjects"
+                        "name": "QQuickFramebufferObject"
                     }
                 ]
             }
