@@ -173,5 +173,5 @@ opencv addon test
     - hold and reinit objects
     - debug original code
     - original version for next steps
-    - debuging ...
+    - debuging .
 - branch for new version
