@@ -59,9 +59,15 @@ int main(int argc, char **argv)
     // only functional when Qt Quick is also using OpenGL
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
+    // use of the window
+    // (standard steps for QWindow):
+    // create
     WindowSingleThreaded window;
+    // set default size
     window.resize(1024, 768);
+    // show
     window.show();
 
+    // execute application
     return app.exec();
 }
