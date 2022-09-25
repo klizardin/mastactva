@@ -73,6 +73,9 @@ private:
     void init(QWindow *w, QOpenGLContext *share);
     void setupVertexAttribs();
 
+    /* can be emulated by QWindow
+     * https://doc.qt.io/qt-6/qoffscreensurface.html
+    */
     QOffscreenSurface *m_offscreenSurface;
     QOpenGLContext *m_context;
     QOpenGLShaderProgram *m_program;
