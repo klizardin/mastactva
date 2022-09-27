@@ -111,6 +111,7 @@ WindowSingleThreaded::WindowSingleThreaded()
     m_offscreenSurface->setFormat(m_context->format());
     m_offscreenSurface->create();
 
+    // create opnegl render class for QOffscreenSurface
     m_cubeRenderer = new CubeRenderer(m_offscreenSurface);
 
     m_renderControl = new RenderControl(this);
@@ -163,6 +164,7 @@ WindowSingleThreaded::~WindowSingleThreaded()
 
     m_context->doneCurrent();
 
+    // remove opengl render
     delete m_cubeRenderer;
 
     delete m_offscreenSurface;
@@ -212,6 +214,8 @@ void WindowSingleThreaded::render()
     m_quickReady = true;
 
     // Get something onto the screen.
+    // run rendering for this QWindow and for m_context
+    // with texture to use in drawings
     m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId : 0);
 }
 
@@ -271,6 +275,8 @@ void WindowSingleThreaded::updateSizes()
 
     m_quickWindow->setGeometry(0, 0, width(), height());
 
+    // resize render screen size
+    // work with drawing matrix
     m_cubeRenderer->resize(width(), height());
 }
 
@@ -287,6 +293,8 @@ void WindowSingleThreaded::exposeEvent(QExposeEvent *)
 {
     if (isExposed()) {
         if (!m_quickInitialized) {
+            // run rendering
+            // for this QWindow and m_context QOpenGLContext
             m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId : 0);
             startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"));
         }
