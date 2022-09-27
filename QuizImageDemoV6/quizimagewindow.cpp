@@ -99,6 +99,7 @@ WindowSingleThreaded::WindowSingleThreaded()
     format.setStencilBufferSize(8);
     setFormat(format);
 
+    // create QOpenGLContext
     m_context = new QOpenGLContext;
     m_context->setFormat(format);
     m_context->create();
@@ -108,6 +109,7 @@ WindowSingleThreaded::WindowSingleThreaded()
     // sizes, while the context, that has just been created, reports a format that has
     // these values filled in. Pass this to the offscreen surface to make sure it will be
     // compatible with the context's configuration.
+    // (use current QOpenGLContext format for QOffscreenSurface)
     m_offscreenSurface->setFormat(m_context->format());
     m_offscreenSurface->create();
 
@@ -152,6 +154,7 @@ WindowSingleThreaded::~WindowSingleThreaded()
     // offscreen surface here because passing 'this' at this point is not safe: the
     // underlying platform window may already be destroyed. To avoid all the trouble, use
     // another surface that is valid for sure.
+    // make current QOpenGLContext as QOffscreeenSurface
     m_context->makeCurrent(m_offscreenSurface);
 
     delete m_qmlComponent;
@@ -160,7 +163,10 @@ WindowSingleThreaded::~WindowSingleThreaded()
     delete m_renderControl;
 
     if (m_textureId)
+    {
+        // delete texture inside current QOpenGLContext for QOffscreeenSurface
         m_context->functions()->glDeleteTextures(1, &m_textureId);
+    }
 
     m_context->doneCurrent();
 
@@ -177,6 +183,8 @@ void WindowSingleThreaded::createTexture()
     // it with the QQuickWindow.
     m_dpr = devicePixelRatio();
     m_textureSize = size() * m_dpr;
+    // get opengl functions from the QOpenGLContext
+    // we have already setup QOpenGLContext as QOffscreenSurface
     QOpenGLFunctions *f = m_context->functions();
     f->glGenTextures(1, &m_textureId);
     f->glBindTexture(GL_TEXTURE_2D, m_textureId);
@@ -189,12 +197,14 @@ void WindowSingleThreaded::createTexture()
 
 void WindowSingleThreaded::destroyTexture()
 {
+    // maybe not setuped QOffscreenSurface
     m_context->functions()->glDeleteTextures(1, &m_textureId);
     m_textureId = 0;
 }
 
 void WindowSingleThreaded::render()
 {
+    // setup rendering into the texture
     if (!m_context->makeCurrent(m_offscreenSurface))
         return;
 
@@ -209,6 +219,7 @@ void WindowSingleThreaded::render()
     m_renderControl->endFrame();
 
     QOpenGLFramebufferObject::bindDefault();
+    // flush QOpenGLContext
     m_context->functions()->glFlush();
 
     m_quickReady = true;
@@ -216,6 +227,7 @@ void WindowSingleThreaded::render()
     // Get something onto the screen.
     // run rendering for this QWindow and for m_context
     // with texture to use in drawings
+    // (render to the current QWindow)
     m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId : 0);
 }
 
@@ -261,7 +273,9 @@ void WindowSingleThreaded::run()
     m_rootItem->forceActiveFocus();
 
     // Initialize the render control and our OpenGL resources.
+    // setup QOpenGLContext into the QOffscreenSurface
     m_context->makeCurrent(m_offscreenSurface);
+    // setup graphic device into the QQuickWindow
     m_quickWindow->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(m_context));
     m_renderControl->initialize();
     m_quickInitialized = true;
