@@ -82,6 +82,9 @@ CubeRenderer::~CubeRenderer()
     delete m_context;
 }
 
+/*
+ * we need QWindow and QOpenGlContext to init drawing content
+*/
 void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
 {
     m_context = new QOpenGLContext;
