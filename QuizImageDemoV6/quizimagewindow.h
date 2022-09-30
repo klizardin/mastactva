@@ -99,7 +99,10 @@ private:
     void resizeTexture();
 
     QOpenGLContext *m_context;
+
+    // https://doc.qt.io/qt-6/qoffscreensurface.html
     QOffscreenSurface *m_offscreenSurface;
+
     QQuickRenderControl *m_renderControl;
     QQuickWindow *m_quickWindow;
     QQmlEngine *m_qmlEngine;
