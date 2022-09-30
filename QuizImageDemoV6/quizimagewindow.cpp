@@ -177,6 +177,10 @@ WindowSingleThreaded::~WindowSingleThreaded()
     delete m_context;
 }
 
+/*
+ * here is the example of how to create several QQuickWindows and
+ * how to setup textures for each of them
+*/
 void WindowSingleThreaded::createTexture()
 {
     // The scene graph has been initialized. It is now time to create an texture and associate
