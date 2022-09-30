@@ -113,6 +113,8 @@ private:
     bool m_quickInitialized;
     bool m_quickReady;
     QTimer m_updateTimer;
+
+    // TODO: several steps of CubeRenderer ?
     CubeRenderer *m_cubeRenderer;
     qreal m_dpr;
 };
