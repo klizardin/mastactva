@@ -309,6 +309,7 @@ void WindowSingleThreaded::exposeEvent(QExposeEvent *)
         if (!m_quickInitialized) {
             // run rendering
             // for this QWindow and m_context QOpenGLContext
+            // (possibly this mostly for initialization)
             m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId : 0);
             startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"));
         }
