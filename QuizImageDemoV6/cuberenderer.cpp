@@ -189,6 +189,9 @@ void CubeRenderer::setupVertexAttribs()
     m_vbo->release();
 }
 
+/*
+ * TODO: add texture1, texture2
+*/
 void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture)
 {
     if (!m_context)
