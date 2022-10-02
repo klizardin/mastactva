@@ -99,17 +99,22 @@ private:
     void resizeTexture();
 
     QOpenGLContext *m_context;
+
+    // https://doc.qt.io/qt-6/qoffscreensurface.html
     QOffscreenSurface *m_offscreenSurface;
-    QQuickRenderControl *m_renderControl;
-    QQuickWindow *m_quickWindow;
-    QQmlEngine *m_qmlEngine;
-    QQmlComponent *m_qmlComponent;
-    QQuickItem *m_rootItem;
-    uint m_textureId;
+
+    QQuickRenderControl *m_renderControl[2];
+    QQuickWindow *m_quickWindow[2];
+    QQmlEngine *m_qmlEngine[2];
+    QQmlComponent *m_qmlComponent[2];
+    QQuickItem *m_rootItem[2];
+    uint m_textureId[2];
     QSize m_textureSize;
     bool m_quickInitialized;
     bool m_quickReady;
     QTimer m_updateTimer;
+
+    // TODO: several steps of CubeRenderer ?
     CubeRenderer *m_cubeRenderer;
     qreal m_dpr;
 };
