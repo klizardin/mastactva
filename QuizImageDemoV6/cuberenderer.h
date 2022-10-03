@@ -68,7 +68,7 @@ public:
     ~CubeRenderer();
 
     void resize(int w, int h);
-    void render(QWindow *w, QOpenGLContext *share, uint texture);
+    void render(QWindow *w, QOpenGLContext *share, uint texture1, uint texture2);
 
 private:
     void init(QWindow *w, QOpenGLContext *share);

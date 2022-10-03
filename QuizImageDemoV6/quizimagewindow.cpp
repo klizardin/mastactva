@@ -264,7 +264,7 @@ void WindowSingleThreaded::render()
     // run rendering for this QWindow and for m_context
     // with texture to use in drawings
     // (render to the current QWindow)
-    m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0);
+    m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0, m_quickReady ? m_textureId[1] : 0);
 }
 
 void WindowSingleThreaded::requestUpdate()
@@ -381,7 +381,7 @@ void WindowSingleThreaded::exposeEvent(QExposeEvent *)
             // run rendering
             // for this QWindow and m_context QOpenGLContext
             // (possibly this mostly for initialization)
-            m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0);
+            m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0, m_quickReady ? m_textureId[1] : 0);
             startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"));
         }
     }
