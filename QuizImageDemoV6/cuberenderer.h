@@ -52,6 +52,7 @@
 #define CUBERENDERER_H
 
 #include <QMatrix4x4>
+#include <vector>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLContext)
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
@@ -67,10 +68,10 @@ public:
     ~CubeRenderer();
 
     void resize(int w, int h);
-    void render(QWindow *w, QOpenGLContext *share, uint texture);
+    void render(QWindow *w, QOpenGLContext *share, uint texture, bool first, bool last, QOpenGLContext *&context);
 
 private:
-    void init(QWindow *w, QOpenGLContext *share);
+    void init(QWindow *w, QOpenGLContext *share, bool first, bool last, QOpenGLContext *&context);
     void setupVertexAttribs();
 
     /* can be emulated by QWindow
@@ -83,6 +84,8 @@ private:
     QOpenGLVertexArrayObject *m_vao;
     int m_matrixLoc;
     QMatrix4x4 m_proj;
+    bool m_last = false;
+    std::vector<int> m_viewport;
 };
 
 #endif

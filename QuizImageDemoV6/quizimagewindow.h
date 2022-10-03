@@ -115,7 +115,7 @@ private:
     QTimer m_updateTimer;
 
     // TODO: several steps of CubeRenderer ?
-    CubeRenderer *m_cubeRenderer;
+    CubeRenderer *m_cubeRenderer[2];
     qreal m_dpr;
 };
 
