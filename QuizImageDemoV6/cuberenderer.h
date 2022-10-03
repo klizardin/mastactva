@@ -68,10 +68,10 @@ public:
     ~CubeRenderer();
 
     void resize(int w, int h);
-    void render(QWindow *w, QOpenGLContext *share, uint texture, bool first, bool last, QOpenGLContext *&context);
+    void render(QWindow *w, QOpenGLContext *share, uint texture);
 
 private:
-    void init(QWindow *w, QOpenGLContext *share, bool first, bool last, QOpenGLContext *&context);
+    void init(QWindow *w, QOpenGLContext *share);
     void setupVertexAttribs();
 
     /* can be emulated by QWindow

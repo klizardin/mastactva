@@ -114,8 +114,7 @@ WindowSingleThreaded::WindowSingleThreaded()
     m_offscreenSurface->create();
 
     // create opnegl render class for QOffscreenSurface
-    m_cubeRenderer[0] = new CubeRenderer(m_offscreenSurface);
-    m_cubeRenderer[1] = new CubeRenderer(m_offscreenSurface);
+    m_cubeRenderer = new CubeRenderer(m_offscreenSurface);
 
     m_renderControl[0] = new RenderControl(this);
     m_renderControl[1] = new RenderControl(this);
@@ -190,8 +189,7 @@ WindowSingleThreaded::~WindowSingleThreaded()
     m_context->doneCurrent();
 
     // remove opengl render
-    delete m_cubeRenderer[0];
-    delete m_cubeRenderer[1];
+    delete m_cubeRenderer;
 
     delete m_offscreenSurface;
     delete m_context;
@@ -266,9 +264,7 @@ void WindowSingleThreaded::render()
     // run rendering for this QWindow and for m_context
     // with texture to use in drawings
     // (render to the current QWindow)
-    QOpenGLContext *context = nullptr;
-    m_cubeRenderer[0]->render(this, m_context, m_quickReady ? m_textureId[0] : 0, true, false, context);
-    m_cubeRenderer[0]->render(this, m_context, m_quickReady ? m_textureId[0] : 0, false, true, context);
+    m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0);
 }
 
 void WindowSingleThreaded::requestUpdate()
@@ -358,8 +354,7 @@ void WindowSingleThreaded::updateSizes()
 
     // resize render screen size
     // work with drawing matrix
-    m_cubeRenderer[0]->resize(width(), height());
-    m_cubeRenderer[1]->resize(width(), height());
+    m_cubeRenderer->resize(width(), height());
 }
 
 void WindowSingleThreaded::startQuick(const QString &filename)
@@ -386,9 +381,7 @@ void WindowSingleThreaded::exposeEvent(QExposeEvent *)
             // run rendering
             // for this QWindow and m_context QOpenGLContext
             // (possibly this mostly for initialization)
-            QOpenGLContext *context = nullptr;
-            m_cubeRenderer[0]->render(this, m_context, m_quickReady ? m_textureId[0] : 0, true, false, context);
-            m_cubeRenderer[1]->render(this, m_context, m_quickReady ? m_textureId[0] : 0, false, true, context);
+            m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0);
             startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"));
         }
     }

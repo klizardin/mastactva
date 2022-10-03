@@ -79,39 +79,33 @@ CubeRenderer::~CubeRenderer()
     delete m_vao;
 
     m_context->doneCurrent();
-    if(m_last)
-        delete m_context;
+    delete m_context;
 }
 
 /*
  * we need QWindow and QOpenGlContext to init drawing content
 */
-void CubeRenderer::init(QWindow *w, QOpenGLContext *share, bool first, bool last, QOpenGLContext *&context)
+void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
 {
-    m_last = last;
-    if(!context)
-    {
-        m_context = new QOpenGLContext;
-        m_context->setShareContext(share);
-        m_context->setFormat(w->requestedFormat());
-        m_context->create();
-        if (!m_context->makeCurrent(w))
-            return;
-        context = m_context;
-    }
-    else
-    {
-        m_context = context;
-    }
+    m_context = new QOpenGLContext;
+    m_context->setShareContext(share);
+    m_context->setFormat(w->requestedFormat());
+    m_context->create();
+    if (!m_context->makeCurrent(w))
+        return;
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClearColor(0.0f, 0.1f, 0.25f, 1.0f);
-    m_viewport.push_back(first ? 0 : w->width() * w->devicePixelRatio() * 0.5);
     m_viewport.push_back(0);
-    m_viewport.push_back(first ? w->width() * w->devicePixelRatio() * 0.5 : w->width() * w->devicePixelRatio());
+    m_viewport.push_back(0);
+    m_viewport.push_back(w->width() * w->devicePixelRatio() * 0.5);
     m_viewport.push_back(w->height() * w->devicePixelRatio());
-    if(m_viewport.size()>=4)
-        f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
+    m_viewport.push_back(w->width() * w->devicePixelRatio() * 0.5);
+    m_viewport.push_back(0);
+    m_viewport.push_back(w->width() * w->devicePixelRatio());
+    m_viewport.push_back(w->height() * w->devicePixelRatio());
+    //if(m_viewport.size()>=4)
+    //    f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
 
     static const char *vertexShaderSource =
         "attribute highp vec4 vertex;\n"
@@ -190,7 +184,7 @@ void CubeRenderer::init(QWindow *w, QOpenGLContext *share, bool first, bool last
 void CubeRenderer::resize(int w, int h)
 {
     m_proj.setToIdentity();
-    m_proj.perspective(45, w * 0.5 / float(h), 0.01f, 100.0f);
+    m_proj.perspective(45, w / float(h), 0.01f, 100.0f);
 }
 
 void CubeRenderer::setupVertexAttribs()
@@ -207,29 +201,19 @@ void CubeRenderer::setupVertexAttribs()
 /*
  * TODO: add texture1, texture2
 */
-void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture, bool first, bool last, QOpenGLContext *&context)
+void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture)
 {
     if (!m_context)
     {
-        init(w, share, first, last, context);
-    }
-    else
-    {
-        context = m_context;
+        init(w, share);
     }
 
-    if (first)
-    {
-        if (!m_context->makeCurrent(w))
-           return;
-    }
+    if (!m_context->makeCurrent(w))
+       return;
 
     QOpenGLFunctions *f = m_context->functions();
-    if (first)
-        f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if(m_viewport.size()>=4)
-        f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
 
     if (texture) {
         f->glBindTexture(GL_TEXTURE_2D, texture);
@@ -253,9 +237,17 @@ void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture, bool 
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
         // Draw the cube.
-        f->glDrawArrays(GL_TRIANGLES, 0, 36);
+        if(m_viewport.size()>=4)
+        {
+            f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
+            f->glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+        if(m_viewport.size()>=8)
+        {
+            f->glViewport(m_viewport[4], m_viewport[5], m_viewport[6] ,m_viewport[7]);
+            f->glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
     }
 
-    if (last)
-        m_context->swapBuffers(w);
+    m_context->swapBuffers(w);
 }
