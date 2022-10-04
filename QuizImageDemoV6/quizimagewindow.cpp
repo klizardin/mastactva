@@ -215,6 +215,8 @@ void WindowSingleThreaded::createTexture()
     f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_textureSize.width(), m_textureSize.height(), 0,
                     GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     m_quickWindow[0]->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId[0], m_textureSize));
+
+    // TODO: fix texture size
     f->glGenTextures(2, &m_textureId[1]);
     f->glBindTexture(GL_TEXTURE_2D, m_textureId[1]);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
