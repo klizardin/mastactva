@@ -208,6 +208,7 @@ void WindowSingleThreaded::createTexture()
     // get opengl functions from the QOpenGLContext
     // we have already setup QOpenGLContext as QOffscreenSurface
     QOpenGLFunctions *f = m_context->functions();
+
     f->glGenTextures(1, &m_textureId[0]);
     f->glBindTexture(GL_TEXTURE_2D, m_textureId[0]);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -217,7 +218,7 @@ void WindowSingleThreaded::createTexture()
     m_quickWindow[0]->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId[0], m_textureSize));
 
     // TODO: fix texture size
-    f->glGenTextures(2, &m_textureId[1]);
+    f->glGenTextures(1, &m_textureId[1]);
     f->glBindTexture(GL_TEXTURE_2D, m_textureId[1]);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
