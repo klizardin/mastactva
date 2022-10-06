@@ -360,6 +360,7 @@ void WindowSingleThreaded::updateSizes()
     m_cubeRenderer->resize(width(), height());
 }
 
+// TODO: use separate versions
 void WindowSingleThreaded::startQuick(const QString &filename)
 {
     m_qmlComponent[0] = new QQmlComponent(m_qmlEngine[0], QUrl(filename));

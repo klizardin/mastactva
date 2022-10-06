@@ -61,6 +61,7 @@ QT_FORWARD_DECLARE_CLASS(QOpenGLVertexArrayObject)
 QT_FORWARD_DECLARE_CLASS(QWindow)
 QT_FORWARD_DECLARE_CLASS(QOffscreenSurface)
 
+// TODO: replace with simple code
 class CubeRenderer
 {
 public:
