@@ -217,7 +217,6 @@ void WindowSingleThreaded::createTexture()
                     GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     m_quickWindow[0]->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId[0], m_textureSize));
 
-    // TODO: fix texture size
     f->glGenTextures(1, &m_textureId[1]);
     f->glBindTexture(GL_TEXTURE_2D, m_textureId[1]);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -360,7 +359,6 @@ void WindowSingleThreaded::updateSizes()
     m_cubeRenderer->resize(width(), height());
 }
 
-// TODO: use separate versions
 void WindowSingleThreaded::startQuick(const QString &filename1, const QString &filename2)
 {
     m_qmlComponent[0] = new QQmlComponent(m_qmlEngine[0], QUrl(filename1));
