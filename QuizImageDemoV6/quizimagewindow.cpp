@@ -208,6 +208,7 @@ void WindowSingleThreaded::createTexture()
     // get opengl functions from the QOpenGLContext
     // we have already setup QOpenGLContext as QOffscreenSurface
     QOpenGLFunctions *f = m_context->functions();
+
     f->glGenTextures(1, &m_textureId[0]);
     f->glBindTexture(GL_TEXTURE_2D, m_textureId[0]);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -215,7 +216,8 @@ void WindowSingleThreaded::createTexture()
     f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_textureSize.width(), m_textureSize.height(), 0,
                     GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     m_quickWindow[0]->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId[0], m_textureSize));
-    f->glGenTextures(2, &m_textureId[1]);
+
+    f->glGenTextures(1, &m_textureId[1]);
     f->glBindTexture(GL_TEXTURE_2D, m_textureId[1]);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -264,7 +266,7 @@ void WindowSingleThreaded::render()
     // run rendering for this QWindow and for m_context
     // with texture to use in drawings
     // (render to the current QWindow)
-    m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0);
+    m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0, m_quickReady ? m_textureId[1] : 0);
 }
 
 void WindowSingleThreaded::requestUpdate()
@@ -357,10 +359,10 @@ void WindowSingleThreaded::updateSizes()
     m_cubeRenderer->resize(width(), height());
 }
 
-void WindowSingleThreaded::startQuick(const QString &filename)
+void WindowSingleThreaded::startQuick(const QString &filename1, const QString &filename2)
 {
-    m_qmlComponent[0] = new QQmlComponent(m_qmlEngine[0], QUrl(filename));
-    m_qmlComponent[1] = new QQmlComponent(m_qmlEngine[1], QUrl(filename));
+    m_qmlComponent[0] = new QQmlComponent(m_qmlEngine[0], QUrl(filename1));
+    m_qmlComponent[1] = new QQmlComponent(m_qmlEngine[1], QUrl(filename2));
     bool startRun = false;
     if (m_qmlComponent[0]->isLoading())
         connect(m_qmlComponent[0], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
@@ -381,8 +383,8 @@ void WindowSingleThreaded::exposeEvent(QExposeEvent *)
             // run rendering
             // for this QWindow and m_context QOpenGLContext
             // (possibly this mostly for initialization)
-            m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0);
-            startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"));
+            m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0, m_quickReady ? m_textureId[1] : 0);
+            startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"), QStringLiteral("qrc:/rendercontrol/demo2.qml"));
         }
     }
 }

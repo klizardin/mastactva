@@ -52,6 +52,7 @@
 #define CUBERENDERER_H
 
 #include <QMatrix4x4>
+#include <vector>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLContext)
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
@@ -60,6 +61,7 @@ QT_FORWARD_DECLARE_CLASS(QOpenGLVertexArrayObject)
 QT_FORWARD_DECLARE_CLASS(QWindow)
 QT_FORWARD_DECLARE_CLASS(QOffscreenSurface)
 
+// TODO: replace with simple code
 class CubeRenderer
 {
 public:
@@ -67,7 +69,7 @@ public:
     ~CubeRenderer();
 
     void resize(int w, int h);
-    void render(QWindow *w, QOpenGLContext *share, uint texture);
+    void render(QWindow *w, QOpenGLContext *share, uint texture1, uint texture2);
 
 private:
     void init(QWindow *w, QOpenGLContext *share);
@@ -83,6 +85,8 @@ private:
     QOpenGLVertexArrayObject *m_vao;
     int m_matrixLoc;
     QMatrix4x4 m_proj;
+    bool m_last = false;
+    std::vector<int> m_viewport;
 };
 
 #endif

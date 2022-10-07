@@ -96,7 +96,16 @@ void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClearColor(0.0f, 0.1f, 0.25f, 1.0f);
-    f->glViewport(0, 0, w->width() * w->devicePixelRatio(), w->height() * w->devicePixelRatio());
+    m_viewport.push_back(0);
+    m_viewport.push_back(0);
+    m_viewport.push_back(w->width() * w->devicePixelRatio() * 0.5);
+    m_viewport.push_back(w->height() * w->devicePixelRatio());
+    m_viewport.push_back(w->width() * w->devicePixelRatio() * 0.5);
+    m_viewport.push_back(0);
+    m_viewport.push_back(w->width() * w->devicePixelRatio());
+    m_viewport.push_back(w->height() * w->devicePixelRatio());
+    //if(m_viewport.size()>=4)
+    //    f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
 
     static const char *vertexShaderSource =
         "attribute highp vec4 vertex;\n"
@@ -192,19 +201,22 @@ void CubeRenderer::setupVertexAttribs()
 /*
  * TODO: add texture1, texture2
 */
-void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture)
+void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, uint texture2)
 {
     if (!m_context)
+    {
         init(w, share);
+    }
 
     if (!m_context->makeCurrent(w))
-        return;
+       return;
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (texture) {
-        f->glBindTexture(GL_TEXTURE_2D, texture);
+
+    if (texture1) {
+        f->glBindTexture(GL_TEXTURE_2D, texture1);
         f->glFrontFace(GL_CW); // because our cube's vertex data is such
         f->glEnable(GL_CULL_FACE);
         f->glEnable(GL_DEPTH_TEST);
@@ -225,7 +237,39 @@ void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture)
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
         // Draw the cube.
-        f->glDrawArrays(GL_TRIANGLES, 0, 36);
+        if(m_viewport.size()>=4)
+        {
+            f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
+            f->glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+    }
+    if (texture2) {
+        f->glBindTexture(GL_TEXTURE_2D, texture2);
+        f->glFrontFace(GL_CW); // because our cube's vertex data is such
+        f->glEnable(GL_CULL_FACE);
+        f->glEnable(GL_DEPTH_TEST);
+
+        m_program->bind();
+        QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
+        // If VAOs are not supported, set the vertex attributes every time.
+        if (!m_vao->isCreated())
+            setupVertexAttribs();
+
+        static GLfloat angle = 0;
+        QMatrix4x4 m;
+        m.translate(0, 0, -2);
+        m.rotate(90, 0, 0, 1);
+        m.rotate(angle, 0.5, 1, 0);
+        angle += 0.5f;
+
+        m_program->setUniformValue(m_matrixLoc, m_proj * m);
+
+        // Draw the cube.
+        if(m_viewport.size()>=8)
+        {
+            f->glViewport(m_viewport[4], m_viewport[5], m_viewport[6] ,m_viewport[7]);
+            f->glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
     }
 
     m_context->swapBuffers(w);
