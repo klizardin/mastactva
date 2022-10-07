@@ -94,7 +94,7 @@ private slots:
     void handleScreenChange();
 
 private:
-    void startQuick(const QString &filename);
+    void startQuick(const QString &filename1, const QString &filename2);
     void updateSizes();
     void resizeTexture();
 

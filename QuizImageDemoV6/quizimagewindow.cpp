@@ -361,10 +361,10 @@ void WindowSingleThreaded::updateSizes()
 }
 
 // TODO: use separate versions
-void WindowSingleThreaded::startQuick(const QString &filename)
+void WindowSingleThreaded::startQuick(const QString &filename1, const QString &filename2)
 {
-    m_qmlComponent[0] = new QQmlComponent(m_qmlEngine[0], QUrl(filename));
-    m_qmlComponent[1] = new QQmlComponent(m_qmlEngine[1], QUrl(filename));
+    m_qmlComponent[0] = new QQmlComponent(m_qmlEngine[0], QUrl(filename1));
+    m_qmlComponent[1] = new QQmlComponent(m_qmlEngine[1], QUrl(filename2));
     bool startRun = false;
     if (m_qmlComponent[0]->isLoading())
         connect(m_qmlComponent[0], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
@@ -386,7 +386,7 @@ void WindowSingleThreaded::exposeEvent(QExposeEvent *)
             // for this QWindow and m_context QOpenGLContext
             // (possibly this mostly for initialization)
             m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0, m_quickReady ? m_textureId[1] : 0);
-            startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"));
+            startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"), QStringLiteral("qrc:/rendercontrol/demo2.qml"));
         }
     }
 }

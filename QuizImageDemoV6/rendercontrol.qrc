@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/rendercontrol">
         <file>demo.qml</file>
+        <file>demo2.qml</file>
     </qresource>
 </RCC>
