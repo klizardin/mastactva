@@ -36,5 +36,16 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     engine.load(url);
 
+    // TODO:
+    // use of the window
+    // (standard steps for QWindow):
+    // create
+    //QuizImageQWindowSingleThreaded window;
+    // set default size
+    //window.resize(1024, 768);
+    // show
+    //window.show();
+
+
     return app.exec();
 }
