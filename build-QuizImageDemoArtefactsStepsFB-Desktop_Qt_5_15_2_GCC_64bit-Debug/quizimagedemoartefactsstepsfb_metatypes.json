@@ -254,5 +254,54 @@
         ],
         "inputFile": "quickframebufferobjects.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "QuizImageQWindowSingleThread",
+                "object": true,
+                "qualifiedClassName": "QuizImageQWindowSingleThread",
+                "slots": [
+                    {
+                        "access": "private",
+                        "name": "run",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "name": "createTexture",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "name": "destroyTexture",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "name": "render",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "name": "requestUpdate",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "name": "handleScreenChange",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QWindow"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "quizimageqwindowsinglethread.h",
+        "outputRevision": 67
     }
 ]
