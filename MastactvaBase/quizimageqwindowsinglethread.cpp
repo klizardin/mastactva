@@ -16,6 +16,7 @@
 
 
 // TODO: add implementation
+// just simple possible implementation
 QuizImageQWindowSingleThread::QuizImageQWindowSingleThread()
 {
 
