@@ -37,6 +37,7 @@ class QQuickItem;
 QT_END_NAMESPACE
 
 
+// TODO: add interface for new drawing surface
 class QuizImageQWindowSingleThread : public QWindow
 {
     Q_OBJECT
