@@ -15,6 +15,53 @@
 #include <QCoreApplication>
 
 
+class RenderControl : public QQuickRenderControl
+{
+public:
+    RenderControl(QWindow *w) : m_window(w) { }
+    QWindow *renderWindow(QPoint *offset) override;
+
+private:
+    QWindow *m_window;
+};
+
+
+QWindow *RenderControl::renderWindow(QPoint *offset)
+{
+    if (offset)
+        *offset = QPoint(0, 0);
+    return m_window;
+}
+
+
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create(QuizImageQWindowSingleThread *qwindow)
+{
+    if(!qwindow)
+    {
+        return false;
+    }
+
+    m_renderControl = std::make_unique<RenderControl>(qwindow);
+
+    // Create a QQuickWindow that is associated with out render control. Note that this
+    // window never gets created or shown, meaning that it will never get an underlying
+    // native (platform) window.
+    m_quickWindow = std::make_unique<QQuickWindow>(m_renderControl.get());
+
+    // Create a QML engine.
+    m_qmlEngine = std::make_unique<QQmlEngine>();
+    if (!m_qmlEngine->incubationController())
+        m_qmlEngine->setIncubationController(m_quickWindow->incubationController());
+
+    // Now hook up the signals. For simplicy we don't differentiate between
+    // renderRequested (only render is needed, no sync) and sceneChanged (polish and sync
+    // is needed too).
+    qwindow->connectDrawingSurface(m_renderControl.get(), m_quickWindow.get());
+
+    return true;
+}
+
+
 // TODO: add implementation
 // just simple possible implementation
 QuizImageQWindowSingleThread::QuizImageQWindowSingleThread()
@@ -91,4 +138,12 @@ void QuizImageQWindowSingleThread::updateSizes()
 
 void QuizImageQWindowSingleThread::resizeTexture()
 {
+}
+
+void QuizImageQWindowSingleThread::connectDrawingSurface(QQuickRenderControl * renderControl, QQuickWindow * quickWindow)
+{
+    connect(quickWindow, &QQuickWindow::sceneGraphInitialized, this, &QuizImageQWindowSingleThread::createTexture);
+    connect(quickWindow, &QQuickWindow::sceneGraphInvalidated, this, &QuizImageQWindowSingleThread::destroyTexture);
+    connect(renderControl, &QQuickRenderControl::renderRequested, this, &QuizImageQWindowSingleThread::requestUpdate);
+    connect(renderControl, &QQuickRenderControl::sceneChanged, this, &QuizImageQWindowSingleThread::requestUpdate);
 }

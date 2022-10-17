@@ -43,8 +43,12 @@ class QuizImageQWindowSingleThread : public QWindow
     Q_OBJECT
 
 protected:
-    struct QuizImageQMLDrawingSurface
+    class QuizImageQMLDrawingSurface
     {
+    public:
+        bool create(QuizImageQWindowSingleThread *qwindow);
+
+    private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
         std::unique_ptr<QQuickWindow> m_quickWindow;
         std::unique_ptr<QQmlEngine> m_qmlEngine;
@@ -78,6 +82,7 @@ private:
     void startQuick(const QString &filename);
     void updateSizes();
     void resizeTexture();
+    void connectDrawingSurface(QQuickRenderControl * renderControl, QQuickWindow * quickWindow);
 
 private:
     std::unique_ptr<QOpenGLContext> m_context;
