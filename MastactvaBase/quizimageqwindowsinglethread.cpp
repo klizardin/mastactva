@@ -66,7 +66,43 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create(QuizImageQ
 // just simple possible implementation
 QuizImageQWindowSingleThread::QuizImageQWindowSingleThread()
 {
+    setSurfaceType(QSurface::OpenGLSurface);
 
+    QSurfaceFormat format;
+    // Qt Quick may need a depth and stencil buffer. Always make sure these are available.
+    format.setDepthBufferSize(16);
+    format.setStencilBufferSize(8);
+    setFormat(format);
+
+    // create QOpenGLContext
+    m_context = std::make_unique<QOpenGLContext>();
+    m_context->setFormat(format);
+    m_context->create();
+
+    m_offscreenSurface = std::make_unique<QOffscreenSurface>();
+
+    // Pass m_context->format(), not format. Format does not specify and color buffer
+    // sizes, while the context, that has just been created, reports a format that has
+    // these values filled in. Pass this to the offscreen surface to make sure it will be
+    // compatible with the context's configuration.
+    // (use current QOpenGLContext format for QOffscreenSurface)
+    m_offscreenSurface->setFormat(m_context->format());
+    m_offscreenSurface->create();
+
+    // create opnegl render class for QOffscreenSurface
+    //m_defaultRenderer = new DefaultRenderer(m_offscreenSurface);
+
+    if(!createSurface())
+    {
+        return;
+    }
+
+    // When Quick says there is a need to render, we will not render immediately. Instead,
+    // a timer with a small interval is used to get better performance.
+    m_updateTimer = std::make_unique<QTimer>();
+    m_updateTimer->setSingleShot(true);
+    m_updateTimer->setInterval(5);
+    connect(m_updateTimer.get(), &QTimer::timeout, this, &QuizImageQWindowSingleThread::render);
 }
 
 QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
@@ -146,4 +182,21 @@ void QuizImageQWindowSingleThread::connectDrawingSurface(QQuickRenderControl * r
     connect(quickWindow, &QQuickWindow::sceneGraphInvalidated, this, &QuizImageQWindowSingleThread::destroyTexture);
     connect(renderControl, &QQuickRenderControl::renderRequested, this, &QuizImageQWindowSingleThread::requestUpdate);
     connect(renderControl, &QQuickRenderControl::sceneChanged, this, &QuizImageQWindowSingleThread::requestUpdate);
+}
+
+bool QuizImageQWindowSingleThread::createSurface()
+{
+    m_drawingSurfaces.push_back(QuizImageQMLDrawingSurface{});
+    if(m_drawingSurfaces.back().create(this))
+    {
+        return true;
+    }
+
+    if(!m_drawingSurfaces.empty())
+    {
+        auto itback = std::end(m_drawingSurfaces);
+        --itback;
+        m_drawingSurfaces.erase(itback);
+    }
+    return false;
 }

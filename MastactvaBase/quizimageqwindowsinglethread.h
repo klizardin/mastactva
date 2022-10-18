@@ -83,6 +83,7 @@ private:
     void updateSizes();
     void resizeTexture();
     void connectDrawingSurface(QQuickRenderControl * renderControl, QQuickWindow * quickWindow);
+    bool createSurface();
 
 private:
     std::unique_ptr<QOpenGLContext> m_context;
