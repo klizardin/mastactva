@@ -23,6 +23,10 @@
 #include <QWidget>
 #include <QMatrix4x4>
 #include <QTimer>
+#include <list>
+#include <vector>
+#include <string>
+#include <memory>
 
 
 QT_BEGIN_NAMESPACE
@@ -46,14 +50,19 @@ protected:
     class QuizImageQMLDrawingSurface
     {
     public:
+        QuizImageQMLDrawingSurface() = default;
+        ~QuizImageQMLDrawingSurface() = default;
         bool create(QuizImageQWindowSingleThread *qwindow);
+        static bool preFree(QOpenGLContext *context, QOffscreenSurface *offscreenSurface);
+        bool free(QOpenGLContext *context);
+        static bool postFree(QOpenGLContext *context);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
         std::unique_ptr<QQuickWindow> m_quickWindow;
         std::unique_ptr<QQmlEngine> m_qmlEngine;
         std::unique_ptr<QQmlComponent> m_qmlComponent;
-        std::unique_ptr<QQuickItem> m_rootItem;
+        QQuickItem * m_rootItem = nullptr;
         uint m_textureId = -1;
     };
 
@@ -91,7 +100,7 @@ private:
     // https://doc.qt.io/qt-6/qoffscreensurface.html
     std::unique_ptr<QOffscreenSurface> m_offscreenSurface;
 
-    std::vector<QuizImageQMLDrawingSurface> m_drawingSurfaces;
+    std::list<QuizImageQMLDrawingSurface> m_drawingSurfaces;
 
     QSize m_textureSize = QSize{};
     bool m_quickInitialized = false;

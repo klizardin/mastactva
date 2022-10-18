@@ -34,6 +34,44 @@ QWindow *RenderControl::renderWindow(QPoint *offset)
 }
 
 
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::preFree(QOpenGLContext *context, QOffscreenSurface *offscreenSurface)
+{
+    if(!context || !offscreenSurface)
+    {
+        return false;
+    }
+    context->makeCurrent(offscreenSurface);
+    return true;
+}
+
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::free(QOpenGLContext *context)
+{
+    m_qmlComponent.reset();
+    m_qmlEngine.reset();
+    m_quickWindow.reset();
+    m_renderControl.reset();
+    m_rootItem = nullptr;
+
+    if (m_textureId)
+    {
+        // delete texture inside current QOpenGLContext for QOffscreeenSurface
+        context->functions()->glDeleteTextures(1, &m_textureId);
+    }
+    m_textureId = -1;
+
+    return true;
+}
+
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::postFree(QOpenGLContext *context)
+{
+    if(!context)
+    {
+        return false;
+    }
+    context->doneCurrent();
+    return true;
+}
+
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create(QuizImageQWindowSingleThread *qwindow)
 {
     if(!qwindow)
@@ -107,6 +145,18 @@ QuizImageQWindowSingleThread::QuizImageQWindowSingleThread()
 
 QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 {
+    m_updateTimer.reset();
+    QuizImageQMLDrawingSurface::preFree(m_context.get(), m_offscreenSurface.get());
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        surface.free(m_context.get());
+    }
+    QuizImageQMLDrawingSurface::postFree(m_context.get());
+
+    //m_defaultRenderer.reset();
+    m_drawingSurfaces.clear();
+    m_offscreenSurface.reset();
+    m_context.reset();
 }
 
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
@@ -186,7 +236,7 @@ void QuizImageQWindowSingleThread::connectDrawingSurface(QQuickRenderControl * r
 
 bool QuizImageQWindowSingleThread::createSurface()
 {
-    m_drawingSurfaces.push_back(QuizImageQMLDrawingSurface{});
+    m_drawingSurfaces.emplace_back();
     if(m_drawingSurfaces.back().create(this))
     {
         return true;
