@@ -56,6 +56,7 @@ protected:
         static bool preFree(QOpenGLContext *context, QOffscreenSurface *offscreenSurface);
         bool free(QOpenGLContext *context);
         static bool postFree(QOpenGLContext *context);
+        void mousePressEvent(QMouseEvent *e);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;

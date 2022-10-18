@@ -3,7 +3,8 @@ include(lua_dependency.pri)
 QT += quick \
     quickcontrols2  \
     widgets \
-    core
+    core    \
+    qml
 
 CONFIG += c++14
 

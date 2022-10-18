@@ -13,6 +13,8 @@
 #include <QQuickWindow>
 #include <QQuickRenderControl>
 #include <QCoreApplication>
+//#include <QQuickRenderTarget>
+//#include <QQuickGraphicsDevice>
 
 
 class RenderControl : public QQuickRenderControl
@@ -70,6 +72,13 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::postFree(QOpenGLC
     }
     context->doneCurrent();
     return true;
+}
+
+void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::mousePressEvent(QMouseEvent *e)
+{
+    Q_UNUSED(e);
+    //QMouseEvent mappedEvent(e->type(), e->position(), e->globalPosition(), e->button(), e->buttons(), e->modifiers());
+    //QCoreApplication::sendEvent(m_quickWindow.get(), &mappedEvent);
 }
 
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create(QuizImageQWindowSingleThread *qwindow)
@@ -171,7 +180,14 @@ void QuizImageQWindowSingleThread::resizeEvent(QResizeEvent *e)
 
 void QuizImageQWindowSingleThread::mousePressEvent(QMouseEvent *e)
 {
-    Q_UNUSED(e);
+    // Use the constructor taking position and globalPosition. That puts position into the
+    // event's position and scenePosition, and globalPosition into the event's globalPosition. This way
+    // the scenePosition in e is ignored and is replaced by position. This is necessary
+    // because QQuickWindow thinks of itself as a top-level window always.
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        surface.mousePressEvent(e);
+    }
 }
 
 void QuizImageQWindowSingleThread::mouseReleaseEvent(QMouseEvent *e)
