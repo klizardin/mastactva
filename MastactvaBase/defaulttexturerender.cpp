@@ -40,7 +40,9 @@ void DefaultTextureRender::init(QWindow *w, QOpenGLContext *share)
     m_context->setFormat(w->requestedFormat());
     m_context->create();
     if (!m_context->makeCurrent(w))
+    {
         return;
+    }
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -120,7 +122,9 @@ void DefaultTextureRender::init(QWindow *w, QOpenGLContext *share)
     m_vbo->release();
 
     if (m_vao->isCreated())
+    {
         setupVertexAttribs();
+    }
 }
 
 void DefaultTextureRender::resize(int w, int h)
@@ -151,11 +155,12 @@ void DefaultTextureRender::render(QWindow *w, QOpenGLContext *share, uint textur
     }
 
     if (!m_context->makeCurrent(w))
-       return;
+    {
+        return;
+    }
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
     if (texture)
     {
