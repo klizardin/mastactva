@@ -82,6 +82,7 @@ void DefaultTextureRender::init(QWindow *w, QOpenGLContext *share)
     m_vbo->create();
     m_vbo->bind();
 
+    // TODO: adopt to the minimal version
     GLfloat v[] = {
         -0.5, 0.5, 0.5, 0.5,-0.5,0.5,-0.5,-0.5,0.5,
         0.5, -0.5, 0.5, -0.5,0.5,0.5,0.5,0.5,0.5,
