@@ -3,7 +3,8 @@ include(lua_dependency.pri)
 QT += quick \
     quickcontrols2  \
     widgets \
-    core
+    core    \
+    qml
 
 CONFIG += c++14
 
@@ -28,6 +29,7 @@ unix: SOURCES +=    \
     quickframebufferobjects.cpp \
     opengldrawing_calculations.cpp  \
     quizimageqwindowsinglethread.cpp    \
+    defaulttexturerender.cpp    \
     effectargument_data.cpp \
     effectarg_data.cpp  \
     effectargvalue_data.cpp \
@@ -75,6 +77,7 @@ unix: HEADERS +=    \
     quickframebufferobjects.h \
     opengldrawing_calculations.h    \
     quizimageqwindowsinglethread.h  \
+    defaulttexturerender.h  \
     effectargument_data.h   \
     effectarg_data.h    \
     effectargvalue_data.h   \
