@@ -33,6 +33,8 @@ DefaultTextureRender::~DefaultTextureRender()
     m_context.reset();
 }
 
+const int g_vertexCount = 6;
+
 void DefaultTextureRender::init(QWindow *w, QOpenGLContext *share)
 {
     m_context = std::make_unique<QOpenGLContext>();
@@ -83,7 +85,7 @@ void DefaultTextureRender::init(QWindow *w, QOpenGLContext *share)
     m_vbo->bind();
 
     // TODO: adopt to the minimal version
-    GLfloat v[] = {
+    /*GLfloat v[] = {
         -0.5, 0.5, 0.5,     0.5,-0.5,0.5,       -0.5,-0.5,0.5,
         0.5, -0.5, 0.5,     -0.5,0.5,0.5,       0.5,0.5,0.5,
 
@@ -122,10 +124,20 @@ void DefaultTextureRender::init(QWindow *w, QOpenGLContext *share)
         0.0f,1.0f,      0.0f,0.0f,      1.0f,1.0f
     };
 
-    const int vertexCount = 36;
-    m_vbo->allocate(sizeof(GLfloat) * vertexCount * 5);
-    m_vbo->write(0, v, sizeof(GLfloat) * vertexCount * 3);
-    m_vbo->write(sizeof(GLfloat) * vertexCount * 3, texCoords, sizeof(GLfloat) * vertexCount * 2);
+    const int vertexCount = 36;*/
+
+    GLfloat v[] = {
+            -0.5, 0.5, 0.5,     0.5,-0.5,0.5,       -0.5,-0.5,0.5,
+            0.5, -0.5, 0.5,     -0.5,0.5,0.5,       0.5,0.5,0.5,
+        };
+        GLfloat texCoords[] = {
+            0.0f,0.0f,      1.0f,1.0f,      1.0f,0.0f,
+            1.0f,1.0f,      0.0f,0.0f,      0.0f,1.0f,
+        };
+
+    m_vbo->allocate(sizeof(GLfloat) * g_vertexCount * 5);
+    m_vbo->write(0, v, sizeof(GLfloat) * g_vertexCount * 3);
+    m_vbo->write(sizeof(GLfloat) * g_vertexCount * 3, texCoords, sizeof(GLfloat) * g_vertexCount * 2);
     m_vbo->release();
 
     if (m_vao->isCreated())
@@ -147,7 +159,7 @@ void DefaultTextureRender::setupVertexAttribs()
     m_program->enableAttributeArray(1);
     m_context->functions()->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     m_context->functions()->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0,
-                                                  (const void *)(36 * 3 * sizeof(GLfloat)));
+                                                  (const void *)(g_vertexCount * 3 * sizeof(GLfloat)));
     m_vbo->release();
 }
 
@@ -189,7 +201,7 @@ void DefaultTextureRender::render(QWindow *w, QOpenGLContext *share, uint textur
         if(m_viewport.size()>=4)
         {
             f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
-            f->glDrawArrays(GL_TRIANGLES, 0, 36);
+            f->glDrawArrays(GL_TRIANGLES, 0, g_vertexCount);
         }
     }
 
