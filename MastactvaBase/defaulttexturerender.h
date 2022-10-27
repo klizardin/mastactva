@@ -32,6 +32,7 @@ QT_FORWARD_DECLARE_CLASS(QWindow)
 QT_FORWARD_DECLARE_CLASS(QOffscreenSurface)
 
 
+// TODO: refactoring
 class DefaultTextureRender
 {
 public:
