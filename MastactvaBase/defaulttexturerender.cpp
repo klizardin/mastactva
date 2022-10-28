@@ -155,7 +155,7 @@ void DefaultTextureRender::render(QWindow *w, QOpenGLContext *share, uint textur
     if (texture)
     {
         f->glBindTexture(GL_TEXTURE_2D, texture);
-        f->glFrontFace(GL_CW); // because our cube's vertex data is such
+        f->glFrontFace(GL_CW); // because of vertex data
         f->glEnable(GL_CULL_FACE);
         f->glEnable(GL_DEPTH_TEST);
 
