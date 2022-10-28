@@ -171,7 +171,7 @@ void DefaultTextureRender::render(QWindow *w, QOpenGLContext *share, uint textur
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
         // Draw the cube.
-        if(m_viewport.size()>=4)
+        if (m_viewport.size()>=4)
         {
             f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
             f->glDrawArrays(GL_TRIANGLES, 0, g_vertexCount);
