@@ -60,4 +60,5 @@ private:
 
 };
 
+
 #endif // DEFAULTTEXTURERENDER_H
