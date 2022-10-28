@@ -27,12 +27,7 @@
 
 
 DefaultTextureRender::DefaultTextureRender(QOffscreenSurface *offscreenSurface)
-    : m_offscreenSurface(offscreenSurface),
-      m_context(nullptr),
-      m_program(nullptr),
-      m_vbo(nullptr),
-      m_vao(nullptr),
-      m_matrixLoc(0)
+    : m_offscreenSurface(offscreenSurface)
 {
 }
 
