@@ -60,6 +60,9 @@ protected:
         bool free(QOpenGLContext *context);
         static bool postFree(QOpenGLContext *context);
         void mousePressEvent(QMouseEvent *e);
+        void mouseReleaseEvent(QMouseEvent *e);
+        void keyPressEvent(QKeyEvent *e);
+        void keyReleaseEvent(QKeyEvent *e);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;

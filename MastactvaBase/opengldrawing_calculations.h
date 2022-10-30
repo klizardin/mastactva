@@ -174,7 +174,7 @@ protected:
             // if we have arguments process them
             QString effectCalculationArgs = args[1].trimmed();
             if(effectCalculationArgs.length() > 0
-                    && effectCalculationArgs.at(effectCalculationArgs.length() - 1) == g_endArguments)
+                    && effectCalculationArgs.at(effectCalculationArgs.length() - 1) == QChar(g_endArguments[0]))
             {
                 effectCalculationArgs = effectCalculationArgs.mid(0, effectCalculationArgs.length() - 1);
             }

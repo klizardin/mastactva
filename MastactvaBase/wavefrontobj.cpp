@@ -21,6 +21,7 @@
 #include <tuple>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QRegularExpression>
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/utils.h"
 
@@ -658,11 +659,11 @@ bool WavefrontOBJ::buildObject(
         }
         if(f_.y() >= 0 && f_.y() < m_vertexTexture.size())
         {
-            vertexTexture[j] = m_vertexTexture[f_.y()];
+            vertexTexture[j] = QVector4D(m_vertexTexture[f_.y()], 0.0);
         }
         if(f_.z() >= 0 && f_.z() < m_normal.size())
         {
-            vertexNormal[j] = m_normal[f_.z()];
+            vertexNormal[j] = QVector4D(m_normal[f_.z()], 0.0);
         }
         ++j;
     }
@@ -724,7 +725,7 @@ QJsonDocument WavefrontOBJ::graphicsOBJtoJson(const QString &objData_)
 std::unique_ptr<WavefrontOBJ> WavefrontOBJ::parseGraphicsOBJ(const QString &objData_)
 {
     std::unique_ptr<WavefrontOBJ> res = std::make_unique<WavefrontOBJ>();
-    const QStringList lines = objData_.split(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
+    const QStringList lines = objData_.split(QRegularExpression("[\r\n]"), Qt::SkipEmptyParts);
     int lineNumber = 0;
     for(const QString &line0 : qAsConst(lines))
     {

@@ -1,7 +1,7 @@
 #include "quickframebufferobjects.h"
 
-#include <QtGui/QOpenGLFramebufferObject>
-#include <QtGui/QOpenGLFunctions>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLFunctions>
 #include <QWindow>
 #include <QQuickWindow>
 #include <QThread>

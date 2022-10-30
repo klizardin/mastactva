@@ -26,7 +26,6 @@ SOURCES += \
 unix: SOURCES +=    \
     quizimagedrawingdata.cpp    \
     quizimageopengldrawingdata.cpp \
-    quickframebufferobjects.cpp \
     opengldrawing_calculations.cpp  \
     quizimageqwindowsinglethread.cpp    \
     defaulttexturerender.cpp    \
@@ -74,7 +73,6 @@ HEADERS += \
 unix: HEADERS +=    \
     quizimagedrawingdata.h  \
     quizimageopengldrawingdata.h \
-    quickframebufferobjects.h \
     opengldrawing_calculations.h    \
     quizimageqwindowsinglethread.h  \
     defaulttexturerender.h  \

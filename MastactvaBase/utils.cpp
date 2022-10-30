@@ -25,8 +25,6 @@
 #include <QCryptographicHash>
 #include <QTimeZone>
 #include <QTextStream>
-#include <QTextCodec>
-#include <QRegExp>
 #include <QDebug>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
@@ -486,9 +484,7 @@ QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_
 
 QString getTextFromBinaryData(const QByteArray &data_)
 {
-    QTextCodec *codec = QTextCodec::codecForUtfText(data_);
-    if(!codec) { return QString(); }
-    return codec->toUnicode(data_);
+    return QString::fromUtf8(data_);
 }
 
 void saveTextFile(const QString filepath_, const QString &text_)

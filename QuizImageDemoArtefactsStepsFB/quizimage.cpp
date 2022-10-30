@@ -17,13 +17,13 @@
 
 #include "quizimage.h"
 #include <math.h>
-#include <QtGui/qvector3d.h>
-#include <QtGui/qmatrix4x4.h>
-#include <QtGui/qopenglshaderprogram.h>
-#include <QtGui/qopenglfunctions.h>
-#include <QtGui/QOpenGLFramebufferObject>
-#include <QtQuick/QQuickWindow>
-#include <qsgsimpletexturenode.h>
+#include <QVector3D>
+#include <QMatrix4x4>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLFunctions>
+#include <QOpenGLFramebufferObject>
+#include <QQuickWindow>
+#include <QSGSimpleTextureNode>
 #include <QRandomGenerator>
 #include <QTime>
 #include <QVector>

@@ -99,6 +99,22 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::mousePressEvent(Q
     QCoreApplication::sendEvent(m_quickWindow.get(), &mappedEvent);
 }
 
+void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::mouseReleaseEvent(QMouseEvent *e)
+{
+    QMouseEvent mappedEvent(e->type(), e->position(), e->globalPosition(), e->button(), e->buttons(), e->modifiers());
+    QCoreApplication::sendEvent(m_quickWindow.get(), &mappedEvent);
+}
+
+void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::keyPressEvent(QKeyEvent *e)
+{
+    QCoreApplication::sendEvent(m_quickWindow.get(), e);
+}
+
+void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::keyReleaseEvent(QKeyEvent *e)
+{
+    QCoreApplication::sendEvent(m_quickWindow.get(), e);
+}
+
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create(QuizImageQWindowSingleThread *qwindow)
 {
     if(!qwindow)
@@ -210,17 +226,26 @@ void QuizImageQWindowSingleThread::mousePressEvent(QMouseEvent *e)
 
 void QuizImageQWindowSingleThread::mouseReleaseEvent(QMouseEvent *e)
 {
-    Q_UNUSED(e);
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        surface.mouseReleaseEvent(e);
+    }
 }
 
 void QuizImageQWindowSingleThread::keyPressEvent(QKeyEvent *e)
 {
-    Q_UNUSED(e);
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        surface.keyPressEvent(e);
+    }
 }
 
 void QuizImageQWindowSingleThread::keyReleaseEvent(QKeyEvent *e)
 {
-    Q_UNUSED(e);
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        surface.keyReleaseEvent(e);
+    }
 }
 
 void QuizImageQWindowSingleThread::run()
