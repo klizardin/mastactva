@@ -16,6 +16,7 @@
 */
 
 #include "quizimageqwindowsinglethread.h"
+#include "defaulttexturerender.h"
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QOpenGLFramebufferObject>
@@ -30,8 +31,8 @@
 #include <QQuickWindow>
 #include <QQuickRenderControl>
 #include <QCoreApplication>
-//#include <QQuickRenderTarget>
-//#include <QQuickGraphicsDevice>
+#include <QQuickRenderTarget>
+#include <QQuickGraphicsDevice>
 
 
 class RenderControl : public QQuickRenderControl
@@ -94,8 +95,8 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::postFree(QOpenGLC
 void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::mousePressEvent(QMouseEvent *e)
 {
     Q_UNUSED(e);
-    //QMouseEvent mappedEvent(e->type(), e->position(), e->globalPosition(), e->button(), e->buttons(), e->modifiers());
-    //QCoreApplication::sendEvent(m_quickWindow.get(), &mappedEvent);
+    QMouseEvent mappedEvent(e->type(), e->position(), e->globalPosition(), e->button(), e->buttons(), e->modifiers());
+    QCoreApplication::sendEvent(m_quickWindow.get(), &mappedEvent);
 }
 
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create(QuizImageQWindowSingleThread *qwindow)

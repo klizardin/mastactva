@@ -41,6 +41,9 @@ class QQuickItem;
 QT_END_NAMESPACE
 
 
+class DefaultTextureRender;
+
+
 // TODO: add interface for new drawing surface
 class QuizImageQWindowSingleThread : public QWindow
 {
