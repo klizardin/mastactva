@@ -294,10 +294,21 @@ void QuizImageQWindowSingleThread::run()
 
 void QuizImageQWindowSingleThread::createTexture()
 {
+    m_dpr = devicePixelRatio();
+    m_textureSize = size() * m_dpr;
+
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        surface.createTexture(m_context.get(), m_textureSize);
+    }
 }
 
 void QuizImageQWindowSingleThread::destroyTexture()
 {
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        surface.deleteTexture(m_context.get());
+    }
 }
 
 void QuizImageQWindowSingleThread::render()
