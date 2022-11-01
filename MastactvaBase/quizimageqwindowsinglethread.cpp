@@ -77,12 +77,10 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::free(QOpenGLConte
     m_renderControl.reset();
     m_rootItem = nullptr;
 
-    if (m_textureId)
+    if(!deleteTexture(context))
     {
-        // delete texture inside current QOpenGLContext for QOffscreeenSurface
-        context->functions()->glDeleteTextures(1, &m_textureId);
+        return false;
     }
-    m_textureId = -1;
 
     return true;
 }
@@ -167,6 +165,19 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::createTexture(QOp
     f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureSize.width(), textureSize.height(), 0,
                     GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     m_quickWindow->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId, textureSize));
+
+    return true;
+}
+
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::deleteTexture(QOpenGLContext *context)
+{
+    if(!context || !m_textureId || !context->functions())
+    {
+        return false;
+    }
+
+    context->functions()->glDeleteTextures(1, &m_textureId);
+    m_textureId = 0;
 
     return true;
 }

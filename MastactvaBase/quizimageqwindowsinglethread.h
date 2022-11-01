@@ -64,6 +64,7 @@ protected:
         void keyPressEvent(QKeyEvent *e);
         void keyReleaseEvent(QKeyEvent *e);
         bool createTexture(QOpenGLContext *context, const QSize &textureSize);
+        bool deleteTexture(QOpenGLContext *context);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
@@ -71,7 +72,7 @@ protected:
         std::unique_ptr<QQmlEngine> m_qmlEngine;
         std::unique_ptr<QQmlComponent> m_qmlComponent;
         QQuickItem * m_rootItem = nullptr;
-        uint m_textureId = -1;
+        uint m_textureId = 0;
     };
 
 public:
