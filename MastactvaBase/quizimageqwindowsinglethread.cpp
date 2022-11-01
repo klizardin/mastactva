@@ -45,7 +45,7 @@ public:
     QWindow *renderWindow(QPoint *offset) override;
 
 private:
-    QWindow *m_window;
+    QWindow *m_window = nullptr;
 };
 
 
