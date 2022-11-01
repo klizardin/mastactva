@@ -63,6 +63,7 @@ protected:
         void mouseReleaseEvent(QMouseEvent *e);
         void keyPressEvent(QKeyEvent *e);
         void keyReleaseEvent(QKeyEvent *e);
+        bool createTexture(QOpenGLContext *context, const QSize &textureSize);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;

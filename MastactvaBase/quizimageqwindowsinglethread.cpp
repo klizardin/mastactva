@@ -147,6 +147,30 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create(QuizImageQ
     return true;
 }
 
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::createTexture(QOpenGLContext *context, const QSize &textureSize)
+{
+    if(!context || !m_quickWindow)
+    {
+        return false;
+    }
+
+    QOpenGLFunctions *f = context->functions();
+    if(!f)
+    {
+        return false;
+    }
+
+    f->glGenTextures(1, &m_textureId);
+    f->glBindTexture(GL_TEXTURE_2D, m_textureId);
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureSize.width(), textureSize.height(), 0,
+                    GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    m_quickWindow->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId, textureSize));
+
+    return true;
+}
+
 
 // TODO: add implementation
 // just simple possible implementation
