@@ -63,6 +63,14 @@ protected:
         void keyReleaseEvent(QKeyEvent *e);
         bool createTexture(QOpenGLContext *context, const QSize &textureSize);
         bool deleteTexture(QOpenGLContext *context);
+        bool run(
+                //QuizImageQWindowSingleThread* qwindow,
+                QOpenGLContext *context,
+                QOffscreenSurface *offscreenSurface,
+                const QSize &windowSize
+                );
+        void updateSizes(const QSize &windowSize);
+        QQmlComponent* getQmlComponent();
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;

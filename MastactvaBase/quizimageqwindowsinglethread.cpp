@@ -181,6 +181,78 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::deleteTexture(QOp
     return true;
 }
 
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
+        //QuizImageQWindowSingleThread* qwindow,
+        QOpenGLContext *context,
+        QOffscreenSurface *offscreenSurface,
+        const QSize &windowSize
+        )
+{
+    //disconnect(m_qmlComponent, &QQmlComponent::statusChanged, qwindow, &QuizImageQWindowSingleThread::run);
+
+    if (m_qmlComponent->isError())
+    {
+        const QList<QQmlError> errorList = m_qmlComponent->errors();
+        for (const QQmlError &error : errorList)
+        {
+            qWarning() << error.url() << error.line() << error;
+        }
+        return false;
+    }
+
+    QObject *rootObject = m_qmlComponent->create();
+    if (m_qmlComponent->isError()) {
+        const QList<QQmlError> errorList = m_qmlComponent->errors();
+        for (const QQmlError &error : errorList)
+        {
+            qWarning() << error.url() << error.line() << error;
+        }
+        return false;
+    }
+
+    m_rootItem = qobject_cast<QQuickItem *>(rootObject);
+    if (!m_rootItem)
+    {
+        qWarning("run: Not a QQuickItem");
+        delete rootObject;
+        return false;
+    }
+
+    // The root item is ready. Associate it with the window.
+    m_rootItem->setParentItem(m_quickWindow->contentItem());
+
+    // Update item and rendering related geometries.
+    updateSizes(windowSize);
+
+    // Ensure key events are received by the root Rectangle.
+    m_rootItem->forceActiveFocus();
+
+    // Initialize the render control and our OpenGL resources.
+    // setup QOpenGLContext into the QOffscreenSurface
+    context->makeCurrent(offscreenSurface);
+    // setup graphic device into the QQuickWindow
+    m_quickWindow->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(context));
+    m_renderControl->initialize();
+
+    return true;
+}
+
+void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::updateSizes(
+        const QSize &windowSize
+        )
+{
+    // Behave like SizeRootObjectToView.
+    m_rootItem->setWidth(windowSize.width());
+    m_rootItem->setHeight(windowSize.height());
+
+    m_quickWindow->setGeometry(0, 0, windowSize.width(), windowSize.height());
+}
+
+QQmlComponent* QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getQmlComponent()
+{
+    return m_qmlComponent.get();
+}
+
 
 // TODO: add implementation
 // just simple possible implementation
