@@ -27,6 +27,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include "defaulttexturerender.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -39,9 +40,6 @@ class QQmlEngine;
 class QQmlComponent;
 class QQuickItem;
 QT_END_NAMESPACE
-
-
-class DefaultTextureRender;
 
 
 // TODO: add interface for new drawing surface
@@ -116,6 +114,7 @@ private:
     bool m_quickReady = false;
     std::unique_ptr<QTimer> m_updateTimer;
     qreal m_dpr = 1.0;
+    std::unique_ptr<DefaultTextureRender> m_defaultRender;
 };
 
 #endif // QUIZIMAGEQWINDOWSINGLETHREAD_H

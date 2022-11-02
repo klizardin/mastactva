@@ -16,7 +16,6 @@
 */
 
 #include "quizimageqwindowsinglethread.h"
-#include "defaulttexturerender.h"
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QOpenGLFramebufferObject>
@@ -210,6 +209,8 @@ QuizImageQWindowSingleThread::QuizImageQWindowSingleThread()
     m_offscreenSurface->setFormat(m_context->format());
     m_offscreenSurface->create();
 
+    m_defaultRender = std::make_unique<DefaultTextureRender>(m_offscreenSurface.get());
+
     // create opnegl render class for QOffscreenSurface
     //m_defaultRenderer = new DefaultRenderer(m_offscreenSurface);
 
@@ -238,6 +239,7 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 
     //m_defaultRenderer.reset();
     m_drawingSurfaces.clear();
+    m_defaultRender.reset();
     m_offscreenSurface.reset();
     m_context.reset();
 }
