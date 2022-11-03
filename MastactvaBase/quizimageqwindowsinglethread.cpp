@@ -318,6 +318,7 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
 {
+    // TODO: add implementation
     Q_UNUSED(e);
 }
 
