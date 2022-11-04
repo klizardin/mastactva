@@ -425,6 +425,10 @@ void QuizImageQWindowSingleThread::render()
 
 void QuizImageQWindowSingleThread::requestUpdate()
 {
+    if (m_updateTimer && !m_updateTimer->isActive())
+    {
+        m_updateTimer->start();
+    }
 }
 
 void QuizImageQWindowSingleThread::handleScreenChange()
