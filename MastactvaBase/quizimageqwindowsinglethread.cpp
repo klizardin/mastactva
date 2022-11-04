@@ -391,6 +391,15 @@ void QuizImageQWindowSingleThread::keyReleaseEvent(QKeyEvent *e)
 
 void QuizImageQWindowSingleThread::run()
 {
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        disconnect(surface.getQmlComponent(), &QQmlComponent::statusChanged, this, &QuizImageQWindowSingleThread::run);
+    }
+    m_quickInitialized = true;
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        m_quickInitialized &= surface.run(m_context.get(), m_offscreenSurface.get(), QSize{width(), height()});
+    }
 }
 
 void QuizImageQWindowSingleThread::createTexture()
