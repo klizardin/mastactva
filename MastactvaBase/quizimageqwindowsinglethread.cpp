@@ -58,7 +58,7 @@ QWindow *RenderControl::renderWindow(QPoint *offset)
 }
 
 
-bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::preFree(QOpenGLContext *context, QOffscreenSurface *offscreenSurface)
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::prepareContext(QOpenGLContext *context, QOffscreenSurface *offscreenSurface)
 {
     if(!context || !offscreenSurface)
     {
@@ -84,7 +84,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::free(QOpenGLConte
     return true;
 }
 
-bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::postFree(QOpenGLContext *context)
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::postContext(QOpenGLContext *context)
 {
     if(!context)
     {
@@ -253,6 +253,32 @@ QQmlComponent* QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getQmlC
     return m_qmlComponent.get();
 }
 
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::render(QOpenGLContext *context)
+{
+    if (!context ||
+        !m_renderControl
+        )
+    {
+        return false;
+    }
+
+    // Polish, synchronize and render the next frame (into our texture).  In this example
+    // everything happens on the same thread and therefore all three steps are performed
+    // in succession from here. In a threaded setup the render() call would happen on a
+    // separate thread.
+    m_renderControl->beginFrame();
+    m_renderControl->polishItems();
+    m_renderControl->sync();
+    m_renderControl->render();
+    m_renderControl->endFrame();
+
+    QOpenGLFramebufferObject::bindDefault();
+    // flush QOpenGLContext
+    context->functions()->glFlush();
+
+    return true;
+}
+
 
 // TODO: add implementation
 // just simple possible implementation
@@ -302,12 +328,12 @@ QuizImageQWindowSingleThread::QuizImageQWindowSingleThread()
 QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 {
     m_updateTimer.reset();
-    QuizImageQMLDrawingSurface::preFree(m_context.get(), m_offscreenSurface.get());
+    QuizImageQMLDrawingSurface::prepareContext(m_context.get(), m_offscreenSurface.get());
     for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
     {
         surface.free(m_context.get());
     }
-    QuizImageQMLDrawingSurface::postFree(m_context.get());
+    QuizImageQMLDrawingSurface::postContext(m_context.get());
 
     //m_defaultRenderer.reset();
     m_drawingSurfaces.clear();
@@ -388,6 +414,13 @@ void QuizImageQWindowSingleThread::destroyTexture()
 
 void QuizImageQWindowSingleThread::render()
 {
+    m_quickReady = true;
+    QuizImageQMLDrawingSurface::prepareContext(m_context.get(), m_offscreenSurface.get());
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        m_quickReady &= surface.render(m_context.get());
+    }
+    m_defaultRender->render(this, m_context.get(), 0); // TODO: setup textures
 }
 
 void QuizImageQWindowSingleThread::requestUpdate()

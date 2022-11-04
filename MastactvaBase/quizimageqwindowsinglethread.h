@@ -54,9 +54,9 @@ protected:
         QuizImageQMLDrawingSurface() = default;
         ~QuizImageQMLDrawingSurface() = default;
         bool create(QuizImageQWindowSingleThread *qwindow);
-        static bool preFree(QOpenGLContext *context, QOffscreenSurface *offscreenSurface);
+        static bool prepareContext(QOpenGLContext *context, QOffscreenSurface *offscreenSurface);
         bool free(QOpenGLContext *context);
-        static bool postFree(QOpenGLContext *context);
+        static bool postContext(QOpenGLContext *context);
         void mousePressEvent(QMouseEvent *e);
         void mouseReleaseEvent(QMouseEvent *e);
         void keyPressEvent(QKeyEvent *e);
@@ -71,6 +71,7 @@ protected:
                 );
         void updateSizes(const QSize &windowSize);
         QQmlComponent* getQmlComponent();
+        bool render(QOpenGLContext *context);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
