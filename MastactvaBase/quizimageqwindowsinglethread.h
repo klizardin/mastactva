@@ -27,6 +27,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include "defaulttexturerender.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -53,10 +54,24 @@ protected:
         QuizImageQMLDrawingSurface() = default;
         ~QuizImageQMLDrawingSurface() = default;
         bool create(QuizImageQWindowSingleThread *qwindow);
-        static bool preFree(QOpenGLContext *context, QOffscreenSurface *offscreenSurface);
+        static bool prepareContext(QOpenGLContext *context, QOffscreenSurface *offscreenSurface);
         bool free(QOpenGLContext *context);
-        static bool postFree(QOpenGLContext *context);
+        static bool postContext(QOpenGLContext *context);
         void mousePressEvent(QMouseEvent *e);
+        void mouseReleaseEvent(QMouseEvent *e);
+        void keyPressEvent(QKeyEvent *e);
+        void keyReleaseEvent(QKeyEvent *e);
+        bool createTexture(QOpenGLContext *context, const QSize &textureSize);
+        bool deleteTexture(QOpenGLContext *context);
+        bool run(
+                //QuizImageQWindowSingleThread* qwindow,
+                QOpenGLContext *context,
+                QOffscreenSurface *offscreenSurface,
+                const QSize &windowSize
+                );
+        void updateSizes(const QSize &windowSize);
+        QQmlComponent* getQmlComponent();
+        bool render(QOpenGLContext *context);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
@@ -64,7 +79,7 @@ protected:
         std::unique_ptr<QQmlEngine> m_qmlEngine;
         std::unique_ptr<QQmlComponent> m_qmlComponent;
         QQuickItem * m_rootItem = nullptr;
-        uint m_textureId = -1;
+        uint m_textureId = 0;
     };
 
 public:
@@ -108,6 +123,7 @@ private:
     bool m_quickReady = false;
     std::unique_ptr<QTimer> m_updateTimer;
     qreal m_dpr = 1.0;
+    std::unique_ptr<DefaultTextureRender> m_defaultRender;
 };
 
 #endif // QUIZIMAGEQWINDOWSINGLETHREAD_H

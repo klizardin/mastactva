@@ -19,10 +19,9 @@
 #define OPENGLDRAWING_UTILS_H
 
 
-#include <QtGui/QOpenGLFramebufferObject>
-#include <QtGui/qopenglshaderprogram.h>
-#include <QtGui/qopenglfunctions.h>
-#include <QtGui/QOpenGLFramebufferObject>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLFunctions>
 #include <vector>
 #include <QString>
 #include <QVector>

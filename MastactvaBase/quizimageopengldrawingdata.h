@@ -19,11 +19,10 @@
 #define QUIZIMAGEOPENGLDRAWINGDATA_H
 
 
-#include <QtGui/QOpenGLFramebufferObject>
-#include <QtGui/qopenglshaderprogram.h>
-#include <QtGui/qopenglfunctions.h>
-#include <QtGui/QOpenGLFramebufferObject>
-#include <QtQuick/QQuickWindow>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLFunctions>
+#include <QOpenGLFramebufferObject>
+#include <QQuickWindow>
 #include <QQuickFramebufferObject>
 //#include "../MastactvaBase/quickframebufferobjects.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"

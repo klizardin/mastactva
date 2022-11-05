@@ -27,12 +27,12 @@
 #include <QDateTime>
 #include <QByteArray>
 #include <QJsonValue>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QOpenGLTexture>
-#include <QtGui/QOpenGLShaderProgram>
-#include <QtGui/QOpenGLBuffer>
-#include <QtGui/QOpenGLShader>
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
+#include <QOpenGLTexture>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLBuffer>
+#include <QOpenGLShader>
 
 
 /*
