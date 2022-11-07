@@ -346,11 +346,28 @@ void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
 {
     // TODO: add implementation
     Q_UNUSED(e);
+    /*
+    if (isExposed()) {
+        if (!m_quickInitialized) {
+            // run rendering
+            // for this QWindow and m_context QOpenGLContext
+            // (possibly this mostly for initialization)
+            m_defaultRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0, m_quickReady ? m_textureId[1] : 0);
+            startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"), QStringLiteral("qrc:/rendercontrol/demo2.qml"));
+        }
+    }
+    */
 }
 
 void QuizImageQWindowSingleThread::resizeEvent(QResizeEvent *e)
 {
     Q_UNUSED(e);
+    /*
+    // If this is a resize after the scene is up and running, recreate the texture and the
+    // Quick item and scene.
+    if (m_textureId[0] && m_textureId[0] && m_textureSize != size() * devicePixelRatio())
+        resizeTexture();
+    */
 }
 
 void QuizImageQWindowSingleThread::mousePressEvent(QMouseEvent *e)
@@ -442,19 +459,64 @@ void QuizImageQWindowSingleThread::requestUpdate()
 
 void QuizImageQWindowSingleThread::handleScreenChange()
 {
+    /*
+    if (m_dpr != devicePixelRatio())
+        resizeTexture();
+    */
 }
 
 void QuizImageQWindowSingleThread::startQuick(const QString &filename)
 {
     Q_UNUSED(filename);
+    /*
+    m_qmlComponent[0] = new QQmlComponent(m_qmlEngine[0], QUrl(filename1));
+    m_qmlComponent[1] = new QQmlComponent(m_qmlEngine[1], QUrl(filename2));
+    bool startRun = false;
+    if (m_qmlComponent[0]->isLoading())
+        connect(m_qmlComponent[0], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
+    else
+        startRun = true;
+    if (m_qmlComponent[1]->isLoading())
+        connect(m_qmlComponent[1], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
+    else
+        startRun = true;
+    if(startRun)
+        run();
+    */
 }
 
 void QuizImageQWindowSingleThread::updateSizes()
 {
+    /*
+    // Behave like SizeRootObjectToView.
+    m_rootItem[0]->setWidth(width());
+    m_rootItem[0]->setHeight(height());
+    m_rootItem[1]->setWidth(width());
+    m_rootItem[1]->setHeight(height());
+
+    m_quickWindow[0]->setGeometry(0, 0, width(), height());
+    m_quickWindow[1]->setGeometry(0, 0, width(), height());
+
+    // resize render screen size
+    // work with drawing matrix
+    m_defaultRenderer->resize(width(), height());
+    */
 }
 
 void QuizImageQWindowSingleThread::resizeTexture()
 {
+    /*
+    if (m_rootItem[0] && m_rootItem[1] && m_context->makeCurrent(m_offscreenSurface)) {
+        m_context->functions()->glDeleteTextures(1, &m_textureId[0]);
+        m_context->functions()->glDeleteTextures(1, &m_textureId[1]);
+        m_textureId[0] = 0;
+        m_textureId[1] = 0;
+        createTexture();
+        m_context->doneCurrent();
+        updateSizes();
+        render();
+    }
+    */
 }
 
 void QuizImageQWindowSingleThread::connectDrawingSurface(QQuickRenderControl * renderControl, QQuickWindow * quickWindow)
