@@ -344,19 +344,18 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
 {
-    // TODO: add implementation
     Q_UNUSED(e);
-    /*
-    if (isExposed()) {
-        if (!m_quickInitialized) {
+    if (isExposed())
+    {
+        if (!m_quickInitialized)
+        {
             // run rendering
             // for this QWindow and m_context QOpenGLContext
             // (possibly this mostly for initialization)
-            m_defaultRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0, m_quickReady ? m_textureId[1] : 0);
-            startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"), QStringLiteral("qrc:/rendercontrol/demo2.qml"));
+            m_defaultRender->render(this, m_context.get() , 0); // TODO: correct implementation
+            startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml")); // TODO: correct default qml
         }
     }
-    */
 }
 
 void QuizImageQWindowSingleThread::resizeEvent(QResizeEvent *e)
