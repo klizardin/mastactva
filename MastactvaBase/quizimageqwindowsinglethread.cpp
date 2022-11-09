@@ -279,6 +279,11 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::render(QOpenGLCon
     return true;
 }
 
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::hasTexture() const
+{
+    return m_textureId != 0;
+}
+
 
 // TODO: add implementation
 // just simple possible implementation
@@ -361,12 +366,19 @@ void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
 void QuizImageQWindowSingleThread::resizeEvent(QResizeEvent *e)
 {
     Q_UNUSED(e);
-    /*
+
     // If this is a resize after the scene is up and running, recreate the texture and the
     // Quick item and scene.
-    if (m_textureId[0] && m_textureId[0] && m_textureSize != size() * devicePixelRatio())
+    bool hasTexture = false;
+    const auto newTextureSize = size() * devicePixelRatio();
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        hasTexture |= surface.hasTexture();
+    }
+    if (hasTexture && newTextureSize != m_textureSize)
+    {
         resizeTexture();
-    */
+    }
 }
 
 void QuizImageQWindowSingleThread::mousePressEvent(QMouseEvent *e)
