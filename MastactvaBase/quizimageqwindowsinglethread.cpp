@@ -284,6 +284,12 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::hasTexture() cons
     return m_textureId != 0;
 }
 
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::startQuick(const QString &filename)
+{
+    m_qmlComponent = std::make_unique<QQmlComponent>(m_qmlEngine.get(), QUrl(filename));
+    return !m_qmlComponent->isLoading();
+}
+
 
 // TODO: add implementation
 // just simple possible implementation
@@ -478,22 +484,23 @@ void QuizImageQWindowSingleThread::handleScreenChange()
 
 void QuizImageQWindowSingleThread::startQuick(const QString &filename)
 {
-    Q_UNUSED(filename);
-    /*
-    m_qmlComponent[0] = new QQmlComponent(m_qmlEngine[0], QUrl(filename1));
-    m_qmlComponent[1] = new QQmlComponent(m_qmlEngine[1], QUrl(filename2));
     bool startRun = false;
-    if (m_qmlComponent[0]->isLoading())
-        connect(m_qmlComponent[0], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
-    else
-        startRun = true;
-    if (m_qmlComponent[1]->isLoading())
-        connect(m_qmlComponent[1], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
-    else
-        startRun = true;
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        if(!surface.startQuick(filename)) // TODO: correct filename
+        {
+            connect(surface.getQmlComponent(), &QQmlComponent::statusChanged, this, &QuizImageQWindowSingleThread::run);
+        }
+        else
+        {
+            startRun |= true;
+        }
+    }
+
     if(startRun)
+    {
         run();
-    */
+    }
 }
 
 void QuizImageQWindowSingleThread::updateSizes()
