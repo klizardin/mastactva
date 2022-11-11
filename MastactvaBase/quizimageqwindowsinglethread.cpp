@@ -470,10 +470,10 @@ void QuizImageQWindowSingleThread::requestUpdate()
 
 void QuizImageQWindowSingleThread::handleScreenChange()
 {
-    /*
     if (m_dpr != devicePixelRatio())
+    {
         resizeTexture();
-    */
+    }
 }
 
 void QuizImageQWindowSingleThread::startQuick(const QString &filename)
