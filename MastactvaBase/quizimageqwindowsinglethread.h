@@ -72,6 +72,8 @@ protected:
         void updateSizes(const QSize &windowSize);
         QQmlComponent* getQmlComponent();
         bool render(QOpenGLContext *context);
+        bool hasTexture() const;
+        bool startQuick(const QString &filename);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
