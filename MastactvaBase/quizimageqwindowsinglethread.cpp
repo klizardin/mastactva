@@ -526,18 +526,15 @@ void QuizImageQWindowSingleThread::updateSizes()
 
 void QuizImageQWindowSingleThread::resizeTexture()
 {
-    /*
-    if (m_rootItem[0] && m_rootItem[1] && m_context->makeCurrent(m_offscreenSurface)) {
-        m_context->functions()->glDeleteTextures(1, &m_textureId[0]);
-        m_context->functions()->glDeleteTextures(1, &m_textureId[1]);
-        m_textureId[0] = 0;
-        m_textureId[1] = 0;
-        createTexture();
-        m_context->doneCurrent();
-        updateSizes();
-        render();
+    QuizImageQMLDrawingSurface::prepareContext(m_context.get(), m_offscreenSurface.get());
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        surface.deleteTexture(m_context.get());
     }
-    */
+    createTexture();
+    QuizImageQMLDrawingSurface::postContext(m_context.get());
+    updateSizes();
+    render();
 }
 
 void QuizImageQWindowSingleThread::connectDrawingSurface(QQuickRenderControl * renderControl, QQuickWindow * quickWindow)
