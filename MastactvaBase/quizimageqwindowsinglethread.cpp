@@ -290,6 +290,18 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::startQuick(const 
     return !m_qmlComponent->isLoading();
 }
 
+void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setWindowSize(const QSize &windowSize)
+{
+    if(!m_rootItem || !m_quickWindow)
+    {
+        return;
+    }
+
+    m_rootItem->setWidth(windowSize.width());
+    m_rootItem->setHeight(windowSize.height());
+    m_quickWindow->setGeometry(0, 0, windowSize.width(), windowSize.height());
+}
+
 
 // TODO: add implementation
 // just simple possible implementation
@@ -505,20 +517,11 @@ void QuizImageQWindowSingleThread::startQuick(const QString &filename)
 
 void QuizImageQWindowSingleThread::updateSizes()
 {
-    /*
-    // Behave like SizeRootObjectToView.
-    m_rootItem[0]->setWidth(width());
-    m_rootItem[0]->setHeight(height());
-    m_rootItem[1]->setWidth(width());
-    m_rootItem[1]->setHeight(height());
-
-    m_quickWindow[0]->setGeometry(0, 0, width(), height());
-    m_quickWindow[1]->setGeometry(0, 0, width(), height());
-
-    // resize render screen size
-    // work with drawing matrix
-    m_defaultRenderer->resize(width(), height());
-    */
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        surface.setWindowSize(QSize(width(), height()));
+    }
+    m_defaultRender->resize(width(), height());
 }
 
 void QuizImageQWindowSingleThread::resizeTexture()
