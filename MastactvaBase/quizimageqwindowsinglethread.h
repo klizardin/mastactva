@@ -74,6 +74,7 @@ protected:
         bool render(QOpenGLContext *context);
         bool hasTexture() const;
         bool startQuick(const QString &filename);
+        void setWindowSize(const QSize &windowSize);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
