@@ -126,7 +126,7 @@ private:
     bool m_quickReady = false;
     std::unique_ptr<QTimer> m_updateTimer;
     qreal m_dpr = 1.0;
-    std::unique_ptr<DefaultTextureRender> m_defaultRender;
+    std::unique_ptr<DefaultTextureRender> m_defaultRenderer;
     QString m_qmlFileName;
 };
 
