@@ -305,7 +305,8 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setWindowSize(con
 
 // TODO: add implementation
 // just simple possible implementation
-QuizImageQWindowSingleThread::QuizImageQWindowSingleThread()
+QuizImageQWindowSingleThread::QuizImageQWindowSingleThread(const QString & qmlFileName)
+    : m_qmlFileName(qmlFileName)
 {
     setSurfaceType(QSurface::OpenGLSurface);
 
@@ -376,7 +377,7 @@ void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
             // for this QWindow and m_context QOpenGLContext
             // (possibly this mostly for initialization)
             m_defaultRender->render(this, m_context.get() , 0); // TODO: correct implementation
-            startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml")); // TODO: correct default qml
+            startQuick(m_qmlFileName);
         }
     }
 }

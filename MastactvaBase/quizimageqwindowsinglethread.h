@@ -86,7 +86,7 @@ protected:
     };
 
 public:
-    QuizImageQWindowSingleThread();
+    QuizImageQWindowSingleThread(const QString & qmlFileName);
     ~QuizImageQWindowSingleThread() override;
 
 protected:
@@ -127,6 +127,7 @@ private:
     std::unique_ptr<QTimer> m_updateTimer;
     qreal m_dpr = 1.0;
     std::unique_ptr<DefaultTextureRender> m_defaultRender;
+    QString m_qmlFileName;
 };
 
 #endif // QUIZIMAGEQWINDOWSINGLETHREAD_H
