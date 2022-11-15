@@ -302,6 +302,11 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setWindowSize(con
     m_quickWindow->setGeometry(0, 0, windowSize.width(), windowSize.height());
 }
 
+uint QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getTexture() const
+{
+    return m_textureId;
+}
+
 
 // TODO: add implementation
 // just simple possible implementation
@@ -376,7 +381,7 @@ void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
             // run rendering
             // for this QWindow and m_context QOpenGLContext
             // (possibly this mostly for initialization)
-            m_defaultRenderer->render(this, m_context.get() , 0); // TODO: correct implementation
+            m_defaultRenderer->render(this, m_context.get() , getTextures());
             startQuick(m_qmlFileName);
         }
     }
@@ -476,7 +481,7 @@ void QuizImageQWindowSingleThread::render()
     {
         m_quickReady &= surface.render(m_context.get());
     }
-    m_defaultRenderer->render(this, m_context.get(), 0); // TODO: setup textures
+    m_defaultRenderer->render(this, m_context.get(), getTextures());
 }
 
 void QuizImageQWindowSingleThread::requestUpdate()
@@ -561,4 +566,15 @@ bool QuizImageQWindowSingleThread::createSurface()
         m_drawingSurfaces.erase(itback);
     }
     return false;
+}
+
+std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
+{
+    std::vector<uint> result;
+    result.reserve(m_drawingSurfaces.size());
+    for(const QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        result.push_back(surface.getTexture());
+    }
+    return result;
 }

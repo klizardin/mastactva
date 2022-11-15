@@ -75,6 +75,7 @@ protected:
         bool hasTexture() const;
         bool startQuick(const QString &filename);
         void setWindowSize(const QSize &windowSize);
+        uint getTexture() const;
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
@@ -112,6 +113,7 @@ private:
     void resizeTexture();
     void connectDrawingSurface(QQuickRenderControl * renderControl, QQuickWindow * quickWindow);
     bool createSurface();
+    std::vector<uint> getTextures() const;
 
 private:
     std::unique_ptr<QOpenGLContext> m_context;
