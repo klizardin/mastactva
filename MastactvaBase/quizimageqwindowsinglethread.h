@@ -75,6 +75,7 @@ protected:
         bool hasTexture() const;
         bool startQuick(const QString &filename);
         void setWindowSize(const QSize &windowSize);
+        uint getTexture() const;
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
@@ -86,7 +87,7 @@ protected:
     };
 
 public:
-    QuizImageQWindowSingleThread();
+    QuizImageQWindowSingleThread(const QString & qmlFileName);
     ~QuizImageQWindowSingleThread() override;
 
 protected:
@@ -112,6 +113,7 @@ private:
     void resizeTexture();
     void connectDrawingSurface(QQuickRenderControl * renderControl, QQuickWindow * quickWindow);
     bool createSurface();
+    std::vector<uint> getTextures() const;
 
 private:
     std::unique_ptr<QOpenGLContext> m_context;
@@ -126,7 +128,8 @@ private:
     bool m_quickReady = false;
     std::unique_ptr<QTimer> m_updateTimer;
     qreal m_dpr = 1.0;
-    std::unique_ptr<DefaultTextureRender> m_defaultRender;
+    std::unique_ptr<DefaultTextureRender> m_defaultRenderer;
+    QString m_qmlFileName;
 };
 
 #endif // QUIZIMAGEQWINDOWSINGLETHREAD_H

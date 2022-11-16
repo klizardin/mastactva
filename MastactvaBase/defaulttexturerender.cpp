@@ -137,7 +137,7 @@ void DefaultTextureRender::setupVertexAttribs()
     m_vbo->release();
 }
 
-void DefaultTextureRender::render(QWindow *w, QOpenGLContext *share, uint texture)
+void DefaultTextureRender::render(QWindow *w, QOpenGLContext *share, const std::vector<uint> &textures)
 {
     if (!m_context)
     {
@@ -152,9 +152,9 @@ void DefaultTextureRender::render(QWindow *w, QOpenGLContext *share, uint textur
     QOpenGLFunctions *f = m_context->functions();
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (texture)
+    if (!textures.empty() && textures[0])
     {
-        f->glBindTexture(GL_TEXTURE_2D, texture);
+        f->glBindTexture(GL_TEXTURE_2D, textures[0]);
         f->glFrontFace(GL_CW); // because of vertex data
         f->glEnable(GL_CULL_FACE);
         f->glEnable(GL_DEPTH_TEST);

@@ -176,6 +176,9 @@ opencv addon test
     - debuging ..
 - branch for new version
 
-- refactoring/update code
+* refactoring/update code
+- run current
+    - add resource for qml modules
+
 
 

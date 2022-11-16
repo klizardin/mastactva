@@ -40,7 +40,7 @@ public:
     ~DefaultTextureRender();
 
     void resize(int w, int h);
-    void render(QWindow *w, QOpenGLContext *share, uint texture);
+    void render(QWindow *w, QOpenGLContext *share, const std::vector<uint> &textures);
 
 private:
     void init(QWindow *w, QOpenGLContext *share);
