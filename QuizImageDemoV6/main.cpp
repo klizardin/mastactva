@@ -52,6 +52,8 @@
 #include <QQuickWindow>
 #include "quizimagewindow.h"
 
+
+// TODO: move test app
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
