@@ -177,7 +177,7 @@ opencv addon test
 - branch for new version
 
 * refactoring/update code
-- run current
+- run current.
     - add resource for qml modules
 
 
