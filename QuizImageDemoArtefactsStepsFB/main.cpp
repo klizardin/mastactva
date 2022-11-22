@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     // create
     QuizImageQWindowSingleThread window(QStringLiteral("qrc:/main.qml"));
     // set default size
-    window.resize(1024, 768);
+    window.resize(800, 600);
     // show
     window.show();
 
