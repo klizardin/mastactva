@@ -17,6 +17,7 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include "../MastactvaBase/quizimageqwindowsinglethread.h"
 
 int main(int argc, char *argv[])
 {
@@ -27,24 +28,24 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
-    engine.addImportPath("qrc:/Mastactva");
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+    //const QUrl url(QStringLiteral("qrc:/main.qml"));
+    //engine.addImportPath("qrc:/Mastactva");
+    /*QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
-    engine.load(url);
+    engine.load(url);*/
 
     // TODO:
     // use of the window
     // (standard steps for QWindow):
     // create
-    //QuizImageQWindowSingleThreaded window;
+    QuizImageQWindowSingleThread window(QStringLiteral("qrc:/main.qml"));
     // set default size
-    //window.resize(1024, 768);
+    window.resize(800, 600);
     // show
-    //window.show();
+    window.show();
 
 
     return app.exec();
