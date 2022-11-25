@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    QQmlApplicationEngine engine;
+    //QQmlApplicationEngine engine;
     //const QUrl url(QStringLiteral("qrc:/main.qml"));
     //engine.addImportPath("qrc:/Mastactva");
     /*QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

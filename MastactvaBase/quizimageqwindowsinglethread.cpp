@@ -132,7 +132,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create(QuizImageQ
     m_quickWindow = std::make_unique<QQuickWindow>(m_renderControl.get());
 
     // Create a QML engine.
-    m_qmlEngine = std::make_unique<QQmlEngine>();
+    m_qmlEngine = std::make_unique<QQmlApplicationEngine>();
     if (!m_qmlEngine->incubationController())
         m_qmlEngine->setIncubationController(m_quickWindow->incubationController());
 
