@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QMatrix4x4>
 #include <QTimer>
+#include <QQmlApplicationEngine>
 #include <list>
 #include <vector>
 #include <string>
@@ -80,7 +81,7 @@ protected:
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
         std::unique_ptr<QQuickWindow> m_quickWindow;
-        std::unique_ptr<QQmlEngine> m_qmlEngine;
+        std::unique_ptr<QQmlApplicationEngine> m_qmlEngine;
         std::unique_ptr<QQmlComponent> m_qmlComponent;
         QQuickItem * m_rootItem = nullptr;
         uint m_textureId = 0;
