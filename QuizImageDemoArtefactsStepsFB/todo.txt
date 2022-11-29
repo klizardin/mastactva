@@ -178,6 +178,7 @@ opencv addon test
 
 * refactoring/update code
 - run current..
+    * prepare code
     - add resource for qml modules
 
 
