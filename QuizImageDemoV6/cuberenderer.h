@@ -62,11 +62,11 @@ QT_FORWARD_DECLARE_CLASS(QWindow)
 QT_FORWARD_DECLARE_CLASS(QOffscreenSurface)
 
 // TODO: replace with simple code
-class CubeRenderer
+class DefaultRenderer
 {
 public:
-    CubeRenderer(QOffscreenSurface *offscreenSurface);
-    ~CubeRenderer();
+    DefaultRenderer(QOffscreenSurface *offscreenSurface);
+    ~DefaultRenderer();
 
     void resize(int w, int h);
     void render(QWindow *w, QOpenGLContext *share, uint texture1, uint texture2);

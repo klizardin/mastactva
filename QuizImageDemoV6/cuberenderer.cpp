@@ -58,7 +58,7 @@
 #include <QOffscreenSurface>
 #include <QWindow>
 
-CubeRenderer::CubeRenderer(QOffscreenSurface *offscreenSurface)
+DefaultRenderer::DefaultRenderer(QOffscreenSurface *offscreenSurface)
     : m_offscreenSurface(offscreenSurface),
       m_context(nullptr),
       m_program(nullptr),
@@ -68,7 +68,7 @@ CubeRenderer::CubeRenderer(QOffscreenSurface *offscreenSurface)
 {
 }
 
-CubeRenderer::~CubeRenderer()
+DefaultRenderer::~DefaultRenderer()
 {
     // Use a temporary offscreen surface to do the cleanup.
     // There may not be a native window surface available anymore at this stage.
@@ -82,10 +82,12 @@ CubeRenderer::~CubeRenderer()
     delete m_context;
 }
 
+const int vertexCount = 6;//36;
+
 /*
  * we need QWindow and QOpenGlContext to init drawing content
 */
-void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
+void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
 {
     m_context = new QOpenGLContext;
     m_context->setShareContext(share);
@@ -139,9 +141,9 @@ void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
     m_vbo->bind();
 
     GLfloat v[] = {
-        -0.5, 0.5, 0.5, 0.5,-0.5,0.5,-0.5,-0.5,0.5,
-        0.5, -0.5, 0.5, -0.5,0.5,0.5,0.5,0.5,0.5,
-        -0.5, -0.5, -0.5, 0.5,-0.5,-0.5,-0.5,0.5,-0.5,
+        -1.0, 1.0, 1.0,     1.0,-1.0,1.0,       -1.0,-1.0,1.0,
+        1.0, -1.0, 1.0,     -1.0,1.0,1.0,       1.0,1.0,1.0,
+        /*-0.5, -0.5, -0.5, 0.5,-0.5,-0.5,-0.5,0.5,-0.5,
         0.5, 0.5, -0.5, -0.5,0.5,-0.5,0.5,-0.5,-0.5,
 
         0.5, -0.5, -0.5, 0.5,-0.5,0.5,0.5,0.5,-0.5,
@@ -152,12 +154,12 @@ void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
         0.5, 0.5,  -0.5, -0.5, 0.5,  0.5,  -0.5,  0.5,  -0.5,
         -0.5,  0.5,  0.5,  0.5,  0.5,  -0.5, 0.5, 0.5,  0.5,
         -0.5,  -0.5, -0.5, -0.5, -0.5, 0.5,  0.5, -0.5, -0.5,
-        0.5, -0.5, 0.5,  0.5,  -0.5, -0.5, -0.5,  -0.5, 0.5
+        0.5, -0.5, 0.5,  0.5,  -0.5, -0.5, -0.5,  -0.5, 0.5*/
     };
     GLfloat texCoords[] = {
-        0.0f,0.0f, 1.0f,1.0f, 1.0f,0.0f,
-        1.0f,1.0f, 0.0f,0.0f, 0.0f,1.0f,
-        1.0f,1.0f, 1.0f,0.0f, 0.0f,1.0f,
+        0.0f,0.0f,      1.0f,1.0f,      1.0f,0.0f,
+        1.0f,1.0f,      0.0f,0.0f,      0.0f,1.0f,
+        /*1.0f,1.0f, 1.0f,0.0f, 0.0f,1.0f,
         0.0f,0.0f, 0.0f,1.0f, 1.0f,0.0f,
 
         1.0f,1.0f, 1.0f,0.0f, 0.0f,1.0f,
@@ -168,10 +170,9 @@ void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
         0.0f,1.0f, 1.0f,0.0f, 1.0f,1.0f,
         1.0f,0.0f, 0.0f,1.0f, 0.0f,0.0f,
         1.0f,0.0f, 1.0f,1.0f, 0.0f,0.0f,
-        0.0f,1.0f, 0.0f,0.0f, 1.0f,1.0f
+        0.0f,1.0f, 0.0f,0.0f, 1.0f,1.0f*/
     };
 
-    const int vertexCount = 36;
     m_vbo->allocate(sizeof(GLfloat) * vertexCount * 5);
     m_vbo->write(0, v, sizeof(GLfloat) * vertexCount * 3);
     m_vbo->write(sizeof(GLfloat) * vertexCount * 3, texCoords, sizeof(GLfloat) * vertexCount * 2);
@@ -181,27 +182,27 @@ void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
         setupVertexAttribs();
 }
 
-void CubeRenderer::resize(int w, int h)
+void DefaultRenderer::resize(int w, int h)
 {
     m_proj.setToIdentity();
     m_proj.perspective(45, w / float(h), 0.01f, 100.0f);
 }
 
-void CubeRenderer::setupVertexAttribs()
+void DefaultRenderer::setupVertexAttribs()
 {
     m_vbo->bind();
     m_program->enableAttributeArray(0);
     m_program->enableAttributeArray(1);
     m_context->functions()->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     m_context->functions()->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0,
-                                                  (const void *)(36 * 3 * sizeof(GLfloat)));
+                                                  (const void *)(vertexCount * 3 * sizeof(GLfloat)));
     m_vbo->release();
 }
 
 /*
  * TODO: add texture1, texture2
 */
-void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, uint texture2)
+void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, uint texture2)
 {
     if (!m_context)
     {
@@ -232,7 +233,7 @@ void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, uint
         m.translate(0, 0, -2);
         m.rotate(90, 0, 0, 1);
         m.rotate(angle, 0.5, 1, 0);
-        angle += 0.5f;
+        //angle += 0.5f;
 
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
@@ -240,7 +241,7 @@ void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, uint
         if(m_viewport.size()>=4)
         {
             f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
-            f->glDrawArrays(GL_TRIANGLES, 0, 36);
+            f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
     }
     if (texture2) {
@@ -260,7 +261,7 @@ void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, uint
         m.translate(0, 0, -2);
         m.rotate(90, 0, 0, 1);
         m.rotate(angle, 0.5, 1, 0);
-        angle += 0.5f;
+        //angle += 0.5f;
 
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
@@ -268,7 +269,7 @@ void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, uint
         if(m_viewport.size()>=8)
         {
             f->glViewport(m_viewport[4], m_viewport[5], m_viewport[6] ,m_viewport[7]);
-            f->glDrawArrays(GL_TRIANGLES, 0, 36);
+            f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
     }
 
