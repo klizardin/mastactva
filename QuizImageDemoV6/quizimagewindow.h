@@ -66,7 +66,7 @@ class QQmlComponent;
 class QQuickItem;
 QT_END_NAMESPACE
 
-class CubeRenderer;
+class DefaultRenderer;
 
 class WindowSingleThreaded : public QWindow
 {
@@ -115,7 +115,7 @@ private:
     QTimer m_updateTimer;
 
     // TODO: several steps of CubeRenderer ?
-    CubeRenderer *m_cubeRenderer;
+    DefaultRenderer *m_cubeRenderer;
     qreal m_dpr;
 };
 

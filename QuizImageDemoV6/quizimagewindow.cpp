@@ -119,7 +119,7 @@ WindowSingleThreaded::WindowSingleThreaded()
     m_offscreenSurface->create();
 
     // create opnegl render class for QOffscreenSurface
-    m_cubeRenderer = new CubeRenderer(m_offscreenSurface);
+    m_cubeRenderer = new DefaultRenderer(m_offscreenSurface);
 
     m_renderControl[0] = new RenderControl(this);
     m_renderControl[1] = new RenderControl(this);

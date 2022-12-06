@@ -58,7 +58,7 @@
 #include <QOffscreenSurface>
 #include <QWindow>
 
-CubeRenderer::CubeRenderer(QOffscreenSurface *offscreenSurface)
+DefaultRenderer::DefaultRenderer(QOffscreenSurface *offscreenSurface)
     : m_offscreenSurface(offscreenSurface),
       m_context(nullptr),
       m_program(nullptr),
@@ -68,7 +68,7 @@ CubeRenderer::CubeRenderer(QOffscreenSurface *offscreenSurface)
 {
 }
 
-CubeRenderer::~CubeRenderer()
+DefaultRenderer::~DefaultRenderer()
 {
     // Use a temporary offscreen surface to do the cleanup.
     // There may not be a native window surface available anymore at this stage.
@@ -85,7 +85,7 @@ CubeRenderer::~CubeRenderer()
 /*
  * we need QWindow and QOpenGlContext to init drawing content
 */
-void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
+void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
 {
     m_context = new QOpenGLContext;
     m_context->setShareContext(share);
@@ -181,13 +181,13 @@ void CubeRenderer::init(QWindow *w, QOpenGLContext *share)
         setupVertexAttribs();
 }
 
-void CubeRenderer::resize(int w, int h)
+void DefaultRenderer::resize(int w, int h)
 {
     m_proj.setToIdentity();
     m_proj.perspective(45, w / float(h), 0.01f, 100.0f);
 }
 
-void CubeRenderer::setupVertexAttribs()
+void DefaultRenderer::setupVertexAttribs()
 {
     m_vbo->bind();
     m_program->enableAttributeArray(0);
@@ -201,7 +201,7 @@ void CubeRenderer::setupVertexAttribs()
 /*
  * TODO: add texture1, texture2
 */
-void CubeRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, uint texture2)
+void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, uint texture2)
 {
     if (!m_context)
     {
