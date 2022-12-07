@@ -98,10 +98,12 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClearColor(0.0f, 0.1f, 0.25f, 1.0f);
+
     m_viewport.push_back(0);
     m_viewport.push_back(0);
     m_viewport.push_back(w->width() * w->devicePixelRatio() * 0.5);
     m_viewport.push_back(w->height() * w->devicePixelRatio());
+
     m_viewport.push_back(w->width() * w->devicePixelRatio() * 0.5);
     m_viewport.push_back(0);
     m_viewport.push_back(w->width() * w->devicePixelRatio());
