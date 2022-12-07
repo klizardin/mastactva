@@ -206,13 +206,7 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         if (!m_vao->isCreated())
             setupVertexAttribs();
 
-        static GLfloat angle = 0;
         QMatrix4x4 m;
-        m.translate(0, 0, -2);
-        m.rotate(90, 0, 0, 1);
-        m.rotate(angle, 0.5, 1, 0);
-        //angle += 0.5f;
-
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
         // Draw the cube.
