@@ -149,18 +149,6 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
     GLfloat texCoords[] = {
         0.0f,0.0f,      1.0f,1.0f,      1.0f,0.0f,
         1.0f,1.0f,      0.0f,0.0f,      0.0f,1.0f,
-        /*1.0f,1.0f, 1.0f,0.0f, 0.0f,1.0f,
-        0.0f,0.0f, 0.0f,1.0f, 1.0f,0.0f,
-
-        1.0f,1.0f, 1.0f,0.0f, 0.0f,1.0f,
-        0.0f,0.0f, 0.0f,1.0f, 1.0f,0.0f,
-        0.0f,0.0f, 1.0f,1.0f, 1.0f,0.0f,
-        1.0f,1.0f, 0.0f,0.0f, 0.0f,1.0f,
-
-        0.0f,1.0f, 1.0f,0.0f, 1.0f,1.0f,
-        1.0f,0.0f, 0.0f,1.0f, 0.0f,0.0f,
-        1.0f,0.0f, 1.0f,1.0f, 0.0f,0.0f,
-        0.0f,1.0f, 0.0f,0.0f, 1.0f,1.0f*/
     };
 
     m_vbo->allocate(sizeof(GLfloat) * vertexCount * 5);
