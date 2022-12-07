@@ -194,7 +194,8 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    if (texture1) {
+    if (texture1)
+    {
         f->glBindTexture(GL_TEXTURE_2D, texture1);
         f->glFrontFace(GL_CW); // because our cube's vertex data is such
         f->glEnable(GL_CULL_FACE);
@@ -216,7 +217,8 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
             f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
     }
-    if (texture2) {
+    if (texture2)
+    {
         f->glBindTexture(GL_TEXTURE_2D, texture2);
         f->glFrontFace(GL_CW); // because our cube's vertex data is such
         f->glEnable(GL_CULL_FACE);
