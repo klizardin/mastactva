@@ -188,7 +188,9 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
     }
 
     if (!m_context->makeCurrent(w))
-       return;
+    {
+        return;
+    }
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
