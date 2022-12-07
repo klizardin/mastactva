@@ -60,7 +60,6 @@
 
 DefaultRenderer::DefaultRenderer(QOffscreenSurface *offscreenSurface)
     : m_offscreenSurface(offscreenSurface),
-      m_context(nullptr),
       m_program(nullptr),
       m_vbo(nullptr),
       m_vao(nullptr),
@@ -79,7 +78,7 @@ DefaultRenderer::~DefaultRenderer()
     delete m_vao;
 
     m_context->doneCurrent();
-    delete m_context;
+    m_context.reset(nullptr);
 }
 
 const int vertexCount = 6;//36;
@@ -89,7 +88,7 @@ const int vertexCount = 6;//36;
 */
 void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
 {
-    m_context = new QOpenGLContext;
+    m_context = std::make_unique<QOpenGLContext>();
     m_context->setShareContext(share);
     m_context->setFormat(w->requestedFormat());
     m_context->create();

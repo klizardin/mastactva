@@ -52,9 +52,10 @@
 #define CUBERENDERER_H
 
 #include <QMatrix4x4>
+#include <QOpenGLContext>
 #include <vector>
+#include <memory>
 
-QT_FORWARD_DECLARE_CLASS(QOpenGLContext)
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
 QT_FORWARD_DECLARE_CLASS(QOpenGLBuffer)
 QT_FORWARD_DECLARE_CLASS(QOpenGLVertexArrayObject)
@@ -79,7 +80,7 @@ private:
      * https://doc.qt.io/qt-6/qoffscreensurface.html
     */
     QOffscreenSurface *m_offscreenSurface;
-    QOpenGLContext *m_context;
+    std::unique_ptr<QOpenGLContext> m_context;
     QOpenGLShaderProgram *m_program;
     QOpenGLBuffer *m_vbo;
     QOpenGLVertexArrayObject *m_vao;
