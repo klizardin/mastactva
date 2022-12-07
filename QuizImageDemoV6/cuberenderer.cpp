@@ -207,7 +207,9 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
         // If VAOs are not supported, set the vertex attributes every time.
         if (!m_vao->isCreated())
+        {
             setupVertexAttribs();
+        }
 
         QMatrix4x4 m;
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
