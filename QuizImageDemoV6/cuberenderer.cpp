@@ -89,7 +89,9 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
     m_context->setFormat(w->requestedFormat());
     m_context->create();
     if (!m_context->makeCurrent(w))
+    {
         return;
+    }
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClearColor(0.0f, 0.1f, 0.25f, 1.0f);
