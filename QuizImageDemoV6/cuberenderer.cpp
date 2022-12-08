@@ -60,7 +60,6 @@
 
 DefaultRenderer::DefaultRenderer(QOffscreenSurface *offscreenSurface)
     : m_offscreenSurface(offscreenSurface),
-      m_vbo(nullptr),
       m_vao(nullptr),
       m_matrixLoc(0)
 {
