@@ -74,7 +74,7 @@ DefaultRenderer::~DefaultRenderer()
 
     m_program.reset(nullptr);
     m_vbo.reset(nullptr);
-    delete m_vao;
+    m_vao.reset(nullptr);
 
     m_context->doneCurrent();
     m_context.reset(nullptr);
@@ -132,9 +132,9 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
     m_program->link();
     m_matrixLoc = m_program->uniformLocation("matrix");
 
-    m_vao = new QOpenGLVertexArrayObject;
+    m_vao = std::make_unique<QOpenGLVertexArrayObject>();
     m_vao->create();
-    QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
+    QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
 
     m_vbo = std::make_unique<QOpenGLBuffer>();
     m_vbo->create();
@@ -202,7 +202,7 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         f->glEnable(GL_DEPTH_TEST);
 
         m_program->bind();
-        QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
+        QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
         // If VAOs are not supported, set the vertex attributes every time.
         if (!m_vao->isCreated())
         {
@@ -228,7 +228,7 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         f->glEnable(GL_DEPTH_TEST);
 
         m_program->bind();
-        QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
+        QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
         // If VAOs are not supported, set the vertex attributes every time.
         if (!m_vao->isCreated())
         {
