@@ -73,7 +73,7 @@ DefaultRenderer::~DefaultRenderer()
     m_context->makeCurrent(m_offscreenSurface);
 
     m_program.reset(nullptr);
-    delete m_vbo;
+    m_vbo.reset(nullptr);
     delete m_vao;
 
     m_context->doneCurrent();
@@ -136,7 +136,7 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
     m_vao->create();
     QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
 
-    m_vbo = new QOpenGLBuffer;
+    m_vbo = std::make_unique<QOpenGLBuffer>();
     m_vbo->create();
     m_vbo->bind();
 
