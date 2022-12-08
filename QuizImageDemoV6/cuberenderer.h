@@ -53,6 +53,7 @@
 
 #include <QMatrix4x4>
 #include <QOpenGLContext>
+#include <QOpenGLShaderProgram>
 #include <vector>
 #include <memory>
 
