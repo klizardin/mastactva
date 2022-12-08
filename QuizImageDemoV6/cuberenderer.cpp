@@ -60,7 +60,6 @@
 
 DefaultRenderer::DefaultRenderer(QOffscreenSurface *offscreenSurface)
     : m_offscreenSurface(offscreenSurface),
-      m_program(nullptr),
       m_vbo(nullptr),
       m_vao(nullptr),
       m_matrixLoc(0)
@@ -73,9 +72,9 @@ DefaultRenderer::~DefaultRenderer()
     // There may not be a native window surface available anymore at this stage.
     m_context->makeCurrent(m_offscreenSurface);
 
-    delete m_program;
-    delete m_vbo;
-    delete m_vao;
+    m_program.reset(nullptr);
+    m_vbo.reset(nullptr);
+    m_vao.reset(nullptr);
 
     m_context->doneCurrent();
     m_context.reset(nullptr);
@@ -125,7 +124,7 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
         "void main() {\n"
         "   gl_FragColor = vec4(texture2D(sampler, v_coord).rgb, 1.0);\n"
         "}\n";
-    m_program = new QOpenGLShaderProgram;
+    m_program = std::make_unique<QOpenGLShaderProgram>();
     m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
     m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
     m_program->bindAttributeLocation("vertex", 0);
@@ -133,11 +132,11 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
     m_program->link();
     m_matrixLoc = m_program->uniformLocation("matrix");
 
-    m_vao = new QOpenGLVertexArrayObject;
+    m_vao = std::make_unique<QOpenGLVertexArrayObject>();
     m_vao->create();
-    QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
+    QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
 
-    m_vbo = new QOpenGLBuffer;
+    m_vbo = std::make_unique<QOpenGLBuffer>();
     m_vbo->create();
     m_vbo->bind();
 
@@ -203,7 +202,7 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         f->glEnable(GL_DEPTH_TEST);
 
         m_program->bind();
-        QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
+        QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
         // If VAOs are not supported, set the vertex attributes every time.
         if (!m_vao->isCreated())
         {
@@ -229,7 +228,7 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         f->glEnable(GL_DEPTH_TEST);
 
         m_program->bind();
-        QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
+        QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
         // If VAOs are not supported, set the vertex attributes every time.
         if (!m_vao->isCreated())
         {

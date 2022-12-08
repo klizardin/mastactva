@@ -53,12 +53,12 @@
 
 #include <QMatrix4x4>
 #include <QOpenGLContext>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLBuffer>
+#include <QOpenGLVertexArrayObject>
 #include <vector>
 #include <memory>
 
-QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
-QT_FORWARD_DECLARE_CLASS(QOpenGLBuffer)
-QT_FORWARD_DECLARE_CLASS(QOpenGLVertexArrayObject)
 QT_FORWARD_DECLARE_CLASS(QWindow)
 QT_FORWARD_DECLARE_CLASS(QOffscreenSurface)
 
@@ -81,9 +81,9 @@ private:
     */
     QOffscreenSurface *m_offscreenSurface;
     std::unique_ptr<QOpenGLContext> m_context;
-    QOpenGLShaderProgram *m_program;
-    QOpenGLBuffer *m_vbo;
-    QOpenGLVertexArrayObject *m_vao;
+    std::unique_ptr<QOpenGLShaderProgram> m_program;
+    std::unique_ptr<QOpenGLBuffer> m_vbo;
+    std::unique_ptr<QOpenGLVertexArrayObject> m_vao;
     int m_matrixLoc;
     QMatrix4x4 m_proj;
     bool m_last = false;
