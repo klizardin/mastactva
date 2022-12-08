@@ -191,15 +191,17 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-    if (texture1)
+    if(texture1 || texture2)
     {
         f->glBindTexture(GL_TEXTURE_2D, texture1);
         f->glFrontFace(GL_CW); // because our cube's vertex data is such
         f->glEnable(GL_CULL_FACE);
         f->glEnable(GL_DEPTH_TEST);
+    }
 
+
+    if (texture1)
+    {
         m_program->bind();
         QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
         // If VAOs are not supported, set the vertex attributes every time.
@@ -221,11 +223,6 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
     }
     if (texture2)
     {
-        f->glBindTexture(GL_TEXTURE_2D, texture2);
-        f->glFrontFace(GL_CW); // because our cube's vertex data is such
-        f->glEnable(GL_CULL_FACE);
-        f->glEnable(GL_DEPTH_TEST);
-
         m_program->bind();
         QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
         // If VAOs are not supported, set the vertex attributes every time.
