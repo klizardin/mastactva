@@ -84,7 +84,7 @@ private:
     std::unique_ptr<QOpenGLShaderProgram> m_program;
     std::unique_ptr<QOpenGLBuffer> m_vbo;
     std::unique_ptr<QOpenGLVertexArrayObject> m_vao;
-    int m_matrixLoc;
+    int m_matrixLoc = 0;
     QMatrix4x4 m_proj;
     bool m_last = false;
     std::vector<int> m_viewport;

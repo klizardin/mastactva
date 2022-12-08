@@ -59,8 +59,7 @@
 #include <QWindow>
 
 DefaultRenderer::DefaultRenderer(QOffscreenSurface *offscreenSurface)
-    : m_offscreenSurface(offscreenSurface),
-      m_matrixLoc(0)
+    : m_offscreenSurface(offscreenSurface)
 {
 }
 
