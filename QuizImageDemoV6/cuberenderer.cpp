@@ -60,7 +60,6 @@
 
 DefaultRenderer::DefaultRenderer(QOffscreenSurface *offscreenSurface)
     : m_offscreenSurface(offscreenSurface),
-      m_program(nullptr),
       m_vbo(nullptr),
       m_vao(nullptr),
       m_matrixLoc(0)
@@ -73,7 +72,7 @@ DefaultRenderer::~DefaultRenderer()
     // There may not be a native window surface available anymore at this stage.
     m_context->makeCurrent(m_offscreenSurface);
 
-    delete m_program;
+    m_program.reset(nullptr);
     delete m_vbo;
     delete m_vao;
 
@@ -125,7 +124,7 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
         "void main() {\n"
         "   gl_FragColor = vec4(texture2D(sampler, v_coord).rgb, 1.0);\n"
         "}\n";
-    m_program = new QOpenGLShaderProgram;
+    m_program = std::make_unique<QOpenGLShaderProgram>();
     m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
     m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
     m_program->bindAttributeLocation("vertex", 0);

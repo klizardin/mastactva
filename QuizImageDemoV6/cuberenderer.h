@@ -81,7 +81,7 @@ private:
     */
     QOffscreenSurface *m_offscreenSurface;
     std::unique_ptr<QOpenGLContext> m_context;
-    QOpenGLShaderProgram *m_program;
+    std::unique_ptr<QOpenGLShaderProgram> m_program;
     QOpenGLBuffer *m_vbo;
     QOpenGLVertexArrayObject *m_vao;
     int m_matrixLoc;
