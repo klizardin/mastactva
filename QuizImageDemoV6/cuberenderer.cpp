@@ -60,7 +60,6 @@
 
 DefaultRenderer::DefaultRenderer(QOffscreenSurface *offscreenSurface)
     : m_offscreenSurface(offscreenSurface),
-      m_context(nullptr),
       m_program(nullptr),
       m_vbo(nullptr),
       m_vao(nullptr),
@@ -79,7 +78,7 @@ DefaultRenderer::~DefaultRenderer()
     delete m_vao;
 
     m_context->doneCurrent();
-    delete m_context;
+    m_context.reset(nullptr);
 }
 
 const int vertexCount = 6;//36;
@@ -89,7 +88,7 @@ const int vertexCount = 6;//36;
 */
 void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
 {
-    m_context = new QOpenGLContext;
+    m_context = std::make_unique<QOpenGLContext>();
     m_context->setShareContext(share);
     m_context->setFormat(w->requestedFormat());
     m_context->create();
@@ -98,10 +97,12 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClearColor(0.0f, 0.1f, 0.25f, 1.0f);
+
     m_viewport.push_back(0);
     m_viewport.push_back(0);
     m_viewport.push_back(w->width() * w->devicePixelRatio() * 0.5);
     m_viewport.push_back(w->height() * w->devicePixelRatio());
+
     m_viewport.push_back(w->width() * w->devicePixelRatio() * 0.5);
     m_viewport.push_back(0);
     m_viewport.push_back(w->width() * w->devicePixelRatio());
@@ -143,34 +144,10 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
     GLfloat v[] = {
         -1.0, 1.0, 1.0,     1.0,-1.0,1.0,       -1.0,-1.0,1.0,
         1.0, -1.0, 1.0,     -1.0,1.0,1.0,       1.0,1.0,1.0,
-        /*-0.5, -0.5, -0.5, 0.5,-0.5,-0.5,-0.5,0.5,-0.5,
-        0.5, 0.5, -0.5, -0.5,0.5,-0.5,0.5,-0.5,-0.5,
-
-        0.5, -0.5, -0.5, 0.5,-0.5,0.5,0.5,0.5,-0.5,
-        0.5, 0.5, 0.5, 0.5,0.5,-0.5,0.5,-0.5,0.5,
-        -0.5, 0.5, -0.5, -0.5,-0.5,0.5,-0.5,-0.5,-0.5,
-        -0.5, -0.5, 0.5, -0.5,0.5,-0.5,-0.5,0.5,0.5,
-
-        0.5, 0.5,  -0.5, -0.5, 0.5,  0.5,  -0.5,  0.5,  -0.5,
-        -0.5,  0.5,  0.5,  0.5,  0.5,  -0.5, 0.5, 0.5,  0.5,
-        -0.5,  -0.5, -0.5, -0.5, -0.5, 0.5,  0.5, -0.5, -0.5,
-        0.5, -0.5, 0.5,  0.5,  -0.5, -0.5, -0.5,  -0.5, 0.5*/
     };
     GLfloat texCoords[] = {
         0.0f,0.0f,      1.0f,1.0f,      1.0f,0.0f,
         1.0f,1.0f,      0.0f,0.0f,      0.0f,1.0f,
-        /*1.0f,1.0f, 1.0f,0.0f, 0.0f,1.0f,
-        0.0f,0.0f, 0.0f,1.0f, 1.0f,0.0f,
-
-        1.0f,1.0f, 1.0f,0.0f, 0.0f,1.0f,
-        0.0f,0.0f, 0.0f,1.0f, 1.0f,0.0f,
-        0.0f,0.0f, 1.0f,1.0f, 1.0f,0.0f,
-        1.0f,1.0f, 0.0f,0.0f, 0.0f,1.0f,
-
-        0.0f,1.0f, 1.0f,0.0f, 1.0f,1.0f,
-        1.0f,0.0f, 0.0f,1.0f, 0.0f,0.0f,
-        1.0f,0.0f, 1.0f,1.0f, 0.0f,0.0f,
-        0.0f,1.0f, 0.0f,0.0f, 1.0f,1.0f*/
     };
 
     m_vbo->allocate(sizeof(GLfloat) * vertexCount * 5);
@@ -210,13 +187,16 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
     }
 
     if (!m_context->makeCurrent(w))
-       return;
+    {
+        return;
+    }
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    if (texture1) {
+    if (texture1)
+    {
         f->glBindTexture(GL_TEXTURE_2D, texture1);
         f->glFrontFace(GL_CW); // because our cube's vertex data is such
         f->glEnable(GL_CULL_FACE);
@@ -226,15 +206,12 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
         // If VAOs are not supported, set the vertex attributes every time.
         if (!m_vao->isCreated())
+        {
             setupVertexAttribs();
+        }
 
-        static GLfloat angle = 0;
         QMatrix4x4 m;
         m.translate(0, 0, -2);
-        m.rotate(90, 0, 0, 1);
-        m.rotate(angle, 0.5, 1, 0);
-        //angle += 0.5f;
-
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
         // Draw the cube.
@@ -244,7 +221,8 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
             f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
     }
-    if (texture2) {
+    if (texture2)
+    {
         f->glBindTexture(GL_TEXTURE_2D, texture2);
         f->glFrontFace(GL_CW); // because our cube's vertex data is such
         f->glEnable(GL_CULL_FACE);
@@ -254,15 +232,12 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
         // If VAOs are not supported, set the vertex attributes every time.
         if (!m_vao->isCreated())
+        {
             setupVertexAttribs();
+        }
 
-        static GLfloat angle = 0;
         QMatrix4x4 m;
         m.translate(0, 0, -2);
-        m.rotate(90, 0, 0, 1);
-        m.rotate(angle, 0.5, 1, 0);
-        //angle += 0.5f;
-
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
         // Draw the cube.

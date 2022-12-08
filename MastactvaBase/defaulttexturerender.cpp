@@ -168,6 +168,7 @@ void DefaultTextureRender::render(QWindow *w, QOpenGLContext *share, const std::
         }
 
         QMatrix4x4 m;
+        m.translate(0, 0, -2);
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
         // Draw the cube.
