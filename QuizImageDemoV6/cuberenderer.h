@@ -69,7 +69,7 @@ public:
     DefaultRenderer(QOffscreenSurface *offscreenSurface);
     ~DefaultRenderer();
 
-    void resize(int w, int h);
+    void resize(int width, int height);
     void render(QWindow *w, QOpenGLContext *share, uint texture1, uint texture2);
 
 private:
