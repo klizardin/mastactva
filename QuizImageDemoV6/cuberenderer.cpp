@@ -157,10 +157,10 @@ void DefaultRenderer::init(QWindow *w, QOpenGLContext *share)
         setupVertexAttribs();
 }
 
-void DefaultRenderer::resize(int w, int h)
+void DefaultRenderer::resize(int width, int height)
 {
     m_proj.setToIdentity();
-    m_proj.perspective(45, w / float(h), 0.01f, 100.0f);
+    m_proj.perspective(45, width / float(height), 0.01f, 100.0f);
 }
 
 void DefaultRenderer::setupVertexAttribs()
