@@ -211,21 +211,15 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         m.translate(0, 0, -2);
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
-        if (texture1)
+        if (texture1 && m_viewport.size()>=4)
         {
-            if(m_viewport.size()>=4)
-            {
-                f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
-                f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-            }
+            f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
+            f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
-        if (texture2)
+        if (texture2 && m_viewport.size()>=8)
         {
-            if(m_viewport.size()>=8)
-            {
-                f->glViewport(m_viewport[4], m_viewport[5], m_viewport[6] ,m_viewport[7]);
-                f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-            }
+            f->glViewport(m_viewport[4], m_viewport[5], m_viewport[6] ,m_viewport[7]);
+            f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
     }
 
