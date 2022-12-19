@@ -211,7 +211,6 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
 
         if (texture1)
         {
-            // Draw the cube.
             if(m_viewport.size()>=4)
             {
                 f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
@@ -220,7 +219,6 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         }
         if (texture2)
         {
-            // Draw the cube.
             if(m_viewport.size()>=8)
             {
                 f->glViewport(m_viewport[4], m_viewport[5], m_viewport[6] ,m_viewport[7]);
