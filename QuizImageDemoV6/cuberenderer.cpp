@@ -208,7 +208,6 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         m.translate(0, 0, -2);
         m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
-
         if (texture1)
         {
             if(m_viewport.size()>=4)
