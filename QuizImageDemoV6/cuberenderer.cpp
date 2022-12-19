@@ -204,13 +204,13 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         {
             setupVertexAttribs();
         }
+        QMatrix4x4 m;
+        m.translate(0, 0, -2);
+        m_program->setUniformValue(m_matrixLoc, m_proj * m);
+
 
         if (texture1)
         {
-            QMatrix4x4 m;
-            m.translate(0, 0, -2);
-            m_program->setUniformValue(m_matrixLoc, m_proj * m);
-
             // Draw the cube.
             if(m_viewport.size()>=4)
             {
@@ -220,10 +220,6 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         }
         if (texture2)
         {
-            QMatrix4x4 m;
-            m.translate(0, 0, -2);
-            m_program->setUniformValue(m_matrixLoc, m_proj * m);
-
             // Draw the cube.
             if(m_viewport.size()>=8)
             {
