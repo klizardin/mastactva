@@ -199,15 +199,14 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         f->glEnable(GL_DEPTH_TEST);
         m_program->bind();
         QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
+        // If VAOs are not supported, set the vertex attributes every time.
+        if (!m_vao->isCreated())
+        {
+            setupVertexAttribs();
+        }
 
         if (texture1)
         {
-            // If VAOs are not supported, set the vertex attributes every time.
-            if (!m_vao->isCreated())
-            {
-                setupVertexAttribs();
-            }
-
             QMatrix4x4 m;
             m.translate(0, 0, -2);
             m_program->setUniformValue(m_matrixLoc, m_proj * m);
@@ -221,12 +220,6 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
         }
         if (texture2)
         {
-            // If VAOs are not supported, set the vertex attributes every time.
-            if (!m_vao->isCreated())
-            {
-                setupVertexAttribs();
-            }
-
             QMatrix4x4 m;
             m.translate(0, 0, -2);
             m_program->setUniformValue(m_matrixLoc, m_proj * m);
