@@ -191,12 +191,14 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
 
     QOpenGLFunctions *f = m_context->functions();
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     if(texture1 || texture2)
     {
         f->glBindTexture(GL_TEXTURE_2D, texture1);
         f->glFrontFace(GL_CW); // because our cube's vertex data is such
         f->glEnable(GL_CULL_FACE);
         f->glEnable(GL_DEPTH_TEST);
+
         m_program->bind();
         QOpenGLVertexArrayObject::Binder vaoBinder(m_vao.get());
         // If VAOs are not supported, set the vertex attributes every time.
@@ -205,31 +207,19 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
             setupVertexAttribs();
         }
 
-        if (texture1)
-        {
-            QMatrix4x4 m;
-            m.translate(0, 0, -2);
-            m_program->setUniformValue(m_matrixLoc, m_proj * m);
+        QMatrix4x4 m;
+        m.translate(0, 0, -2);
+        m_program->setUniformValue(m_matrixLoc, m_proj * m);
 
-            // Draw the cube.
-            if(m_viewport.size()>=4)
-            {
-                f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
-                f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-            }
+        if (texture1 && m_viewport.size()>=4)
+        {
+            f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
+            f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
-        if (texture2)
+        if (texture2 && m_viewport.size()>=8)
         {
-            QMatrix4x4 m;
-            m.translate(0, 0, -2);
-            m_program->setUniformValue(m_matrixLoc, m_proj * m);
-
-            // Draw the cube.
-            if(m_viewport.size()>=8)
-            {
-                f->glViewport(m_viewport[4], m_viewport[5], m_viewport[6] ,m_viewport[7]);
-                f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-            }
+            f->glViewport(m_viewport[4], m_viewport[5], m_viewport[6] ,m_viewport[7]);
+            f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
     }
 
