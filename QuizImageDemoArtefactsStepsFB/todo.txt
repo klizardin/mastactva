@@ -180,6 +180,6 @@ opencv addon test
 - run current..
     * prepare code
     - add resource for qml modules
-
+- test already implemented
 
 
