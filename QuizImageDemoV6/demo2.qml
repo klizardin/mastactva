@@ -62,7 +62,7 @@ Rectangle {
 
     Text {
         anchors.centerIn: parent
-        text: "Qt Quick 2 in a texture"
+        text: "Qt Quick 2 (demo v2) in a texture"
         font.pointSize: 40
         color: "white"
 
