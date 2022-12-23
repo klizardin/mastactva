@@ -56,8 +56,8 @@ Rectangle {
     property bool keyDown: false
 
     gradient: Gradient {
-        GradientStop { position: 0; color: mouse.pressed ? "lightsteelblue" : (keyDown ? "blue" : "steelblue") }
-        GradientStop { position: 1; color: "black" }
+        GradientStop { position: 0; color: "green" }
+        GradientStop { position: 1; color: "white" }
     }
 
     Text {
