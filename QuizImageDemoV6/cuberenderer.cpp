@@ -194,7 +194,6 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
 
     if(texture1 || texture2)
     {
-        f->glBindTexture(GL_TEXTURE_2D, texture1);
         f->glFrontFace(GL_CW); // because our cube's vertex data is such
         f->glEnable(GL_CULL_FACE);
         f->glEnable(GL_DEPTH_TEST);
@@ -213,11 +212,13 @@ void DefaultRenderer::render(QWindow *w, QOpenGLContext *share, uint texture1, u
 
         if (texture1 && m_viewport.size()>=4)
         {
+            f->glBindTexture(GL_TEXTURE_2D, texture1);
             f->glViewport(m_viewport[0], m_viewport[1], m_viewport[2] ,m_viewport[3]);
             f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
         if (texture2 && m_viewport.size()>=8)
         {
+            f->glBindTexture(GL_TEXTURE_2D, texture2);
             f->glViewport(m_viewport[4], m_viewport[5], m_viewport[6] ,m_viewport[7]);
             f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         }
