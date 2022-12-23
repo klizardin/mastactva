@@ -57,7 +57,7 @@ Rectangle {
 
     gradient: Gradient {
         GradientStop { position: 0; color: "green" }
-        GradientStop { position: 1; color: "white" }
+        GradientStop { position: 1; color: "gray" }
     }
 
     Text {
