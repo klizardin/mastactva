@@ -182,5 +182,6 @@ opencv addon test
     - add resource for qml modules
 - test already implemented
     - test modes
+    - test 1 + (1 - alpha) mode
 
 
