@@ -27,16 +27,17 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    //QQmlApplicationEngine engine;
-    //const QUrl url(QStringLiteral("qrc:/main.qml"));
-    //engine.addImportPath("qrc:/Mastactva");
-    /*QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+    QQmlApplicationEngine engine;
+    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    engine.addImportPath("qrc:/Mastactva");
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
-    engine.load(url);*/
+    engine.load(url);
 
+    /*
     // TODO:
     // use of the window
     // (standard steps for QWindow):
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
     window.resize(800, 600);
     // show
     window.show();
-
+    */
 
     return app.exec();
 }
