@@ -32,6 +32,6 @@ void main(void)
               : texture2D( renderToImage, texCoordVar.st )
               ;
     gl_FragColor = vec4( s1.r, s1.g, s1.b,
-                         fromImage >= 0.5 ? 1.0 : renderT
+                         fromImage >= 0.5 ? 1.0 - renderT : renderT
                         ) * renderOpacity;
 }
