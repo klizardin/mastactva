@@ -119,14 +119,14 @@ WindowSingleThreaded::WindowSingleThreaded()
     // create opnegl render class for QOffscreenSurface
     m_cubeRenderer = new DefaultRenderer(m_offscreenSurface);
 
-    m_qmlTextureRrenderer[0].m_renderControl = new RenderControl(this);
-    m_qmlTextureRrenderer[1].m_renderControl = new RenderControl(this);
+    m_qmlTextureRrenderer[0].m_renderControl = std::make_unique<RenderControl>(this);
+    m_qmlTextureRrenderer[1].m_renderControl = std::make_unique<RenderControl>(this);
 
     // Create a QQuickWindow that is associated with out render control. Note that this
     // window never gets created or shown, meaning that it will never get an underlying
     // native (platform) window.
-    m_qmlTextureRrenderer[0].m_quickWindow = new QQuickWindow(m_qmlTextureRrenderer[0].m_renderControl);
-    m_qmlTextureRrenderer[1].m_quickWindow = new QQuickWindow(m_qmlTextureRrenderer[1].m_renderControl);
+    m_qmlTextureRrenderer[0].m_quickWindow = new QQuickWindow(m_qmlTextureRrenderer[0].m_renderControl.get());
+    m_qmlTextureRrenderer[1].m_quickWindow = new QQuickWindow(m_qmlTextureRrenderer[1].m_renderControl.get());
 
     // Create a QML engine.
     m_qmlTextureRrenderer[0].m_qmlEngine = new QQmlEngine;
@@ -147,12 +147,12 @@ WindowSingleThreaded::WindowSingleThreaded()
     // is needed too).
     connect(m_qmlTextureRrenderer[0].m_quickWindow, &QQuickWindow::sceneGraphInitialized, this, &WindowSingleThreaded::createTexture);
     connect(m_qmlTextureRrenderer[0].m_quickWindow, &QQuickWindow::sceneGraphInvalidated, this, &WindowSingleThreaded::destroyTexture);
-    connect(m_qmlTextureRrenderer[0].m_renderControl, &QQuickRenderControl::renderRequested, this, &WindowSingleThreaded::requestUpdate);
-    connect(m_qmlTextureRrenderer[0].m_renderControl, &QQuickRenderControl::sceneChanged, this, &WindowSingleThreaded::requestUpdate);
+    connect(m_qmlTextureRrenderer[0].m_renderControl.get(), &QQuickRenderControl::renderRequested, this, &WindowSingleThreaded::requestUpdate);
+    connect(m_qmlTextureRrenderer[0].m_renderControl.get(), &QQuickRenderControl::sceneChanged, this, &WindowSingleThreaded::requestUpdate);
     connect(m_qmlTextureRrenderer[1].m_quickWindow, &QQuickWindow::sceneGraphInitialized, this, &WindowSingleThreaded::createTexture);
     connect(m_qmlTextureRrenderer[1].m_quickWindow, &QQuickWindow::sceneGraphInvalidated, this, &WindowSingleThreaded::destroyTexture);
-    connect(m_qmlTextureRrenderer[1].m_renderControl, &QQuickRenderControl::renderRequested, this, &WindowSingleThreaded::requestUpdate);
-    connect(m_qmlTextureRrenderer[1].m_renderControl, &QQuickRenderControl::sceneChanged, this, &WindowSingleThreaded::requestUpdate);
+    connect(m_qmlTextureRrenderer[1].m_renderControl.get(), &QQuickRenderControl::renderRequested, this, &WindowSingleThreaded::requestUpdate);
+    connect(m_qmlTextureRrenderer[1].m_renderControl.get(), &QQuickRenderControl::sceneChanged, this, &WindowSingleThreaded::requestUpdate);
 
     // Just recreating the texture on resize is not sufficient, when moving between screens
     // with different devicePixelRatio the QWindow size may remain the same but the texture
@@ -172,11 +172,11 @@ WindowSingleThreaded::~WindowSingleThreaded()
     delete m_qmlTextureRrenderer[0].m_qmlComponent;
     delete m_qmlTextureRrenderer[0].m_qmlEngine;
     delete m_qmlTextureRrenderer[0].m_quickWindow;
-    delete m_qmlTextureRrenderer[0].m_renderControl;
+    m_qmlTextureRrenderer[0].m_renderControl.reset();
     delete m_qmlTextureRrenderer[1].m_qmlComponent;
     delete m_qmlTextureRrenderer[1].m_qmlEngine;
     delete m_qmlTextureRrenderer[1].m_quickWindow;
-    delete m_qmlTextureRrenderer[1].m_renderControl;
+    m_qmlTextureRrenderer[1].m_renderControl.reset();
 
     if (m_qmlTextureRrenderer[0].m_textureId)
     {

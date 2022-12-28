@@ -75,7 +75,7 @@ class WindowSingleThreaded : public QWindow
 public:
     struct QMLTextureRenderer
     {
-        QQuickRenderControl *m_renderControl = nullptr;
+        std::unique_ptr<QQuickRenderControl> m_renderControl;
         QQuickWindow *m_quickWindow = nullptr;
         QQmlEngine *m_qmlEngine = nullptr;
         QQmlComponent *m_qmlComponent = nullptr;
