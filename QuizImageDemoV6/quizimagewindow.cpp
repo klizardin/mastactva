@@ -90,9 +90,7 @@ QWindow *RenderControl::renderWindow(QPoint *offset)
 }
 
 WindowSingleThreaded::WindowSingleThreaded()
-    : m_rootItem{nullptr, nullptr},
-      m_textureId{0,0},
-      m_quickInitialized(false),
+    : m_quickInitialized(false),
       m_quickReady(false),
       m_dpr(0)
 {
@@ -121,22 +119,22 @@ WindowSingleThreaded::WindowSingleThreaded()
     // create opnegl render class for QOffscreenSurface
     m_cubeRenderer = new DefaultRenderer(m_offscreenSurface);
 
-    m_renderControl[0] = new RenderControl(this);
-    m_renderControl[1] = new RenderControl(this);
+    m_qmlTextureRrenderer[0].m_renderControl = new RenderControl(this);
+    m_qmlTextureRrenderer[1].m_renderControl = new RenderControl(this);
 
     // Create a QQuickWindow that is associated with out render control. Note that this
     // window never gets created or shown, meaning that it will never get an underlying
     // native (platform) window.
-    m_quickWindow[0] = new QQuickWindow(m_renderControl[0]);
-    m_quickWindow[1] = new QQuickWindow(m_renderControl[1]);
+    m_qmlTextureRrenderer[0].m_quickWindow = new QQuickWindow(m_qmlTextureRrenderer[0].m_renderControl);
+    m_qmlTextureRrenderer[1].m_quickWindow = new QQuickWindow(m_qmlTextureRrenderer[1].m_renderControl);
 
     // Create a QML engine.
-    m_qmlEngine[0] = new QQmlEngine;
-    if (!m_qmlEngine[0]->incubationController())
-        m_qmlEngine[0]->setIncubationController(m_quickWindow[0]->incubationController());
-    m_qmlEngine[1] = new QQmlEngine;
-    if (!m_qmlEngine[1]->incubationController())
-        m_qmlEngine[1]->setIncubationController(m_quickWindow[1]->incubationController());
+    m_qmlTextureRrenderer[0].m_qmlEngine = new QQmlEngine;
+    if (!m_qmlTextureRrenderer[0].m_qmlEngine->incubationController())
+        m_qmlTextureRrenderer[0].m_qmlEngine->setIncubationController(m_qmlTextureRrenderer[0].m_quickWindow->incubationController());
+    m_qmlTextureRrenderer[1].m_qmlEngine = new QQmlEngine;
+    if (!m_qmlTextureRrenderer[1].m_qmlEngine->incubationController())
+        m_qmlTextureRrenderer[1].m_qmlEngine->setIncubationController(m_qmlTextureRrenderer[1].m_quickWindow->incubationController());
 
     // When Quick says there is a need to render, we will not render immediately. Instead,
     // a timer with a small interval is used to get better performance.
@@ -147,14 +145,14 @@ WindowSingleThreaded::WindowSingleThreaded()
     // Now hook up the signals. For simplicy we don't differentiate between
     // renderRequested (only render is needed, no sync) and sceneChanged (polish and sync
     // is needed too).
-    connect(m_quickWindow[0], &QQuickWindow::sceneGraphInitialized, this, &WindowSingleThreaded::createTexture);
-    connect(m_quickWindow[0], &QQuickWindow::sceneGraphInvalidated, this, &WindowSingleThreaded::destroyTexture);
-    connect(m_renderControl[0], &QQuickRenderControl::renderRequested, this, &WindowSingleThreaded::requestUpdate);
-    connect(m_renderControl[0], &QQuickRenderControl::sceneChanged, this, &WindowSingleThreaded::requestUpdate);
-    connect(m_quickWindow[1], &QQuickWindow::sceneGraphInitialized, this, &WindowSingleThreaded::createTexture);
-    connect(m_quickWindow[1], &QQuickWindow::sceneGraphInvalidated, this, &WindowSingleThreaded::destroyTexture);
-    connect(m_renderControl[1], &QQuickRenderControl::renderRequested, this, &WindowSingleThreaded::requestUpdate);
-    connect(m_renderControl[1], &QQuickRenderControl::sceneChanged, this, &WindowSingleThreaded::requestUpdate);
+    connect(m_qmlTextureRrenderer[0].m_quickWindow, &QQuickWindow::sceneGraphInitialized, this, &WindowSingleThreaded::createTexture);
+    connect(m_qmlTextureRrenderer[0].m_quickWindow, &QQuickWindow::sceneGraphInvalidated, this, &WindowSingleThreaded::destroyTexture);
+    connect(m_qmlTextureRrenderer[0].m_renderControl, &QQuickRenderControl::renderRequested, this, &WindowSingleThreaded::requestUpdate);
+    connect(m_qmlTextureRrenderer[0].m_renderControl, &QQuickRenderControl::sceneChanged, this, &WindowSingleThreaded::requestUpdate);
+    connect(m_qmlTextureRrenderer[1].m_quickWindow, &QQuickWindow::sceneGraphInitialized, this, &WindowSingleThreaded::createTexture);
+    connect(m_qmlTextureRrenderer[1].m_quickWindow, &QQuickWindow::sceneGraphInvalidated, this, &WindowSingleThreaded::destroyTexture);
+    connect(m_qmlTextureRrenderer[1].m_renderControl, &QQuickRenderControl::renderRequested, this, &WindowSingleThreaded::requestUpdate);
+    connect(m_qmlTextureRrenderer[1].m_renderControl, &QQuickRenderControl::sceneChanged, this, &WindowSingleThreaded::requestUpdate);
 
     // Just recreating the texture on resize is not sufficient, when moving between screens
     // with different devicePixelRatio the QWindow size may remain the same but the texture
@@ -171,24 +169,24 @@ WindowSingleThreaded::~WindowSingleThreaded()
     // make current QOpenGLContext as QOffscreeenSurface
     m_context->makeCurrent(m_offscreenSurface);
 
-    delete m_qmlComponent[0];
-    delete m_qmlEngine[0];
-    delete m_quickWindow[0];
-    delete m_renderControl[0];
-    delete m_qmlComponent[1];
-    delete m_qmlEngine[1];
-    delete m_quickWindow[1];
-    delete m_renderControl[1];
+    delete m_qmlTextureRrenderer[0].m_qmlComponent;
+    delete m_qmlTextureRrenderer[0].m_qmlEngine;
+    delete m_qmlTextureRrenderer[0].m_quickWindow;
+    delete m_qmlTextureRrenderer[0].m_renderControl;
+    delete m_qmlTextureRrenderer[1].m_qmlComponent;
+    delete m_qmlTextureRrenderer[1].m_qmlEngine;
+    delete m_qmlTextureRrenderer[1].m_quickWindow;
+    delete m_qmlTextureRrenderer[1].m_renderControl;
 
-    if (m_textureId[0])
+    if (m_qmlTextureRrenderer[0].m_textureId)
     {
         // delete texture inside current QOpenGLContext for QOffscreeenSurface
-        m_context->functions()->glDeleteTextures(1, &m_textureId[0]);
+        m_context->functions()->glDeleteTextures(1, &(m_qmlTextureRrenderer[0].m_textureId));
     }
-    if (m_textureId[1])
+    if (m_qmlTextureRrenderer[1].m_textureId)
     {
         // delete texture inside current QOpenGLContext for QOffscreeenSurface
-        m_context->functions()->glDeleteTextures(1, &m_textureId[1]);
+        m_context->functions()->glDeleteTextures(1, &(m_qmlTextureRrenderer[1].m_textureId));
     }
 
     m_context->doneCurrent();
@@ -214,30 +212,30 @@ void WindowSingleThreaded::createTexture()
     // we have already setup QOpenGLContext as QOffscreenSurface
     QOpenGLFunctions *f = m_context->functions();
 
-    f->glGenTextures(1, &m_textureId[0]);
-    f->glBindTexture(GL_TEXTURE_2D, m_textureId[0]);
+    f->glGenTextures(1, &(m_qmlTextureRrenderer[0].m_textureId));
+    f->glBindTexture(GL_TEXTURE_2D, m_qmlTextureRrenderer[0].m_textureId);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_textureSize.width(), m_textureSize.height(), 0,
                     GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    m_quickWindow[0]->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId[0], m_textureSize));
+    m_qmlTextureRrenderer[0].m_quickWindow->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_qmlTextureRrenderer[0].m_textureId, m_textureSize));
 
-    f->glGenTextures(1, &m_textureId[1]);
-    f->glBindTexture(GL_TEXTURE_2D, m_textureId[1]);
+    f->glGenTextures(1, &(m_qmlTextureRrenderer[1].m_textureId));
+    f->glBindTexture(GL_TEXTURE_2D, m_qmlTextureRrenderer[1].m_textureId);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_textureSize.width(), m_textureSize.height(), 0,
                     GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    m_quickWindow[1]->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId[1], m_textureSize));
+    m_qmlTextureRrenderer[1].m_quickWindow->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_qmlTextureRrenderer[1].m_textureId, m_textureSize));
 }
 
 void WindowSingleThreaded::destroyTexture()
 {
     // maybe not setuped QOffscreenSurface
-    m_context->functions()->glDeleteTextures(1, &m_textureId[0]);
-    m_textureId[0] = 0;
-    m_context->functions()->glDeleteTextures(1, &m_textureId[1]);
-    m_textureId[1] = 0;
+    m_context->functions()->glDeleteTextures(1, &(m_qmlTextureRrenderer[0].m_textureId));
+    m_qmlTextureRrenderer[0].m_textureId = 0;
+    m_context->functions()->glDeleteTextures(1, &(m_qmlTextureRrenderer[1].m_textureId));
+    m_qmlTextureRrenderer[1].m_textureId = 0;
 }
 
 void WindowSingleThreaded::render()
@@ -250,16 +248,16 @@ void WindowSingleThreaded::render()
     // everything happens on the same thread and therefore all three steps are performed
     // in succession from here. In a threaded setup the render() call would happen on a
     // separate thread.
-    m_renderControl[0]->beginFrame();
-    m_renderControl[0]->polishItems();
-    m_renderControl[0]->sync();
-    m_renderControl[0]->render();
-    m_renderControl[0]->endFrame();
-    m_renderControl[1]->beginFrame();
-    m_renderControl[1]->polishItems();
-    m_renderControl[1]->sync();
-    m_renderControl[1]->render();
-    m_renderControl[1]->endFrame();
+    m_qmlTextureRrenderer[0].m_renderControl->beginFrame();
+    m_qmlTextureRrenderer[0].m_renderControl->polishItems();
+    m_qmlTextureRrenderer[0].m_renderControl->sync();
+    m_qmlTextureRrenderer[0].m_renderControl->render();
+    m_qmlTextureRrenderer[0].m_renderControl->endFrame();
+    m_qmlTextureRrenderer[1].m_renderControl->beginFrame();
+    m_qmlTextureRrenderer[1].m_renderControl->polishItems();
+    m_qmlTextureRrenderer[1].m_renderControl->sync();
+    m_qmlTextureRrenderer[1].m_renderControl->render();
+    m_qmlTextureRrenderer[1].m_renderControl->endFrame();
 
     QOpenGLFramebufferObject::bindDefault();
     // flush QOpenGLContext
@@ -271,7 +269,7 @@ void WindowSingleThreaded::render()
     // run rendering for this QWindow and for m_context
     // with texture to use in drawings
     // (render to the current QWindow)
-    m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0, m_quickReady ? m_textureId[1] : 0);
+    m_cubeRenderer->render(this, m_context, m_quickReady ? m_qmlTextureRrenderer[0].m_textureId : 0, m_quickReady ? m_qmlTextureRrenderer[1].m_textureId : 0);
 }
 
 void WindowSingleThreaded::requestUpdate()
@@ -282,82 +280,82 @@ void WindowSingleThreaded::requestUpdate()
 
 void WindowSingleThreaded::run()
 {
-    disconnect(m_qmlComponent[0], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
-    disconnect(m_qmlComponent[1], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
+    disconnect(m_qmlTextureRrenderer[0].m_qmlComponent, &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
+    disconnect(m_qmlTextureRrenderer[1].m_qmlComponent, &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
 
-    if (m_qmlComponent[0]->isError()) {
-        const QList<QQmlError> errorList = m_qmlComponent[0]->errors();
+    if (m_qmlTextureRrenderer[0].m_qmlComponent->isError()) {
+        const QList<QQmlError> errorList = m_qmlTextureRrenderer[0].m_qmlComponent->errors();
         for (const QQmlError &error : errorList)
             qWarning() << error.url() << error.line() << error;
         return;
     }
-    if (m_qmlComponent[1]->isError()) {
-        const QList<QQmlError> errorList = m_qmlComponent[1]->errors();
-        for (const QQmlError &error : errorList)
-            qWarning() << error.url() << error.line() << error;
-        return;
-    }
-
-    QObject *rootObject0 = m_qmlComponent[0]->create();
-    if (m_qmlComponent[0]->isError()) {
-        const QList<QQmlError> errorList = m_qmlComponent[0]->errors();
-        for (const QQmlError &error : errorList)
-            qWarning() << error.url() << error.line() << error;
-        return;
-    }
-    QObject *rootObject1 = m_qmlComponent[1]->create();
-    if (m_qmlComponent[1]->isError()) {
-        const QList<QQmlError> errorList = m_qmlComponent[1]->errors();
+    if (m_qmlTextureRrenderer[1].m_qmlComponent->isError()) {
+        const QList<QQmlError> errorList = m_qmlTextureRrenderer[1].m_qmlComponent->errors();
         for (const QQmlError &error : errorList)
             qWarning() << error.url() << error.line() << error;
         return;
     }
 
-    m_rootItem[0] = qobject_cast<QQuickItem *>(rootObject0);
-    if (!m_rootItem[0]) {
+    QObject *rootObject0 = m_qmlTextureRrenderer[0].m_qmlComponent->create();
+    if (m_qmlTextureRrenderer[0].m_qmlComponent->isError()) {
+        const QList<QQmlError> errorList = m_qmlTextureRrenderer[0].m_qmlComponent->errors();
+        for (const QQmlError &error : errorList)
+            qWarning() << error.url() << error.line() << error;
+        return;
+    }
+    QObject *rootObject1 = m_qmlTextureRrenderer[1].m_qmlComponent->create();
+    if (m_qmlTextureRrenderer[1].m_qmlComponent->isError()) {
+        const QList<QQmlError> errorList = m_qmlTextureRrenderer[1].m_qmlComponent->errors();
+        for (const QQmlError &error : errorList)
+            qWarning() << error.url() << error.line() << error;
+        return;
+    }
+
+    m_qmlTextureRrenderer[0].m_rootItem = qobject_cast<QQuickItem *>(rootObject0);
+    if (!m_qmlTextureRrenderer[0].m_rootItem) {
         qWarning("run: Not a QQuickItem");
         delete rootObject0;
         return;
     }
-    m_rootItem[1] = qobject_cast<QQuickItem *>(rootObject1);
-    if (!m_rootItem[1]) {
+    m_qmlTextureRrenderer[1].m_rootItem = qobject_cast<QQuickItem *>(rootObject1);
+    if (!m_qmlTextureRrenderer[1].m_rootItem) {
         qWarning("run: Not a QQuickItem");
         delete rootObject1;
         return;
     }
 
     // The root item is ready. Associate it with the window.
-    m_rootItem[0]->setParentItem(m_quickWindow[0]->contentItem());
-    m_rootItem[1]->setParentItem(m_quickWindow[1]->contentItem());
+    m_qmlTextureRrenderer[0].m_rootItem->setParentItem(m_qmlTextureRrenderer[0].m_quickWindow->contentItem());
+    m_qmlTextureRrenderer[1].m_rootItem->setParentItem(m_qmlTextureRrenderer[1].m_quickWindow->contentItem());
 
     // Update item and rendering related geometries.
     updateSizes();
 
     // Ensure key events are received by the root Rectangle.
-    m_rootItem[0]->forceActiveFocus();
-    m_rootItem[1]->forceActiveFocus();
+    m_qmlTextureRrenderer[0].m_rootItem->forceActiveFocus();
+    m_qmlTextureRrenderer[1].m_rootItem->forceActiveFocus();
 
     // Initialize the render control and our OpenGL resources.
     // setup QOpenGLContext into the QOffscreenSurface
     m_context->makeCurrent(m_offscreenSurface);
     // setup graphic device into the QQuickWindow
-    m_quickWindow[0]->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(m_context));
-    m_renderControl[0]->initialize();
-    m_quickWindow[1]->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(m_context));
-    m_renderControl[1]->initialize();
+    m_qmlTextureRrenderer[0].m_quickWindow->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(m_context));
+    m_qmlTextureRrenderer[0].m_renderControl->initialize();
+    m_qmlTextureRrenderer[1].m_quickWindow->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(m_context));
+    m_qmlTextureRrenderer[1].m_renderControl->initialize();
     m_quickInitialized = true;
 }
 
 void WindowSingleThreaded::updateSizes()
 {
     // Behave like SizeRootObjectToView.
-    m_rootItem[0]->setWidth(width());
-    m_rootItem[0]->setHeight(height());
-    m_rootItem[1]->setWidth(width());
-    m_rootItem[1]->setHeight(height());
+    m_qmlTextureRrenderer[0].m_rootItem->setWidth(width());
+    m_qmlTextureRrenderer[0].m_rootItem->setHeight(height());
+    m_qmlTextureRrenderer[1].m_rootItem->setWidth(width());
+    m_qmlTextureRrenderer[1].m_rootItem->setHeight(height());
 
-    m_quickWindow[0]->setGeometry(0, 0, width(), height());
-    m_quickWindow[1]->setGeometry(0, 0, width(), height());
+    m_qmlTextureRrenderer[0].m_quickWindow->setGeometry(0, 0, width(), height());
+    m_qmlTextureRrenderer[1].m_quickWindow->setGeometry(0, 0, width(), height());
 
     // resize render screen size
     // work with drawing matrix
@@ -366,15 +364,15 @@ void WindowSingleThreaded::updateSizes()
 
 void WindowSingleThreaded::startQuick(const QString &filename1, const QString &filename2)
 {
-    m_qmlComponent[0] = new QQmlComponent(m_qmlEngine[0], QUrl(filename1));
-    m_qmlComponent[1] = new QQmlComponent(m_qmlEngine[1], QUrl(filename2));
+    m_qmlTextureRrenderer[0].m_qmlComponent = new QQmlComponent(m_qmlTextureRrenderer[0].m_qmlEngine, QUrl(filename1));
+    m_qmlTextureRrenderer[1].m_qmlComponent = new QQmlComponent(m_qmlTextureRrenderer[1].m_qmlEngine, QUrl(filename2));
     bool startRun = false;
-    if (m_qmlComponent[0]->isLoading())
-        connect(m_qmlComponent[0], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
+    if (m_qmlTextureRrenderer[0].m_qmlComponent->isLoading())
+        connect(m_qmlTextureRrenderer[0].m_qmlComponent, &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
     else
         startRun = true;
-    if (m_qmlComponent[1]->isLoading())
-        connect(m_qmlComponent[1], &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
+    if (m_qmlTextureRrenderer[1].m_qmlComponent->isLoading())
+        connect(m_qmlTextureRrenderer[1].m_qmlComponent, &QQmlComponent::statusChanged, this, &WindowSingleThreaded::run);
     else
         startRun = true;
     if(startRun)
@@ -388,7 +386,7 @@ void WindowSingleThreaded::exposeEvent(QExposeEvent *)
             // run rendering
             // for this QWindow and m_context QOpenGLContext
             // (possibly this mostly for initialization)
-            m_cubeRenderer->render(this, m_context, m_quickReady ? m_textureId[0] : 0, m_quickReady ? m_textureId[1] : 0);
+            m_cubeRenderer->render(this, m_context, m_quickReady ? m_qmlTextureRrenderer[0].m_textureId : 0, m_quickReady ? m_qmlTextureRrenderer[1].m_textureId : 0);
             startQuick(QStringLiteral("qrc:/rendercontrol/demo.qml"), QStringLiteral("qrc:/rendercontrol/demo2.qml"));
         }
     }
@@ -396,11 +394,11 @@ void WindowSingleThreaded::exposeEvent(QExposeEvent *)
 
 void WindowSingleThreaded::resizeTexture()
 {
-    if (m_rootItem[0] && m_rootItem[1] && m_context->makeCurrent(m_offscreenSurface)) {
-        m_context->functions()->glDeleteTextures(1, &m_textureId[0]);
-        m_context->functions()->glDeleteTextures(1, &m_textureId[1]);
-        m_textureId[0] = 0;
-        m_textureId[1] = 0;
+    if (m_qmlTextureRrenderer[0].m_rootItem && m_qmlTextureRrenderer[1].m_rootItem && m_context->makeCurrent(m_offscreenSurface)) {
+        m_context->functions()->glDeleteTextures(1, &(m_qmlTextureRrenderer[0].m_textureId));
+        m_context->functions()->glDeleteTextures(1, &(m_qmlTextureRrenderer[1].m_textureId));
+        m_qmlTextureRrenderer[0].m_textureId = 0;
+        m_qmlTextureRrenderer[1].m_textureId = 0;
         createTexture();
         m_context->doneCurrent();
         updateSizes();
@@ -412,7 +410,7 @@ void WindowSingleThreaded::resizeEvent(QResizeEvent *)
 {
     // If this is a resize after the scene is up and running, recreate the texture and the
     // Quick item and scene.
-    if (m_textureId[0] && m_textureId[0] && m_textureSize != size() * devicePixelRatio())
+    if (m_qmlTextureRrenderer[0].m_textureId && m_qmlTextureRrenderer[1].m_textureId && m_textureSize != size() * devicePixelRatio())
         resizeTexture();
 }
 
@@ -429,25 +427,25 @@ void WindowSingleThreaded::mousePressEvent(QMouseEvent *e)
     // the scenePosition in e is ignored and is replaced by position. This is necessary
     // because QQuickWindow thinks of itself as a top-level window always.
     QMouseEvent mappedEvent(e->type(), e->position(), e->globalPosition(), e->button(), e->buttons(), e->modifiers());
-    QCoreApplication::sendEvent(m_quickWindow[0], &mappedEvent);
-    QCoreApplication::sendEvent(m_quickWindow[1], &mappedEvent);
+    QCoreApplication::sendEvent(m_qmlTextureRrenderer[0].m_quickWindow, &mappedEvent);
+    QCoreApplication::sendEvent(m_qmlTextureRrenderer[1].m_quickWindow, &mappedEvent);
 }
 
 void WindowSingleThreaded::mouseReleaseEvent(QMouseEvent *e)
 {
     QMouseEvent mappedEvent(e->type(), e->position(), e->globalPosition(), e->button(), e->buttons(), e->modifiers());
-    QCoreApplication::sendEvent(m_quickWindow[0], &mappedEvent);
-    QCoreApplication::sendEvent(m_quickWindow[1], &mappedEvent);
+    QCoreApplication::sendEvent(m_qmlTextureRrenderer[0].m_quickWindow, &mappedEvent);
+    QCoreApplication::sendEvent(m_qmlTextureRrenderer[1].m_quickWindow, &mappedEvent);
 }
 
 void WindowSingleThreaded::keyPressEvent(QKeyEvent *e)
 {
-    QCoreApplication::sendEvent(m_quickWindow[0], e);
-    QCoreApplication::sendEvent(m_quickWindow[1], e);
+    QCoreApplication::sendEvent(m_qmlTextureRrenderer[0].m_quickWindow, e);
+    QCoreApplication::sendEvent(m_qmlTextureRrenderer[1].m_quickWindow, e);
 }
 
 void WindowSingleThreaded::keyReleaseEvent(QKeyEvent *e)
 {
-    QCoreApplication::sendEvent(m_quickWindow[0], e);
-    QCoreApplication::sendEvent(m_quickWindow[1], e);
+    QCoreApplication::sendEvent(m_qmlTextureRrenderer[0].m_quickWindow, e);
+    QCoreApplication::sendEvent(m_qmlTextureRrenderer[1].m_quickWindow, e);
 }
