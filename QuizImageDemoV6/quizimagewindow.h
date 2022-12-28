@@ -73,6 +73,17 @@ class WindowSingleThreaded : public QWindow
     Q_OBJECT
 
 public:
+    struct QMLTextureRenderer
+    {
+        QQuickRenderControl *m_renderControl = nullptr;
+        QQuickWindow *m_quickWindow = nullptr;
+        QQmlEngine *m_qmlEngine = nullptr;
+        QQmlComponent *m_qmlComponent = nullptr;
+        QQuickItem *m_rootItem = nullptr;
+        uint m_textureId = 0;
+    };
+
+public:
     WindowSingleThreaded();
     ~WindowSingleThreaded();
 
@@ -103,12 +114,7 @@ private:
     // https://doc.qt.io/qt-6/qoffscreensurface.html
     QOffscreenSurface *m_offscreenSurface;
 
-    QQuickRenderControl *m_renderControl[2];
-    QQuickWindow *m_quickWindow[2];
-    QQmlEngine *m_qmlEngine[2];
-    QQmlComponent *m_qmlComponent[2];
-    QQuickItem *m_rootItem[2];
-    uint m_textureId[2];
+    QMLTextureRenderer m_qmlTextureRrenderer[2];
     QSize m_textureSize;
     bool m_quickInitialized;
     bool m_quickReady;
