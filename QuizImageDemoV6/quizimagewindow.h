@@ -54,16 +54,16 @@
 #include <QWindow>
 #include <QMatrix4x4>
 #include <QTimer>
+#include <QQuickRenderControl>
+#include <QQuickWindow>
+#include <QQmlEngine>
+#include <QQmlComponent>
+#include <QQuickItem>
 
 QT_BEGIN_NAMESPACE
 class QOpenGLContext;
 class QOpenGLTexture;
 class QOffscreenSurface;
-class QQuickRenderControl;
-class QQuickWindow;
-class QQmlEngine;
-class QQmlComponent;
-class QQuickItem;
 QT_END_NAMESPACE
 
 class DefaultRenderer;
