@@ -135,4 +135,16 @@ private:
     int m_testIndex = -1;
 };
 
+
+class QuizImages
+{
+protected:
+    QuizImages();
+public:
+    static QuizImages &getInstance();
+    void add(QuizImage *quizImage);
+    void remove(QuizImage *quizImage);
+};
+
+
 #endif // QUIZIMAGE_H
