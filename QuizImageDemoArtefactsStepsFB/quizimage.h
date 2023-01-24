@@ -29,6 +29,7 @@
 
 /*
  * list of tests
+ * TODO: to the separate file
 */
 using Tests = std::tuple<
     drawing_data::TestMinimalDrawQTLogoQuizImageObject,
