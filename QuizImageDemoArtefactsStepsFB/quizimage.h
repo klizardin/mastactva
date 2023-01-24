@@ -25,10 +25,12 @@
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "drawing_tests.h"
 #include "object_tests.h"
+#include <vector>
 
 
 /*
  * list of tests
+ * TODO: to the separate file
 */
 using Tests = std::tuple<
     drawing_data::TestMinimalDrawQTLogoQuizImageObject,
@@ -133,5 +135,21 @@ private:
     QString m_compilerLog;
     int m_testIndex = -1;
 };
+
+
+class QuizImages
+{
+private:
+    QuizImages() = default;
+
+public:
+    static QuizImages &getInstance();
+    void add(QuizImage *quizImage);
+    void remove(QuizImage *quizImage);
+
+protected:
+    std::vector<QuizImage *> m_quizImages;
+};
+
 
 #endif // QUIZIMAGE_H

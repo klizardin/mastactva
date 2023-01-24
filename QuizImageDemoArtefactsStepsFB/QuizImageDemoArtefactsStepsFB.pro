@@ -74,6 +74,7 @@ unix: HEADERS +=    \
     quizimagedrawingdata.h  \
     quizimageopengldrawingdata.h \
     opengldrawing_calculations.h    \
+    iquizimageqwindow.h \
     quizimageqwindowsinglethread.h  \
     defaulttexturerender.h  \
     effectargument_data.h   \

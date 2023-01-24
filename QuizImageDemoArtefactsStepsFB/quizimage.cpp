@@ -275,3 +275,30 @@ void QuizImage::setTestIndex(const int &testIndex_)
 
     emit testIndexChanged();
 }
+
+
+QuizImages &QuizImages::getInstance()
+{
+    static QuizImages _;
+    return _;
+}
+
+void QuizImages::add(QuizImage *quizImage)
+{
+    const auto fit = std::find(std::begin(m_quizImages), std::end(m_quizImages), quizImage);
+    if(std::end(m_quizImages) != fit)
+    {
+        return;
+    }
+    m_quizImages.push_back(quizImage);
+}
+
+void QuizImages::remove(QuizImage *quizImage)
+{
+    const auto fit = std::find(std::begin(m_quizImages), std::end(m_quizImages), quizImage);
+    if(std::end(m_quizImages) == fit)
+    {
+        return;
+    }
+    m_quizImages.erase(fit);
+}
