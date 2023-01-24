@@ -25,6 +25,7 @@
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "drawing_tests.h"
 #include "object_tests.h"
+#include <vector>
 
 
 /*
@@ -138,12 +139,16 @@ private:
 
 class QuizImages
 {
-protected:
-    QuizImages();
+private:
+    QuizImages() = default;
+
 public:
     static QuizImages &getInstance();
     void add(QuizImage *quizImage);
     void remove(QuizImage *quizImage);
+
+protected:
+    std::vector<QuizImage *> m_quizImages;
 };
 
 
