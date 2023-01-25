@@ -1186,6 +1186,7 @@ namespace drawing_data
     {
         QString name;       // texture name
         QString filename;   // file name associated with the texture name, maybe empty - no texture file for this texture
+        QString textureName; // texture from the pipeline
     };
 
 
