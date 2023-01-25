@@ -47,6 +47,8 @@ namespace opengl_drawing
         */
         bool setFilename(const QString &fileName_, const QColor &backgroundColor_);
 
+        bool setPipelineTexture(const QString &textureName_, const QColor &backgroundColor_);
+
         /*
          * setTexture() from the open gl frame buffer object
         */

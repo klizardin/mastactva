@@ -41,6 +41,18 @@ bool opengl_drawing::Texture::setFilename(const QString &fileName_, const QColor
     return true;
 }
 
+bool opengl_drawing::Texture::setPipelineTexture(const QString &textureName_, const QColor &backgroundColor_)
+{
+    m_texture.reset();
+    if(textureName_.isEmpty())
+    {
+        return false;
+    }
+    // TODO: add implementation
+    setBorderColor(backgroundColor_);
+    return false;
+}
+
 bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_, const QColor &backgroundColor_)
 {
     m_texture.reset();
@@ -545,7 +557,21 @@ void opengl_drawing::Object::init(
         }
 
         std::unique_ptr<Texture> texture = std::make_unique<Texture>();
-        if(!texture->setFilename(texture_.filename, backgroundColor_))
+        if(!texture_.filename.trimmed().isEmpty())
+        {
+            if(!texture->setFilename(texture_.filename, backgroundColor_))
+            {
+                continue;
+            }
+        }
+        else if(!texture_.textureName.trimmed().isEmpty())
+        {
+            if(!texture->setPipelineTexture(texture_.textureName, backgroundColor_))
+            {
+                continue;
+            }
+        }
+        else
         {
             continue;
         }
@@ -760,7 +786,7 @@ void opengl_drawing::Object::setTexture(
 
     if(std::end(m_imageData->textures) == fit)
     {
-        m_imageData->textures.push_back({name_, newFilename_});
+        m_imageData->textures.push_back({name_, newFilename_, QString{}});
     }
     else
     {
