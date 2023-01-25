@@ -52,7 +52,7 @@ bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject 
     //QOpenGLFramebufferObject::blitFramebuffer(&fb, frameBufferObject_);
     //m_image = fb.toImage(true);
     m_image = frameBufferObject_->toImage(true);
-    qDebug() << m_image.save("000-image.PNG");
+    //qDebug() << m_image.save("000-image.PNG");
     createTextureFromImage();
     setWrapClampToBorder();
     setBorderColor(backgroundColor_);
