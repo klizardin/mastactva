@@ -1246,6 +1246,9 @@ namespace drawing_data
                 // list of object's calculations
         std::map<QString, QStringList> strVariables;
                 // string variables (required only just by calculations)
+        std::set<QString> textureTargets;
+                // terget textures for the object
+                // object will be drawen for these textures
 
     public:
         QuizImageObject();
@@ -1270,6 +1273,16 @@ namespace drawing_data
          * update time from told_ to tnew_ for the next drawing step
         */
         bool changeAllowedForTime(double told_, double tnew_) const;
+
+        /*
+         * add target texture name
+        */
+        void addTargetTexture(const QString &targetTextureName_);
+
+        /*
+         * check if allowed to draw this object for specific target texture name
+        */
+        bool allowedForTargetTexture(const QString& tartgetTextureName_) const;
 
         /*
          * set attribute variable value

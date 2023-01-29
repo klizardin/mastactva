@@ -376,6 +376,16 @@ bool drawing_data::QuizImageObject::changeAllowedForTime(double told_, double tn
     return allowedForTime(told_) != allowedForTime(tnew_);
 }
 
+void drawing_data::QuizImageObject::addTargetTexture(const QString &targetTextureName_)
+{
+    textureTargets.insert(targetTextureName_);
+}
+
+bool drawing_data::QuizImageObject::allowedForTargetTexture(const QString& tartgetTextureName_) const
+{
+    return textureTargets.find(tartgetTextureName_) != std::end(textureTargets);
+}
+
 int drawing_data::QuizImageObject::getAttributeTupleSize(const QString &name_) const
 {
     for(const std::unique_ptr<IAttribute> &attribute_ : qAsConst(attributes))
