@@ -333,8 +333,8 @@ void drawing_data::Test0QuizImageObject::initialize(
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        { g_renderFromImageName, g_noImage001Name },
-        { g_renderToImageName, g_noImage002Name },
+        { g_renderFromImageName, g_noImage001Name, QString{} },
+        { g_renderToImageName, g_noImage002Name, QString{} },
     };
 
     object->attributes.push_back(
@@ -448,8 +448,8 @@ void drawing_data::Test1QuizImageObject::initialize(
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        { g_renderFromImageName, g_noImage001Name },
-        { g_renderToImageName, g_noImage002Name },
+        { g_renderFromImageName, g_noImage001Name, QString{} },
+        { g_renderToImageName, g_noImage002Name, QString{} },
     };
 
     object->attributes.push_back(
@@ -574,8 +574,8 @@ void drawing_data::Test2QuizImageObject::initialize(
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        { g_renderFromImageName, g_noImage001Name },
-        { g_renderToImageName, g_noImage002Name },
+        { g_renderFromImageName, g_noImage001Name, QString{} },
+        { g_renderToImageName, g_noImage002Name, QString{} },
     };
 
     object->attributes.push_back(
@@ -686,8 +686,8 @@ void drawing_data::Test3QuizImageObject::initialize(
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
-        {g_renderToImageName, ":/Images/Images/no-image-002.png"},
+        {g_renderFromImageName, ":/Images/Images/no-image-001.png", QString{}},
+        {g_renderToImageName, ":/Images/Images/no-image-002.png", QString{}},
     };
 
     std::shared_ptr<std::vector<QVector4D>> vertices = std::make_shared<std::vector<QVector4D>>();
@@ -999,8 +999,8 @@ void drawing_data::Test4QuizImageObject::initialize(
     data_.objects.push_back(createObjectWithgDefaultShaderAndPeriod(
                 0.0 - eps, 0.5,
                 {
-                    {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
-                    {g_renderToImageName, ":/Images/Images/no-image-003.png"},
+                    {g_renderFromImageName, ":/Images/Images/no-image-001.png", QString{}},
+                    {g_renderToImageName, ":/Images/Images/no-image-003.png", QString{}},
                 },
                 ":/Shaders/Shaders/default.vsh",
                 ":/Shaders/Shaders/test004/period.fsh"
@@ -1008,8 +1008,8 @@ void drawing_data::Test4QuizImageObject::initialize(
     data_.objects.push_back(createObjectWithgDefaultShaderAndPeriod(
                 0.5 + eps, 1.0 + eps,
                 {
-                    {g_renderFromImageName, ":/Images/Images/no-image-003.png"},
-                    {g_renderToImageName, ":/Images/Images/no-image-002.png"},
+                    {g_renderFromImageName, ":/Images/Images/no-image-003.png", QString{}},
+                    {g_renderToImageName, ":/Images/Images/no-image-002.png", QString{}},
                 },
                 ":/Shaders/Shaders/default.vsh",
                 ":/Shaders/Shaders/test004/period.fsh"
