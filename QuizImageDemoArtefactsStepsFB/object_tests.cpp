@@ -525,7 +525,8 @@ void processArtefact(
                 artefactId_,
                 objectArtefactStep_,
                 artefact.release(),
-                MergeId()
+                MergeId(),
+                QStringList{}
                 );
     effectObject_->m_objectArtefactData->push_back(objectArtefactData.release());
 }
@@ -562,7 +563,8 @@ void processTexturesArtefacts(
                     textureBaseArtefactId_ + i,
                     objectArtefactStep_,
                     textureArtefact.release(),
-                    MergeId()
+                    MergeId(),
+                    QStringList{}
                     );
         effectObject_->m_objectArtefactData->push_back(textureObjectArtefactData.release());
     }
@@ -724,7 +726,8 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
                 artefactId1,
                 objectArtefactStep0,
                 artefact1.release(),
-                MergeId()
+                MergeId(),
+                QStringList{}
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -749,7 +752,8 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
                 artefactId2,
                 objectArtefactStep0,
                 artefact2.release(),
-                MergeId()
+                MergeId(),
+                QStringList{}
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -879,7 +883,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 artefactId1,
                 objectArtefactStep0,
                 artefact1.release(),
-                MergeId()
+                MergeId(),
+                QStringList{}
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -904,7 +909,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 artefactId2,
                 objectArtefactStep0,
                 artefact2.release(),
-                MergeId()
+                MergeId(),
+                QStringList{}
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -1351,7 +1357,8 @@ std::unique_ptr<EffectObjectsData> createEffectObjectWithOneArtefactWithArgument
                 artefactId_,
                 objectArtefactStep0,
                 artefact.release(),
-                MergeId()
+                MergeId(),
+                QStringList{}
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData.release());
 

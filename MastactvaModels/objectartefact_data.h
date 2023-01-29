@@ -39,7 +39,8 @@ public:
             int artefactId_,
             int stepIndex_,
             ArtefactData *artefact_,
-            const MergeId &mergeid_
+            const MergeId &mergeid_,
+            const QStringList &textures_
             );
     ObjectArtefactData(ObjectArtefactData &&data_);
     virtual ~ObjectArtefactData() = default;
@@ -56,7 +57,7 @@ public:
     int m_artefactId = -1;          // artefact id
     int m_stepIndex = -1;           // step index
     MergeId m_mergeid;              // unique id to merge
-    QVector<QString> m_textures;    // names of textures to render object's step into them
+    QStringList m_textures;         // names of textures to render object's step into them
                                     // if it is empty then render to the main texture
 
     std::shared_ptr<QVector<ArtefactData *>> m_artefactData;    // an artefact 1:1
