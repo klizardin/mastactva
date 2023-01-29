@@ -3606,7 +3606,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                         + QString(g_renderToImageName) + QString(g_argumentsSplitter)
                         + QString(g_renderFromImageName)
                     + QString(")")
-                ,QStringList{} << firstTextureName << secondTextureName << ""
+                ,QStringList{} << firstTextureName << secondTextureName << g_renderTextureDefaultSynonim
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
