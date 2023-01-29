@@ -473,7 +473,8 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
         const QDateTime &now,
         int effectObjectStep,
         const QVector3D &fillColor_,
-        const QString &globalCalculations_ = QString()
+        const QString &globalCalculations_ = QString(),
+        const QStringList &textureNamesList_ = QStringList{}
         );
 
 
@@ -491,7 +492,9 @@ void processArtefact(
         const int &objectArtefactStep_,
         const int &effectId_,
         const QDateTime &now_,
-        const ArgumentsTuple (&vertexArgs_)[size_])
+        const ArgumentsTuple (&vertexArgs_)[size_],
+        const QStringList &texturesList_ = QStringList{}
+        )
 {
     std::unique_ptr<ArtefactData> artefact = std::make_unique<ArtefactData>(
                     artefactId_,
@@ -526,7 +529,7 @@ void processArtefact(
                 objectArtefactStep_,
                 artefact.release(),
                 MergeId(),
-                QStringList{}
+                texturesList_
                 );
     effectObject_->m_objectArtefactData->push_back(objectArtefactData.release());
 }
@@ -542,7 +545,8 @@ void processTexturesArtefacts(
         const int &objectArtefactStep_,
         const int &effectId_,
         const QDateTime &now_,
-        const TextureTuple (&textures_)[size_]
+        const TextureTuple (&textures_)[size_],
+        const QStringList &tetureNamesList = QStringList{}
         )
 {
     for(std::size_t i = 0; i < sizeof(textures_)/sizeof(textures_[0]); ++i)
@@ -564,7 +568,44 @@ void processTexturesArtefacts(
                     objectArtefactStep_,
                     textureArtefact.release(),
                     MergeId(),
-                    QStringList{}
+                    tetureNamesList
+                    );
+        effectObject_->m_objectArtefactData->push_back(textureObjectArtefactData.release());
+    }
+}
+
+template<std::size_t size_>
+void processTextureNamesArtefacts(
+        std::unique_ptr<EffectObjectsData> &effectObject_,
+        const int &textureBaseArtefactId_,
+        const int &textureBaseObjectArtefactId_,
+        const int &objectArtefactStep_,
+        const int &effectId_,
+        const QDateTime &now_,
+        const TextureTuple (&textures_)[size_],
+        const QStringList &tetureNamesList = QStringList{}
+        )
+{
+    for(std::size_t i = 0; i < sizeof(textures_)/sizeof(textures_[0]); ++i)
+    {
+        auto textureArtefact = std::make_unique<ArtefactData>(
+                    textureBaseArtefactId_ + i,
+                    std::get<to_underlying(TextureEn::name)>(textures_[i]),
+                    std::get<to_underlying(TextureEn::filename)>(textures_[i]),
+                    emptyStr,
+                    ArtefactTypeEn::texture2DName,
+                    emptyStr,
+                    now_,
+                    MergeId()
+                    );
+        auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
+                    textureBaseObjectArtefactId_ + i,
+                    effectId_,
+                    textureBaseArtefactId_ + i,
+                    objectArtefactStep_,
+                    textureArtefact.release(),
+                    MergeId(),
+                    tetureNamesList
                     );
         effectObject_->m_objectArtefactData->push_back(textureObjectArtefactData.release());
     }
@@ -923,7 +964,10 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
         const char *effectName,
         const char *effectProgrammerName,
         const QDateTime &now,
-        int effectObjectStep
+        int effectObjectStep,
+        const char * textureFileNameFrom = ":/Images/Images/no-image-001.png", const char *textureNameFrom = nullptr,
+        const char * textureFileNameTo = ":/Images/Images/no-image-002.png", const char *textureNameTo = nullptr,
+        const QStringList &textureNamesList = QStringList{}
         )
 {
     std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
@@ -1019,7 +1063,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
         objectArtefactStep0,
         effectId,
         now,
-        vertexArgs1
+        vertexArgs1,
+        textureNamesList
     );
 
     // fragment shader artefact
@@ -1050,26 +1095,49 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
         objectArtefactStep0,
         effectId,
         now,
-        fragmentArgs1
+        fragmentArgs1,
+        textureNamesList
     );
 
     // textures artefacts
-    static const TextureTuple textures[] =
-    {
-        {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
-        {g_renderToImageName, ":/Images/Images/no-image-002.png"}
-    };
     static const int textureBaseArtefactId = 3;
     static const int textureBaseObjectArtefactId = 3;
-    processTexturesArtefacts(
+    if(textureFileNameFrom && textureFileNameTo)
+    {
+        static const TextureTuple textures[] =
+        {
+            {g_renderFromImageName, textureFileNameFrom},
+            {g_renderToImageName, textureFileNameTo}
+        };
+        processTexturesArtefacts(
                 effectObject,
                 textureBaseArtefactId,
                 textureBaseObjectArtefactId,
                 objectArtefactStep0,
                 effectId,
                 now,
-                textures
+                textures,
+                textureNamesList
                 );
+    }
+    else if(textureNameFrom && textureNameTo)
+    {
+        static const TextureTuple textures[] =
+        {
+            {g_renderFromImageName, textureNameFrom},
+            {g_renderToImageName, textureNameTo}
+        };
+        processTextureNamesArtefacts(
+                effectObject,
+                textureBaseArtefactId,
+                textureBaseObjectArtefactId,
+                objectArtefactStep0,
+                effectId,
+                now,
+                textures,
+                textureNamesList
+                );
+    }
     return effectObject;
 }
 
@@ -2596,6 +2664,225 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     return effectObject;
 }
 
+std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
+        int effectId,
+        const char *effectName,
+        const char *effectProgrammerName,
+        const QDateTime &now,
+        int effectObjectStep,
+        const char * vertexShaderFilename_,
+        const char * fragmentShaderFilename_,
+        const char * fromImage_,
+        const char * toImage_,
+        const std::vector<GLfloat> &fromCoords_,
+        const std::vector<GLfloat> &toCoords_,
+        const QString &geomertySize_,
+        const QString &textureName_
+        )
+{
+    std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
+                effectId,
+                effectName,
+                effectProgrammerName,
+                now,
+                effectObjectStep
+                );
+
+    std::vector<GLfloat> vertexData;
+    std::vector<GLfloat> textureData;
+
+    opengl_drawing::makeGeometry(2, 2, 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
+
+    // vertex shader artefact
+    const ArgumentsTuple vertexArgs1[] =
+    {
+        {
+            1,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            g_renderVertexAttributeName,
+            emptyStr
+        },
+        {
+            2,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            g_renderTextureAttributeName,
+            emptyStr
+        },
+        {
+            3,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderMatrixName,
+            emptyStr
+        },
+        {
+            4,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderFromImageMatrixName,
+            emptyStr
+        },
+        {
+            5,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderToImageMatrixName,
+            emptyStr
+        },
+        {
+            6,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderFacedGeometryCoefsName,
+            "0.0 0.0"
+        },
+        {
+            7,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderGeomertySizeName,
+            geomertySize_
+        },
+        {
+            8,
+            ArtefactArgTypeEn::intType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderIsGeomertySolidName,
+            "1"
+        },
+        {
+            9,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderScreenRectName,
+            "1.0 1.0"
+        },
+        {
+            10,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderWindowSizeName,
+            "1.0 1.0"
+        },
+        {
+            11,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "textureAttributeFrom",
+            toString(fromCoords_)
+        },
+        {
+            12,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "textureAttributeTo",
+            toString(toCoords_)
+        },
+        {
+            13,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            "vaFromMatrix",
+            toString(QMatrix4x4{})
+        },
+        {
+            14,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            "vaToMatrix",
+            toString(QMatrix4x4{})
+        },
+        {
+            15,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            QString(g_renderFromImageName) + QString(g_renderWrapToEdgeStateName),
+            "0.0"
+        },
+        {
+            16,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            QString(g_renderToImageName) + QString(g_renderWrapToEdgeStateName),
+            "0.0"
+        }
+    };
+
+    //qDebug() << "toString(fromCoords_)" << toString(fromCoords_);
+    //qDebug() << "toString(toCoords_)" << toString(toCoords_);
+
+    QStringList textureNamesList = { textureName_, };
+
+    static const int objectArtefactStep0 = 0;
+    processArtefact(
+        effectObject,
+        vertexShaderFilename_,
+        1,
+        "vertext shader",
+        ArtefactTypeEn::shaderVertex,
+        1,
+        objectArtefactStep0,
+        effectId,
+        now,
+        vertexArgs1,
+        textureNamesList
+    );
+
+    // fragment shader artefact
+    const ArgumentsTuple fragmentArgs1[] =
+    {
+        {
+            101,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderOpacityName,
+            "1.0"
+        },
+        {
+            102,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderTName,
+            "0.5"
+        },
+    };
+    processArtefact(
+        effectObject,
+        fragmentShaderFilename_,
+        2,
+        "fragment shader",
+        ArtefactTypeEn::shaderFragmet,
+        2,
+        objectArtefactStep0,
+        effectId,
+        now,
+        fragmentArgs1,
+        textureNamesList
+    );
+
+    // textures artefacts
+    static const TextureTuple textures[] =
+    {
+        { g_renderFromImageName, fromImage_ },
+        { g_renderToImageName, toImage_ }
+    };
+    static const int textureBaseArtefactId = 3;
+    static const int textureBaseObjectArtefactId = 3;
+    processTexturesArtefacts(
+                effectObject,
+                textureBaseArtefactId,
+                textureBaseObjectArtefactId,
+                objectArtefactStep0,
+                effectId,
+                now,
+                textures,
+                textureNamesList
+                );
+    return effectObject;
+}
+
 std::unique_ptr<EffectObjectsData> createWalkEffectDrawingBufferTestObject(
         int effectId,
         const char *effectName,
@@ -2942,7 +3229,8 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
         const QDateTime &now,
         int effectObjectStep,
         const QVector3D &fillColor_,
-        const QString &globalCalculations_ /*= QString()*/
+        const QString &globalCalculations_ /*= QString()*/,
+        const QStringList &textureNamesList_ /*= QStringList{}*/
         )
 {
     std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
@@ -2982,7 +3270,8 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
         objectArtefactStep0,
         effectId,
         now,
-        globalArgs
+        globalArgs,
+        textureNamesList_
     );
 
     return effectObject;
@@ -3204,6 +3493,128 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     effect->m_effectObjectsData->push_back(effectObject0.release());
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
+    return effect;
+}
+
+std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    static const char *effectProgrammerName = "effect1";
+    static const char *effectNameMain = "global data";
+    static QString effectProgrammerNameMain = QString(g_defaultObjectInfoProgrammerName) + "_globalData";
+    const QDateTime now = QDateTime::currentDateTime();
+    static const int effectObjectStep0 = 0;
+    static const int effectObjectStep1 = 1;
+    static const int effectObjectStep2 = 2;
+    static const int effectObjectStep3 = 3;
+
+    QDir addonsDir;
+    findDynLibs(QDir("./"), addonsDir);
+    auto modules = std::make_shared<AddonModules>();
+    modules->create(addonsDir);
+
+    QString inputJson = QString(g_inputJson).arg(
+                "/home/klizardin/Pictures/test_images/from_image.jpg",
+                "/home/klizardin/Pictures/test_images/to_image.jpg",
+                "/home/klizardin/tmp/"
+                );
+    QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
+
+    std::vector<QVector4D> fromValues, toValues;
+    convert(result.object().value("1").toObject(), fromValues);
+    convert(result.object().value("0").toObject(), toValues);
+
+    //qDebug() << "fromValues" << fromValues;
+    //qDebug() << "toValues" << toValues;
+
+    std::vector<GLfloat> fromCoords, toCoords;
+    createGeometry(15, 13, fromValues, fromCoords);
+    createGeometry(15, 13, toValues, toCoords);
+
+    //qDebug() << "fromCoords" << fromCoords;
+    //qDebug() << "toCoords" << toCoords;
+
+    const char * firstTextureName = "firstTexture";
+    const char * secondTextureName = "secondTexture";
+
+    auto effectObject0 = createWalkEffectMultiTextureStepsTestObject(
+                effectId,
+                effectName,
+                effectProgrammerName,
+                now,
+                effectObjectStep1,
+                g_walkEffectFromVertexShaderFilename,
+                g_walkEffectFromFragmentShaderFilename,
+                "/home/klizardin/Pictures/test_images/from_image.jpg",
+                "/home/klizardin/Pictures/test_images/to_image.jpg",
+                fromCoords,
+                toCoords,
+                "15.0 13.0",
+                firstTextureName
+                );
+    auto effectObject1 = createWalkEffectMultiTextureStepsTestObject(
+                effectId,
+                effectName,
+                effectProgrammerName,
+                now,
+                effectObjectStep2,
+                g_walkEffectToVertexShaderFilename,
+                g_walkEffectToFragmentShaderFilename,
+                "/home/klizardin/Pictures/test_images/from_image.jpg",
+                "/home/klizardin/Pictures/test_images/to_image.jpg",
+                fromCoords,
+                toCoords,
+                "15.0 13.0",
+                secondTextureName
+                );
+    auto effectObject2 = createTestObject2(
+                effectId,
+                effectName,
+                effectProgrammerName,
+                now,
+                effectObjectStep3,
+                nullptr, firstTextureName,
+                nullptr, secondTextureName,
+                QStringList{}
+                );
+    auto effectObject3 = createGlobalDataTestObject(
+                effectId,
+                effectNameMain,
+                effectProgrammerNameMain,
+                now,
+                effectObjectStep0,
+                QVector3D(0.0, 0.0, 1.0),
+                QString(g_renderWalkEffectRectMatrixCalculation)
+                    + QString("(")
+                        + QString(g_renderFromImageName) + QString(g_argumentsSplitter)
+                        + QString("vaFromMatrix")
+                    + QString(")")
+                + g_renderObjectsStatesSpliter
+                + QString(g_renderWalkEffectRectMatrixCalculation)
+                    + QString("(")
+                        + QString(g_renderToImageName) + QString(g_argumentsSplitter)
+                        + QString("vaToMatrix")
+                    + QString(")")
+                + g_renderObjectsStatesSpliter
+                + QString(g_renderImageGeometryMatrixMultipleCalculation)
+                    + QString("(")
+                        + QString(g_renderToImageName) + QString(g_argumentsSplitter)
+                        + QString(g_renderFromImageName)
+                    + QString(")")
+                ,QStringList{} << firstTextureName << secondTextureName << ""
+                );
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now,
+                MergeId()
+                );
+    effect->m_effectObjectsData->push_back(effectObject0.release());
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    effect->m_effectObjectsData->push_back(effectObject2.release());
+    effect->m_effectObjectsData->push_back(effectObject3.release());
     return effect;
 }
 
@@ -3739,6 +4150,26 @@ void WalkEffectTest::initialize(
 std::pair<const char *, const char *> WalkEffectTest::getDescription() const
 {
     return {"WalkEffectTest", "walk effect base version"};
+}
+
+void WalkEffectMultiTextureStepsTest::initialize(
+        drawing_data::QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
+        ) const
+{
+    Q_UNUSED(argsSetIndex_);
+    Q_UNUSED(data_);
+
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createWalkEffectMultiTextureStepsTestData();
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> WalkEffectMultiTextureStepsTest::getDescription() const
+{
+    return {"WalkEffectTest", "walk effect multi texture steps version"};
 }
 
 void WalkEffectDrawingBufferTest::initialize(
