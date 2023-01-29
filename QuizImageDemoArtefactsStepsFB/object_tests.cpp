@@ -3580,7 +3580,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep3,
                 nullptr, firstTextureName,
                 nullptr, secondTextureName,
-                QStringList{}
+                QStringList{} // empty - default texture
                 );
     auto effectObject3 = createGlobalDataTestObject(
                 effectId,
