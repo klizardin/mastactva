@@ -1976,8 +1976,8 @@ void drawing_data::DefaultQuizImageObject::initialize(
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        { g_renderFromImageName, g_noImage001Name },
-        { g_renderToImageName, g_noImage002Name },
+        { g_renderFromImageName, g_noImage001Name, QString{} },
+        { g_renderToImageName, g_noImage002Name, QString{} },
     };
 
     object->attributes.push_back(

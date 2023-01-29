@@ -652,39 +652,39 @@ QString subpathJoin(const QString &relPath_, const QString &namespacePath_)
     }
 }
 
-bool isSimpleQVariantType(const QVariant::Type &type_)
+bool isSimpleQVariantType(const QVariant &data_)
 {
-    static QVariant::Type s_simpleTypes[] = {
-        QVariant::Type::Bool,
-        QVariant::Type::Int,
-        QVariant::Type::UInt,
-        QVariant::Type::LongLong,
-        QVariant::Type::ULongLong,
-        QVariant::Type::Double,
-        QVariant::Type::Char,
-        QVariant::Type::String,
-        QVariant::Type::StringList,
-        QVariant::Type::ByteArray,
-        QVariant::Type::BitArray,
-        QVariant::Type::Date,
-        QVariant::Type::Time,
-        QVariant::Type::DateTime,
-        QVariant::Type::Url,
-        QVariant::Type::Locale,
-        QVariant::Type::Rect,
-        QVariant::Type::RectF,
-        QVariant::Type::Size,
-        QVariant::Type::SizeF,
-        QVariant::Type::Line,
-        QVariant::Type::LineF,
-        QVariant::Type::Point,
-        QVariant::Type::PointF
+    static QMetaType s_simpleTypes[] = {
+        QMetaType{QMetaType::Bool},
+        QMetaType{QMetaType::Int},
+        QMetaType{QMetaType::UInt},
+        QMetaType{QMetaType::LongLong},
+        QMetaType{QMetaType::ULongLong},
+        QMetaType{QMetaType::Double},
+        QMetaType{QMetaType::QChar},
+        QMetaType{QMetaType::QString},
+        QMetaType{QMetaType::QStringList},
+        QMetaType{QMetaType::QByteArray},
+        QMetaType{QMetaType::QBitArray},
+        QMetaType{QMetaType::QDate},
+        QMetaType{QMetaType::QTime},
+        QMetaType{QMetaType::QDateTime},
+        QMetaType{QMetaType::QUrl},
+        QMetaType{QMetaType::QLocale},
+        QMetaType{QMetaType::QRect},
+        QMetaType{QMetaType::QRectF},
+        QMetaType{QMetaType::QSize},
+        QMetaType{QMetaType::QSizeF},
+        QMetaType{QMetaType::QLine},
+        QMetaType{QMetaType::QLineF},
+        QMetaType{QMetaType::QPoint},
+        QMetaType{QMetaType::QPointF}
     };
     return std::end(s_simpleTypes)
             != std::find(
                 std::begin(s_simpleTypes),
                 std::end(s_simpleTypes),
-                type_
+                data_.metaType()
                 )
             ;
 }

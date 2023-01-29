@@ -93,7 +93,7 @@ QByteArray loadBinaryFileUrl(const QString &filenameUrl_);  // load binary file 
 QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);    // (TODO: inject dep) load binary file by the server files interface
 QString getTextFromBinaryData(const QByteArray &data_);     // return text from the binary data
 void saveTextFile(const QString filepath_, const QString &text_);       // save text to the text file
-bool isSimpleQVariantType(const QVariant::Type &type_);     // is type the simple qvariant type
+bool isSimpleQVariantType(const QVariant &data_);     // is type the simple qvariant type
 QStringList getUniqueValues(const QStringList &values_);    // return just unique values (remove repeted values)
 QStringList replace(const QStringList &stringList_, const QString from_, const QString & to_);  // replace string in the string list
 QStringList removeEmpty(const QStringList &values_);    // remove empty strings from the string list

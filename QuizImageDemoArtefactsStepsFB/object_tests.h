@@ -172,6 +172,13 @@ namespace drawing_objects
         std::pair<const char *, const char *> getDescription() const override;
     };
 
+    class WalkEffectMultiTextureStepsTest : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
+    };
+
     class WalkEffectDrawingBufferTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:

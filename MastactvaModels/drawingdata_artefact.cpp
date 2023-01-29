@@ -188,7 +188,7 @@ void DrawingDataArtefact::addTexture(
     {
         return;
     }
-    object_.textures.push_back({m_name, static_cast<const QString &>(m_filename)});
+    object_.textures.push_back({m_name, static_cast<const QString &>(m_filename), QString{}});
 }
 
 void DrawingDataArtefact::addData(

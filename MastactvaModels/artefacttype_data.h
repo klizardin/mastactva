@@ -28,6 +28,9 @@ enum class ArtefactTypeEn{
     texture1D,          /* not active now */
     texture2D,
     texture3D,          /* not active now */
+    texture1DName,      /* not active now */
+    texture2DName,
+    texture3DName,      /* not active now */
     dataJson,
     dataObj3D,
     convertNamesJson,
