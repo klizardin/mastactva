@@ -29,6 +29,7 @@
         <file>Shaders/walkeffecttest/walkeffectfromv1.vsh</file>
         <file>Shaders/walkeffecttest/walkeffecttov1.vsh</file>
         <file>Shaders/walkeffecttest/walkeffects2.fsh</file>
+        <file>Shaders/walkeffecttest/walkeffecttoconst.fsh</file>
     </qresource>
     <qresource prefix="/Images">
         <file>Images/no-image.png</file>

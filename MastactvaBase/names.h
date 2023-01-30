@@ -248,6 +248,11 @@ Q_DECL_UNUSED static const char * g_renderImageGeometryMatrixDefaultCalculation 
 Q_DECL_UNUSED static const char * g_renderImageGeometryMatrixMultipleCalculation = "ImageGeometryMatrixCalculationMultiple";
 
 
+// special texture names
+Q_DECL_UNUSED static const char * g_renderTextureDefault = "renderTextureDefault";
+Q_DECL_UNUSED static const char * g_renderTextureDefaultSynonim = "";
+
+
 // expression consts
 Q_DECL_UNUSED static const char * g_startArguments = "(";
 Q_DECL_UNUSED static const char * g_endArguments = ")";

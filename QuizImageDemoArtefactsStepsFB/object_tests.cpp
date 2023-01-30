@@ -222,6 +222,7 @@ static const char *g_walkEffectFromVertexShaderFilename = "walkeffectfrom.vsh";
 static const char *g_walkEffectFromFragmentShaderFilename = "walkeffectfrom.fsh";
 static const char *g_walkEffectToVertexShaderFilename = "walkeffectto.vsh";
 static const char *g_walkEffectToFragmentShaderFilename = "walkeffectto.fsh";
+static const char *g_walkEffectToConstFragmentShaderFilename = "walkeffecttoconst.fsh";
 static const char *g_emptyFilename = "empty.lua";
 static const char *g_walkEffectFromVertexShaderV1Filename = "walkeffectfromv1.vsh";
 static const char *g_walkEffectToVertexShaderV1Filename = "walkeffecttov1.vsh";
@@ -328,6 +329,9 @@ std::shared_ptr<MapFileSource> createMapFileSource()
                     );
     filesource->add(g_walkEffectToFragmentShaderFilename,
                     loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectto.fsh")
+                    );
+    filesource->add(g_walkEffectToConstFragmentShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffecttoconst.fsh")
                     );
     filesource->add(g_walkEffectFromVertexShaderV1Filename,
                     loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectfromv1.vsh")
@@ -3560,7 +3564,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 now,
                 effectObjectStep2,
                 g_walkEffectToVertexShaderFilename,
-                g_walkEffectToFragmentShaderFilename,
+                g_walkEffectToConstFragmentShaderFilename,
                 "/home/klizardin/Pictures/test_images/from_image.jpg",
                 "/home/klizardin/Pictures/test_images/to_image.jpg",
                 fromCoords,
@@ -3576,7 +3580,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep3,
                 nullptr, firstTextureName,
                 nullptr, secondTextureName,
-                QStringList{}
+                QStringList{} // empty - default texture
                 );
     auto effectObject3 = createGlobalDataTestObject(
                 effectId,
@@ -3602,7 +3606,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                         + QString(g_renderToImageName) + QString(g_argumentsSplitter)
                         + QString(g_renderFromImageName)
                     + QString(")")
-                ,QStringList{} << firstTextureName << secondTextureName << ""
+                ,QStringList{} << firstTextureName << secondTextureName << g_renderTextureDefaultSynonim
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
