@@ -186,5 +186,8 @@ opencv addon test
     - test 1 + (1 - alpha) mode with tex attrs
     - debug ...
 - multi steps
-    - format
+    * format
+    * base test
+
+
 
