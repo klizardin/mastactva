@@ -91,6 +91,23 @@ void DrawingDataObjectArtefact::addArguments(
     });
 }
 
+void DrawingDataObjectArtefact::addTetureTargets(
+        drawing_data::QuizImageObject &object_,
+        const drawingdata::Details &details_
+        ) const
+{
+    for(const QString &textureTargetName : m_textures)
+    {
+        object_.addTargetTexture(textureTargetName);
+        if(details_.textureTargets
+                && !details_.textureTargets->contains(textureTargetName)
+                )
+        {
+            *(details_.textureTargets) << textureTargetName;
+        }
+    }
+}
+
 bool DrawingDataObjectArtefact::hasArguments() const
 {
     return forArtefacts([](const DrawingDataArtefact *artefact_)->bool

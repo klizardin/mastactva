@@ -271,6 +271,7 @@ bool ObjectArtefacts::build(
         {
             // add arguments for this shader
             (*it)->addArguments(object_, details_);
+            (*it)->addTetureTargets(object_, details_);
             break;
         }
     }
