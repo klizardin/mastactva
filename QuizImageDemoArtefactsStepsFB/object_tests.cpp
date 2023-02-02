@@ -1067,8 +1067,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
         objectArtefactStep0,
         effectId,
         now,
-        vertexArgs1,
-        textureNamesList
+        vertexArgs1
     );
 
     // fragment shader artefact
@@ -1100,7 +1099,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
         effectId,
         now,
         fragmentArgs1,
-        textureNamesList
+        textureNamesList // it is required just for a fragment shader
     );
 
     // textures artefacts
@@ -1120,8 +1119,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 objectArtefactStep0,
                 effectId,
                 now,
-                textures,
-                textureNamesList
+                textures
                 );
     }
     else if(textureNameFrom && textureNameTo)
@@ -1138,8 +1136,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 objectArtefactStep0,
                 effectId,
                 now,
-                textures,
-                textureNamesList
+                textures
                 );
     }
     return effectObject;
@@ -2830,8 +2827,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
         objectArtefactStep0,
         effectId,
         now,
-        vertexArgs1,
-        textureNamesList
+        vertexArgs1
     );
 
     // fragment shader artefact
@@ -2863,7 +2859,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
         effectId,
         now,
         fragmentArgs1,
-        textureNamesList
+        textureNamesList    // it is required just for fragment shader
     );
 
     // textures artefacts
@@ -2881,8 +2877,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
                 objectArtefactStep0,
                 effectId,
                 now,
-                textures,
-                textureNamesList
+                textures
                 );
     return effectObject;
 }
@@ -3275,7 +3270,7 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
         effectId,
         now,
         globalArgs,
-        textureNamesList_
+        textureNamesList_ // also requred for future calculations
     );
 
     return effectObject;

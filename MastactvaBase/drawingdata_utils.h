@@ -909,6 +909,7 @@ public:
     std::shared_ptr<IVariables> variables;
     std::shared_ptr<IPosition> position;
     std::shared_ptr<IAddonModules> modules;
+    std::shared_ptr<QStringList> textureTargets;
 
     void clear();
 };
