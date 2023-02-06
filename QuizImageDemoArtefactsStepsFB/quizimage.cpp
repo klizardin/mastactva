@@ -131,7 +131,7 @@ void QuizImage::loadProject()
     freeProject();
     if(!m_project.isEmpty())
     {
-        QUrl url(project());
+        //QUrl url(project());
         initDefaultDrawingData();
         //m_drawingData = OpenGLDrawingImageData::fromJson(
         //            QJsonDocument::fromJson(
