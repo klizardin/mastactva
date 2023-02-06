@@ -991,6 +991,7 @@ Details::Details()
 {
     variables = std::make_shared<Variables>();
     position = std::make_shared<Position>();
+    textureTargets = std::make_shared<QStringList>();
 }
 
 void Details::clear()
@@ -1002,6 +1003,10 @@ void Details::clear()
     if(position.operator bool())
     {
         position->clear();
+    }
+    if(textureTargets.operator bool())
+    {
+        textureTargets->clear();
     }
 }
 

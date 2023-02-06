@@ -31,6 +31,7 @@
 #include "drawing_tests.h"
 #include "object_tests.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/iquizimageqwindow.h"
 
 
 QuizImage::QuizImage()
@@ -131,7 +132,7 @@ void QuizImage::loadProject()
     freeProject();
     if(!m_project.isEmpty())
     {
-        QUrl url(project());
+        //QUrl url(project());
         initDefaultDrawingData();
         //m_drawingData = OpenGLDrawingImageData::fromJson(
         //            QJsonDocument::fromJson(
@@ -149,7 +150,7 @@ void QuizImage::setProjectFromImage()
             fromImage().isEmpty()
             ) { return; }
     // do not remove prev image
-    QUrl url(fromImage());
+    //QUrl url(fromImage());
     //m_drawingData->addRenderImage(url.toLocalFile(), true);
 }
 
@@ -159,7 +160,7 @@ void QuizImage::setProjectToImage()
             toImage().isEmpty()
             ) { return; }
     // do not remove prev image
-    QUrl url(toImage());
+    //QUrl url(toImage());
     //m_drawingData->addRenderImage(url.toLocalFile(), false);
 }
 
@@ -238,6 +239,11 @@ void QuizImage::initDefaultDrawingData()
         Initialize<std::tuple_size<Tests>::value - 1> init;
         init.initialize(tests, m_testIndex, *data.get());
         m_drawingData = std::move(data);
+    }
+
+    if(IQuizImageQWindow::getInstance())
+    {
+        IQuizImageQWindow::getInstance()->add(m_drawingData->getTargetTextures());
     }
 }
 

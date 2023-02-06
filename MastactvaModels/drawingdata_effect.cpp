@@ -118,6 +118,7 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_, int ar
         // process objects without the objects list
         runObjects(data_, sortedEffectObjects);
     }
+    data_.setTargetTextures(*m_details.textureTargets);
 }
 
 /*

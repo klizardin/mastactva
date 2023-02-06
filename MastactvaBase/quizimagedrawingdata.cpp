@@ -732,3 +732,18 @@ bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *v
 
     return anyProcessed;
 }
+
+void drawing_data::QuizImageObjects::setTargetTextures(const QStringList &textureNames)
+{
+    targetTextures.clear();
+    for(const QString & targetTextureName : textureNames)
+    {
+        targetTextures.push_back(targetTextureName);
+    }
+}
+
+const std::vector<QString> & drawing_data::QuizImageObjects::getTargetTextures() const
+{
+    return targetTextures;
+}
+
