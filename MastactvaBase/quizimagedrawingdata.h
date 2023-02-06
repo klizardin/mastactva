@@ -1387,6 +1387,7 @@ namespace drawing_data
         std::vector<std::shared_ptr<QuizImageObject>> objects;  // drawing object's list
         std::vector<QString> globalStates;  // global states
         std::vector<QString> globalCalculations;    // global calculations
+        std::vector<QString> targetTextures;
 
     public:
         QuizImageObjects();
@@ -1402,6 +1403,9 @@ namespace drawing_data
         void set(const QString &name_, QStringList &&data_) override;
         bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
         // }
+
+        void setTargetTextures(const QStringList &textureNames);
+        const std::vector<QString> & getTargetTextures() const;
 
         /*
          * set attribute variable value from root
