@@ -31,6 +31,7 @@
 #include "drawing_tests.h"
 #include "object_tests.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/iquizimageqwindow.h"
 
 
 QuizImage::QuizImage()
@@ -238,6 +239,11 @@ void QuizImage::initDefaultDrawingData()
         Initialize<std::tuple_size<Tests>::value - 1> init;
         init.initialize(tests, m_testIndex, *data.get());
         m_drawingData = std::move(data);
+    }
+
+    if(IQuizImageQWindow::getInstance())
+    {
+        IQuizImageQWindow::getInstance()->add(m_drawingData->getTargetTextures());
     }
 }
 
