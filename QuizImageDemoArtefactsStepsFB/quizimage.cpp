@@ -149,7 +149,7 @@ void QuizImage::setProjectFromImage()
             fromImage().isEmpty()
             ) { return; }
     // do not remove prev image
-    QUrl url(fromImage());
+    //QUrl url(fromImage());
     //m_drawingData->addRenderImage(url.toLocalFile(), true);
 }
 
@@ -159,7 +159,7 @@ void QuizImage::setProjectToImage()
             toImage().isEmpty()
             ) { return; }
     // do not remove prev image
-    QUrl url(toImage());
+    //QUrl url(toImage());
     //m_drawingData->addRenderImage(url.toLocalFile(), false);
 }
 
