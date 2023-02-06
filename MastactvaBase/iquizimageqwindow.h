@@ -13,7 +13,10 @@ public:
     virtual int count() const = 0;
 
 public:
-    static IQuizImageQWindow * getInstance();
+    static IQuizImageQWindow * getInstance()
+    {
+        return nullptr;
+    }
 };
 
 
