@@ -32,6 +32,7 @@
 #include <QCoreApplication>
 #include <QQuickRenderTarget>
 #include <QQuickGraphicsDevice>
+#include "../MastactvaBase/names.h"
 
 
 class RenderControl : public QQuickRenderControl
@@ -309,11 +310,15 @@ uint QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getTexture() cons
 }
 
 
+static QuizImageQWindows g_quizImageQWindows;
+
+
 // TODO: add implementation
 // just simple possible implementation
 QuizImageQWindowSingleThread::QuizImageQWindowSingleThread(const QString & qmlFileName)
     : m_qmlFileName(qmlFileName)
 {
+    g_quizImageQWindows.set(this);
     setSurfaceType(QSurface::OpenGLSurface);
 
     QSurfaceFormat format;
@@ -357,6 +362,7 @@ QuizImageQWindowSingleThread::QuizImageQWindowSingleThread(const QString & qmlFi
 
 QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 {
+    g_quizImageQWindows.set(nullptr);
     m_updateTimer.reset();
     QuizImageQMLDrawingSurface::prepareContext(m_context.get(), m_offscreenSurface.get());
     for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
@@ -370,6 +376,22 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
     m_defaultRenderer.reset();
     m_offscreenSurface.reset();
     m_context.reset();
+}
+
+void QuizImageQWindowSingleThread::add(const std::vector<QString> & textures)
+{
+    Q_UNUSED(textures);
+}
+
+int QuizImageQWindowSingleThread::count() const
+{
+    return 0;
+}
+
+QString QuizImageQWindowSingleThread::at(int index) const
+{
+    Q_UNUSED(index);
+    return g_renderTextureDefault;
 }
 
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
@@ -578,4 +600,46 @@ std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
         result.push_back(surface.getTexture());
     }
     return result;
+}
+
+void QuizImageQWindows::add(const std::vector<QString> & textures)
+{
+    if(m_processor)
+    {
+        return m_processor->add(textures);
+    }
+}
+
+int QuizImageQWindows::count() const
+{
+    if(m_processor)
+    {
+        return m_processor->count();
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+QString QuizImageQWindows::at(int index) const
+{
+    if(m_processor)
+    {
+        return m_processor->at(index);
+    }
+    else
+    {
+        return g_renderTextureDefault;
+    }
+}
+
+void QuizImageQWindows::set(IQuizImageQWindow *processor)
+{
+    m_processor = processor;
+}
+
+IQuizImageQWindow * IQuizImageQWindow::getInstance()
+{
+    return &g_quizImageQWindows;
 }
