@@ -3310,15 +3310,15 @@ static const char * g_inputJson =
             "\"find_rects_rect_size_coef\":9E-1,"
             "\"find_rects_max_rect_count\":10,"
             "\"find_transform_size_coef\":5E-1,"
-            "\"trace_operations_with_images\":false,"
-            "\"trace_operations_with_messages\":false,"
+            "\"trace_operations_with_images\":true,"
+            "\"trace_operations_with_messages\":true,"
             "\"mode\":\"generated_rects\","
-            "\"test_is_convex\":true,"
+            "\"test_is_convex\":false,"
             "\"generate_rects_rows\":4,"
             "\"generate_rects_cols\":4,"
             "\"rects\":[],"
-            "\"output_rows\":15,"
-            "\"output_cols\":13"
+            "\"output_rows\":3,"
+            "\"output_cols\":5"
             "}";
 
 void convert(const QJsonObject &object_, std::vector<QVector4D> &values_)
@@ -3436,7 +3436,7 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 "/home/klizardin/Pictures/test_images/to_image.jpg",
                 fromCoords,
                 toCoords,
-                "15.0 13.0"
+                "3.0 5.0"
                 );
     auto effectObject1 = createWalkEffectTestObject(
                 effectId,
@@ -3450,7 +3450,7 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 "/home/klizardin/Pictures/test_images/to_image.jpg",
                 fromCoords,
                 toCoords,
-                "15.0 13.0",
+                "3.0 5.0",
                 QString(g_alphaBlendingDefault)
                     + QString(g_renderObjectsStatesSpliter)
                     + QString(g_depthTestDisable)
