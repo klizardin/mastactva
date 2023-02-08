@@ -29,6 +29,7 @@
 #include <string>
 #include <memory>
 #include "defaulttexturerender.h"
+#include "../MastactvaBase/iquizimageqwindow.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -44,7 +45,7 @@ QT_END_NAMESPACE
 
 
 // TODO: add interface for new drawing surface
-class QuizImageQWindowSingleThread : public QWindow
+class QuizImageQWindowSingleThread : public QWindow, public IQuizImageQWindow
 {
     Q_OBJECT
 
@@ -91,6 +92,10 @@ public:
     QuizImageQWindowSingleThread(const QString & qmlFileName);
     ~QuizImageQWindowSingleThread() override;
 
+    void add(const std::vector<QString> & textures) override;
+    int count() const override;
+    QString at(int index) const override;
+
 protected:
     void exposeEvent(QExposeEvent *e) override;
     void resizeEvent(QResizeEvent *e) override;
@@ -132,5 +137,21 @@ private:
     std::unique_ptr<DefaultTextureRender> m_defaultRenderer;
     QString m_qmlFileName;
 };
+
+class QuizImageQWindows : public IQuizImageQWindow
+{
+public:
+    QuizImageQWindows() = default;
+
+    void add(const std::vector<QString> & textures) override;
+    int count() const override;
+    QString at(int index) const override;
+
+    void set(IQuizImageQWindow *processor);
+
+protected:
+    IQuizImageQWindow *m_processor = nullptr;
+};
+
 
 #endif // QUIZIMAGEQWINDOWSINGLETHREAD_H
