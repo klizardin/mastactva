@@ -3404,9 +3404,9 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     modules->create(addonsDir);
 
     QString inputJson = QString(g_inputJson).arg(
-                "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
-                "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
-                "/home/klizardin/tmp/"
+                "~/Pictures/test_images/20220116_145321.jpg",
+                "~/Pictures/test_images/20220116_145325.jpg",
+                "~/tmp/"
                 );
     //20220116_145321.jpg",
     //20220116_145325.jpg",
@@ -3434,8 +3434,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectObjectStep0,
                 g_walkEffectFromVertexShaderFilename,
                 g_walkEffectFromFragmentShaderFilename,
-                "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
-                "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
+                "~/Pictures/test_images/20220116_145321.jpg",
+                "~/Pictures/test_images/20220116_145325.jpg",
                 fromCoords,
                 toCoords,
                 "10.0 10.0"
@@ -3448,8 +3448,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectObjectStep1,
                 g_walkEffectToVertexShaderFilename,
                 g_walkEffectToFragmentShaderFilename,
-                "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
-                "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
+                "~/Pictures/test_images/20220116_145321.jpg",
+                "~/Pictures/test_images/20220116_145325.jpg",
                 fromCoords,
                 toCoords,
                 "10.0 10.0",
@@ -3516,9 +3516,9 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     modules->create(addonsDir);
 
     QString inputJson = QString(g_inputJson).arg(
-                "/home/klizardin/Pictures/test_images/from_image.jpg",
-                "/home/klizardin/Pictures/test_images/to_image.jpg",
-                "/home/klizardin/tmp/"
+                "~/Pictures/test_images/from_image.jpg",
+                "~/Pictures/test_images/to_image.jpg",
+                "~/tmp/"
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
@@ -3547,8 +3547,8 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep1,
                 g_walkEffectFromVertexShaderFilename,
                 g_walkEffectFromFragmentShaderFilename,
-                "/home/klizardin/Pictures/test_images/from_image.jpg",
-                "/home/klizardin/Pictures/test_images/to_image.jpg",
+                "~/Pictures/test_images/from_image.jpg",
+                "~/Pictures/test_images/to_image.jpg",
                 fromCoords,
                 toCoords,
                 "15.0 13.0",
@@ -3562,8 +3562,8 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep2,
                 g_walkEffectToVertexShaderFilename,
                 g_walkEffectToConstFragmentShaderFilename,
-                "/home/klizardin/Pictures/test_images/from_image.jpg",
-                "/home/klizardin/Pictures/test_images/to_image.jpg",
+                "~/Pictures/test_images/from_image.jpg",
+                "~/Pictures/test_images/to_image.jpg",
                 fromCoords,
                 toCoords,
                 "15.0 13.0",
@@ -3637,9 +3637,9 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     modules->create(addonsDir);
 
     QString inputJson = QString(g_inputJson).arg(
-                "/home/klizardin/Pictures/test_images/from_image.jpg",
-                "/home/klizardin/Pictures/test_images/to_image.jpg",
-                "/home/klizardin/tmp/"
+                "~/Pictures/test_images/from_image.jpg",
+                "~/Pictures/test_images/to_image.jpg",
+                "~/tmp/"
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
@@ -3723,7 +3723,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     g_walkEffectFromVertexShaderV1Filename,
                     g_walkEffectFragmentShaderV1Filename,
                     g_renderFromImageName,
-                    "/home/klizardin/Pictures/test_images/from_image.jpg",
+                    "~/Pictures/test_images/from_image.jpg",
                     "textureAttributeFrom",
                     fromCoords,
                     //toCoords,
@@ -3764,7 +3764,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     g_walkEffectToVertexShaderV1Filename,
                     g_walkEffectFragmentShaderV1Filename,
                     g_renderToImageName,
-                    "/home/klizardin/Pictures/test_images/to_image.jpg",
+                    "~/Pictures/test_images/to_image.jpg",
                     "textureAttributeTo",
                     //fromCoords,
                     toCoords,
