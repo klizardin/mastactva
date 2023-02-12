@@ -309,6 +309,16 @@ uint QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getTexture() cons
     return m_textureId;
 }
 
+const QString &QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getTextureName() const
+{
+    return m_textureName;
+}
+
+void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(const QString &texture)
+{
+    m_textureName = texture;
+}
+
 
 static QuizImageQWindows g_quizImageQWindows;
 
@@ -380,18 +390,37 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 
 void QuizImageQWindowSingleThread::add(const std::vector<QString> & textures)
 {
-    Q_UNUSED(textures);
+    for(int i = 0; i < (int)m_drawingSurfaces.size() - 1; ++i)
+    {
+        const auto it = std::begin(m_drawingSurfaces);
+        m_drawingSurfaces.erase(it);
+    }
+    if(textures.empty())
+    {
+        return;
+    }
+    auto it = std::begin(textures);
+    auto ite = std::end(textures);
+    for(;it != ite; ++it)
+    {
+        if(it != std::prev(ite))
+        {
+            createSurface();
+        }
+        m_drawingSurfaces.back().setTextureName(*it);
+    }
 }
 
 int QuizImageQWindowSingleThread::count() const
 {
-    return 0;
+    return m_drawingSurfaces.size();
 }
 
 QString QuizImageQWindowSingleThread::at(int index) const
 {
-    Q_UNUSED(index);
-    return g_renderTextureDefault;
+    auto it = std::begin(m_drawingSurfaces);
+    std::advance(it, index);
+    return it != std::end(m_drawingSurfaces) ? it->getTextureName() : g_renderTextureDefault;
 }
 
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)

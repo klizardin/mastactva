@@ -78,6 +78,8 @@ protected:
         bool startQuick(const QString &filename);
         void setWindowSize(const QSize &windowSize);
         uint getTexture() const;
+        const QString &getTextureName() const;
+        void setTextureName(const QString &texture);
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
@@ -86,6 +88,7 @@ protected:
         std::unique_ptr<QQmlComponent> m_qmlComponent;
         QQuickItem * m_rootItem = nullptr;
         uint m_textureId = 0;
+        QString m_textureName;
     };
 
 public:
