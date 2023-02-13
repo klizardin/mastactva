@@ -4,6 +4,7 @@
 
 #include <QString>
 #include <vector>
+#include "../MastactvaBase/quizimagedrawingdata.h"
 
 
 class IQuizImageQWindow
@@ -13,8 +14,21 @@ public:
     virtual int count() const = 0;
     virtual QString at(int index) const = 0;
 
+    virtual void setDrawingData(std::shared_ptr<drawing_data::QuizImageObjects> data)
+    {
+        m_drawingData = data;
+    }
+
+    virtual std::shared_ptr<drawing_data::QuizImageObjects> getDrawingData() const
+    {
+        return m_drawingData;
+    }
+
 public:
     static IQuizImageQWindow * getInstance();
+
+private:
+    std::shared_ptr<drawing_data::QuizImageObjects> m_drawingData;
 };
 
 
