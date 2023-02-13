@@ -225,6 +225,12 @@ public:
 
 void QuizImage::initDefaultDrawingData()
 {
+    if(IQuizImageQWindow::getInstance()
+            && IQuizImageQWindow::getInstance()->getDrawingData()
+            )
+    {
+        //m_drawingData = IQuizImageQWindow::getInstance()->getDrawingData();
+    }
 
     if(m_testIndex < 0)
     {
@@ -244,6 +250,7 @@ void QuizImage::initDefaultDrawingData()
 
     if(IQuizImageQWindow::getInstance())
     {
+        //IQuizImageQWindow::getInstance()->setDrawingData(m_drawingData);
         IQuizImageQWindow::getInstance()->add(m_drawingData->getTargetTextures());
     }
 }
