@@ -225,16 +225,23 @@ public:
 
 void QuizImage::initDefaultDrawingData()
 {
+    if(IQuizImageQWindow::getInstance()
+            && IQuizImageQWindow::getInstance()->getDrawingData()
+            )
+    {
+        //m_drawingData = IQuizImageQWindow::getInstance()->getDrawingData();
+    }
+
     if(m_testIndex < 0)
     {
-        std::unique_ptr<drawing_data::QuizImageObjects> data(new drawing_data::QuizImageObjects());
+        std::shared_ptr<drawing_data::QuizImageObjects> data = std::make_shared< drawing_data::QuizImageObjects>();
         TestCaseInitializer defaultData;
         defaultData.initialize(*data.get());
         m_drawingData = std::move(data);
     }
     else
     {
-        std::unique_ptr<drawing_data::QuizImageObjects> data(new drawing_data::QuizImageObjects());
+        std::shared_ptr<drawing_data::QuizImageObjects> data = std::make_shared< drawing_data::QuizImageObjects>();
         Tests tests;
         Initialize<std::tuple_size<Tests>::value - 1> init;
         init.initialize(tests, m_testIndex, *data.get());
@@ -243,6 +250,7 @@ void QuizImage::initDefaultDrawingData()
 
     if(IQuizImageQWindow::getInstance())
     {
+        //IQuizImageQWindow::getInstance()->setDrawingData(m_drawingData);
         IQuizImageQWindow::getInstance()->add(m_drawingData->getTargetTextures());
     }
 }

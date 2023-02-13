@@ -130,8 +130,8 @@ private:
     QString m_fromImage;
     QString m_toImage;
     QString m_project;
-    std::unique_ptr<drawing_data::QuizImageObjects> m_drawingData;
-    std::unique_ptr<drawing_data::QuizImageObjects> m_drawingOldData;
+    std::shared_ptr<drawing_data::QuizImageObjects> m_drawingData;
+    std::shared_ptr<drawing_data::QuizImageObjects> m_drawingOldData;
     QString m_compilerLog;
     int m_testIndex = -1;
 };
