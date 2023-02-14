@@ -188,6 +188,8 @@ opencv addon test
 - multi steps
     * format
     * base test
+    - implementation
+    - find better implementation
 
 
 
