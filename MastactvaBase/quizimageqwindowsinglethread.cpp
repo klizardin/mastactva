@@ -388,26 +388,37 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
     m_context.reset();
 }
 
-void QuizImageQWindowSingleThread::add(const std::vector<QString> & textures)
+void QuizImageQWindowSingleThread::setTextures(const std::vector<QString> & textures_)
 {
-    for(int i = 0; i < (int)m_drawingSurfaces.size() - 1; ++i)
+    std::vector<QString> textures = textures_;
+    if(std::find(std::begin(textures), std::end(textures), g_renderTextureDefault) == std::end(textures)
+            && std::find(std::begin(textures), std::end(textures), g_renderTextureDefaultSynonim) == std::end(textures)
+            )
     {
-        const auto it = std::begin(m_drawingSurfaces);
-        m_drawingSurfaces.erase(it);
+        textures.push_back(g_renderTextureDefault);
     }
-    if(textures.empty())
+    if(m_drawingSurfaces.size() > textures.size())
     {
-        return;
+        for(int i = 0; i < (int)m_drawingSurfaces.size() - (int)textures.size(); ++i)
+        {
+            const auto it = std::prev(std::end(m_drawingSurfaces));
+            m_drawingSurfaces.erase(it);
+        }
     }
-    auto it = std::begin(textures);
-    auto ite = std::end(textures);
-    for(;it != ite; ++it)
+    else if(m_drawingSurfaces.size() < textures.size())
     {
-        if(it != std::prev(ite))
+        for(int i = 0; i < (int)textures.size() - (int)m_drawingSurfaces.size(); ++i)
         {
             createSurface();
         }
-        m_drawingSurfaces.back().setTextureName(*it);
+    }
+    auto tit = std::begin(textures);
+    auto tite = std::end(textures);
+    auto sit = std::begin(m_drawingSurfaces);
+    auto site = std::end(m_drawingSurfaces);
+    for(;tit != tite && sit != site; ++tit, ++sit)
+    {
+        sit->setTextureName(*tit);
     }
 }
 
@@ -631,11 +642,11 @@ std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
     return result;
 }
 
-void QuizImageQWindows::add(const std::vector<QString> & textures)
+void QuizImageQWindows::setTextures(const std::vector<QString> & textures)
 {
     if(m_processor)
     {
-        return m_processor->add(textures);
+        return m_processor->setTextures(textures);
     }
 }
 

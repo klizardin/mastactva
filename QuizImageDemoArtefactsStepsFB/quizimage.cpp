@@ -123,8 +123,8 @@ void QuizImage::setLog(const QString &log_)
 
 void QuizImage::freeProject()
 {
-    m_drawingData.reset(nullptr);
-    m_drawingOldData.reset(nullptr);
+    m_drawingData.reset();
+    m_drawingOldData.reset();
 }
 
 void QuizImage::loadProject()
@@ -169,7 +169,7 @@ bool QuizImage::isImageDataUpdated() const
     return m_drawingData.operator bool();
 }
 
-std::unique_ptr<drawing_data::QuizImageObjects> QuizImage::getData()
+std::shared_ptr<drawing_data::QuizImageObjects> QuizImage::getData()
 {
     return std::move(m_drawingData);
 }
@@ -251,7 +251,7 @@ void QuizImage::initDefaultDrawingData()
     if(IQuizImageQWindow::getInstance())
     {
         //IQuizImageQWindow::getInstance()->setDrawingData(m_drawingData);
-        IQuizImageQWindow::getInstance()->add(m_drawingData->getTargetTextures());
+        IQuizImageQWindow::getInstance()->setTextures(m_drawingData->getTargetTextures());
     }
 }
 

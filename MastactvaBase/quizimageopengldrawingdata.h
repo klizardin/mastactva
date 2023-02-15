@@ -302,13 +302,13 @@ namespace opengl_drawing
         /*
          * release quiz image drawing objects list datas
         */
-        std::unique_ptr<drawing_data::QuizImageObjects> free();
+        std::shared_ptr<drawing_data::QuizImageObjects> free();
 
         /*
          * init from quiz image drawing objcts list datas
          * capture quiz image objects list datas
         */
-        void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
+        void init(std::shared_ptr<drawing_data::QuizImageObjects> &&imageData_);
 
         /*
          * do low level reinitialization
@@ -519,7 +519,7 @@ namespace opengl_drawing
         void clearObjects();
 
     private:
-        std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;                // quiz image objects list
+        std::shared_ptr<drawing_data::QuizImageObjects> m_imageData;                // quiz image objects list
         std::vector<std::unique_ptr<Object>> m_objects;                             // objects list
         opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;         // some default calculations TODO: extract to the separate class
         opengl_drawing::IEffectCalculation *m_geometryMatrixDefault = nullptr;
@@ -545,12 +545,12 @@ public:
     /*
      * set up quiz image data
     */
-    void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
+    void setImageData(std::shared_ptr<drawing_data::QuizImageObjects> imageData_);
 
     /*
      * release the current quiz image data
     */
-    std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
+    std::shared_ptr<drawing_data::QuizImageObjects> releaseImageData();
 
     /*
      * render the current objects
@@ -725,7 +725,7 @@ private:
     static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
 
 private:
-    std::unique_ptr<opengl_drawing::Objects> m_openglData;  // contains opne gl drawing objects
+    std::shared_ptr<opengl_drawing::Objects> m_openglData;  // contains opne gl drawing objects
     QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
 };
 
@@ -767,12 +767,12 @@ protected:
     /*
      * release quiz image objects
     */
-    std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
+    std::shared_ptr<drawing_data::QuizImageObjects> releaseImageData();
 
     /*
      * set up quiz image objects
     */
-    void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
+    void setImageData(std::shared_ptr<drawing_data::QuizImageObjects> imageData_);
 
     /*
      * set g_renderFromImageName texture
