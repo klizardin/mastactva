@@ -391,7 +391,7 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 void QuizImageQWindowSingleThread::setTextures(const std::vector<QString> & textures_)
 {
     std::vector<QString> textures = textures_;
-    // TODO: extract methods
+    // TODO: refactoring - extract methods
     // defaultTextureExists()
     // addDefaultTexture()
     if(std::find(std::begin(textures), std::end(textures), g_renderTextureDefault) == std::end(textures)
