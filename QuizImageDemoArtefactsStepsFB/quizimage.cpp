@@ -169,7 +169,7 @@ bool QuizImage::isImageDataUpdated() const
     return m_drawingData.operator bool();
 }
 
-std::unique_ptr<drawing_data::QuizImageObjects> QuizImage::getData()
+std::shared_ptr<drawing_data::QuizImageObjects> QuizImage::getData()
 {
     return std::move(m_drawingData);
 }

@@ -982,7 +982,7 @@ QString opengl_drawing::Object::getTextureStateName(const QString &argumentName_
 }
 
 
-std::unique_ptr<drawing_data::QuizImageObjects> opengl_drawing::Objects::free()
+std::shared_ptr<drawing_data::QuizImageObjects> opengl_drawing::Objects::free()
 {
     clearObjects();
     return std::move(m_imageData);
@@ -1207,7 +1207,7 @@ GeometryMatrixDefaultCalculation g_geometryMatrixDefaultCalculation;
 GeometryDefaultCalculation g_geometryDefaultCalculation;
 
 void opengl_drawing::Objects::init(
-        std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_
+        std::shared_ptr<drawing_data::QuizImageObjects> &&imageData_
         )
 {
     m_imageData = std::move(imageData_);
@@ -1614,7 +1614,7 @@ void ObjectsRenderer::setCurrentFrameBufferObject(QOpenGLFramebufferObject *fbob
 }
 
 void ObjectsRenderer::setImageData(
-        std::unique_ptr<drawing_data::QuizImageObjects> imageData_
+        std::shared_ptr<drawing_data::QuizImageObjects> imageData_
         )
 {
     m_openglData = std::make_unique<opengl_drawing::Objects>();
@@ -1623,7 +1623,7 @@ void ObjectsRenderer::setImageData(
     initialize();
 }
 
-std::unique_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageData()
+std::shared_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageData()
 {
     if(!isValidData())
     {
@@ -1634,7 +1634,7 @@ std::unique_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageDat
     {
         m_openglData->setCurrentFrameBufferObject(nullptr);
     }
-    return m_openglData ? m_openglData->free() : std::unique_ptr<drawing_data::QuizImageObjects>{nullptr};
+    return m_openglData ? m_openglData->free() : std::shared_ptr<drawing_data::QuizImageObjects>{nullptr};
 }
 
 int ObjectsRenderer::getAttributeTupleSize(const QString &name_) const
@@ -1940,12 +1940,12 @@ void QuizImageFboRendererImpl::synchronizeImpl(
     m_objectRenderer.updateVariables(rectSize_, t_, m_windowSize);
 }
 
-std::unique_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releaseImageData()
+std::shared_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releaseImageData()
 {
     return m_objectRenderer.releaseImageData();
 }
 
-void QuizImageFboRendererImpl::setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_)
+void QuizImageFboRendererImpl::setImageData(std::shared_ptr<drawing_data::QuizImageObjects> imageData_)
 {
     m_objectRenderer.setImageData(std::move(imageData_));
 }
