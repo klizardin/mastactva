@@ -95,7 +95,7 @@ public:
     QuizImageQWindowSingleThread(const QString & qmlFileName);
     ~QuizImageQWindowSingleThread() override;
 
-    void add(const std::vector<QString> & textures) override;
+    void setTextures(const std::vector<QString> & textures) override;
     int count() const override;
     QString at(int index) const override;
 
@@ -146,7 +146,7 @@ class QuizImageQWindows : public IQuizImageQWindow
 public:
     QuizImageQWindows() = default;
 
-    void add(const std::vector<QString> & textures) override;
+    void setTextures(const std::vector<QString> & textures) override;
     int count() const override;
     QString at(int index) const override;
 

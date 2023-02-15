@@ -388,7 +388,7 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
     m_context.reset();
 }
 
-void QuizImageQWindowSingleThread::add(const std::vector<QString> & textures)
+void QuizImageQWindowSingleThread::setTextures(const std::vector<QString> & textures)
 {
     for(int i = 0; i < (int)m_drawingSurfaces.size() - 1; ++i)
     {
@@ -631,11 +631,11 @@ std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
     return result;
 }
 
-void QuizImageQWindows::add(const std::vector<QString> & textures)
+void QuizImageQWindows::setTextures(const std::vector<QString> & textures)
 {
     if(m_processor)
     {
-        return m_processor->add(textures);
+        return m_processor->setTextures(textures);
     }
 }
 
