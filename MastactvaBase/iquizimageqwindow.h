@@ -10,6 +10,8 @@
 /*
  * interface to add textures
  * TODO: change to IQuizImageQWindows
+ * add method to return first QuizImage
+ * or flag that the current QuizImage is the first
 */
 class IQuizImageQWindow
 {

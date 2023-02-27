@@ -390,6 +390,11 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 
 void QuizImageQWindowSingleThread::setTextures(const std::vector<QString> & textures_)
 {
+    /*
+     * here test if it is the first QuizImage
+     * if none first ignore
+    */
+
     std::vector<QString> textures = textures_;
     // TODO: refactoring - extract methods
     // defaultTextureExists()
