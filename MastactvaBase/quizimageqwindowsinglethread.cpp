@@ -201,6 +201,9 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         return false;
     }
 
+    // TODO: can we here set QQuickItem properties
+    // https://stackoverflow.com/questions/26704621/how-to-create-a-qqmlcomponent-from-c-at-runtime
+    // https://stackoverflow.com/questions/33611529/set-property-of-qml-object-using-c
     QObject *rootObject = m_qmlComponent->create();
     if (m_qmlComponent->isError()) {
         const QList<QQmlError> errorList = m_qmlComponent->errors();
