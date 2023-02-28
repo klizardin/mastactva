@@ -201,6 +201,9 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         return false;
     }
 
+    // TODO: can we here set QQuickItem properties
+    // https://stackoverflow.com/questions/26704621/how-to-create-a-qqmlcomponent-from-c-at-runtime
+    // https://stackoverflow.com/questions/33611529/set-property-of-qml-object-using-c
     QObject *rootObject = m_qmlComponent->create();
     if (m_qmlComponent->isError()) {
         const QList<QQmlError> errorList = m_qmlComponent->errors();
@@ -288,6 +291,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::hasTexture() cons
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::startQuick(const QString &filename)
 {
     m_qmlEngine->addImportPath("qrc:/Mastactva");
+    // TODO: is it possible to parametrise filename?
     m_qmlComponent = std::make_unique<QQmlComponent>(m_qmlEngine.get(), QUrl(filename));
     return !m_qmlComponent->isLoading();
 }
@@ -390,6 +394,11 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 
 void QuizImageQWindowSingleThread::setTextures(const std::vector<QString> & textures_)
 {
+    /*
+     * here test if it is the first QuizImage
+     * if none first ignore
+    */
+
     std::vector<QString> textures = textures_;
     // TODO: refactoring - extract methods
     // defaultTextureExists()

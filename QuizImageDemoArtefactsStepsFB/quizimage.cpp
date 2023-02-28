@@ -225,6 +225,17 @@ public:
 
 void QuizImage::initDefaultDrawingData()
 {
+    /*
+     * QuizImage creates textures
+     * 1. should be one QuizImage before initialization
+     * how to do it?
+     * Setup main QuizImage and ignore all others?
+     * How to setup main?
+     * First?
+     * Who knows about neighborhuds? (interface)
+     * So here we add all, but interface will filter calls
+    */
+
     if(IQuizImageQWindow::getInstance()
             && IQuizImageQWindow::getInstance()->getDrawingData()
             )

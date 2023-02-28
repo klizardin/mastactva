@@ -7,9 +7,16 @@
 #include "../MastactvaBase/quizimagedrawingdata.h"
 
 
+/*
+ * interface to add textures
+ * TODO: change to IQuizImageQWindows
+ * add method to return first QuizImage
+ * or flag that the current QuizImage is the first
+*/
 class IQuizImageQWindow
 {
 public:
+    // TODO: add base texture pointer void*
     virtual void setTextures(const std::vector<QString> & textures) = 0;
     virtual int count() const = 0;
     virtual QString at(int index) const = 0;
