@@ -288,6 +288,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::hasTexture() cons
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::startQuick(const QString &filename)
 {
     m_qmlEngine->addImportPath("qrc:/Mastactva");
+    // TODO: is it possible to parametrise filename?
     m_qmlComponent = std::make_unique<QQmlComponent>(m_qmlEngine.get(), QUrl(filename));
     return !m_qmlComponent->isLoading();
 }
