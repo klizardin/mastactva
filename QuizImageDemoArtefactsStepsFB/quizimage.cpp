@@ -121,6 +121,18 @@ void QuizImage::setLog(const QString &log_)
     emit logChanged();
 }
 
+QString QuizImage::renderingTextureName() const
+{
+    return m_renderingTextureName;
+}
+
+void QuizImage::setRenderingTextureName(const QString &renderingTextureName_)
+{
+    m_renderingTextureName = renderingTextureName_;
+
+    emit renderingTextureNameChanged();
+}
+
 void QuizImage::freeProject()
 {
     m_drawingData.reset();

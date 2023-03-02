@@ -78,6 +78,7 @@ public:
     Q_PROPERTY(QString projectFilename READ project WRITE setProject NOTIFY projectChanged)
     Q_PROPERTY(QString compilerLog READ log WRITE setLog NOTIFY logChanged)
     Q_PROPERTY(int testIndex READ testIndex WRITE setTestIndex NOTIFY testIndexChanged)
+    Q_PROPERTY(QString renderingTextureName READ renderingTextureName WRITE setRenderingTextureName NOTIFY renderingTextureNameChanged)
 
     Q_INVOKABLE void updateState();
     Q_INVOKABLE void updateProject();
@@ -108,6 +109,8 @@ protected:
     void setProject(const QString &project_);
     QString log() const;
     void setLog(const QString &log_);
+    QString renderingTextureName() const;
+    void setRenderingTextureName(const QString &renderingTextureName_);
 
     void freeProject();
     void loadProject();
@@ -124,6 +127,7 @@ signals:
     void projectChanged();
     void logChanged();
     void testIndexChanged();
+    void renderingTextureNameChanged();
 
 private:
     qreal m_t = 0.0;
@@ -134,6 +138,7 @@ private:
     std::shared_ptr<drawing_data::QuizImageObjects> m_drawingOldData;
     QString m_compilerLog;
     int m_testIndex = -1;
+    QString m_renderingTextureName;
 };
 
 
