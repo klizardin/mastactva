@@ -222,6 +222,17 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         return false;
     }
 
+    // set renderingTextureName property of the QuizImage quick item
+    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QStringLiteral("renderer"));
+    QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
+    if(!quizImageQuickItem)
+    {
+        qWarning("run: Not a QQuickItem");
+        delete rootObject;
+        return false;
+    }
+    quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
+
     // The root item is ready. Associate it with the window.
     m_rootItem->setParentItem(m_quickWindow->contentItem());
 
@@ -321,6 +332,13 @@ const QString &QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getText
 void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(const QString &texture)
 {
     m_textureName = texture;
+
+    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QStringLiteral("renderer"));
+    QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
+    if(quizImageQuickItem)
+    {
+        quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
+    }
 }
 
 
