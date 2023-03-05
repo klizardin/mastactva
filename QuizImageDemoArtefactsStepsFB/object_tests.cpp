@@ -488,7 +488,7 @@ using ArgumentsTuple = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, 
 template<std::size_t size_>
 void processArtefact(
         std::unique_ptr<EffectObjectsData> &effectObject_,
-        const char *shaderFilename_,
+        const QString &shaderFilename_,
         const int &artefactId_,
         const char *artefactName_,
         const ArtefactTypeEn &artefactType_,
@@ -539,7 +539,7 @@ void processArtefact(
 }
 
 enum class TextureEn{name, filename};
-using TextureTuple = std::tuple<const char *, const char *>;
+using TextureTuple = std::tuple<QString, QString>;
 
 template<std::size_t size_>
 void processTexturesArtefacts(
@@ -969,8 +969,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
         const char *effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep,
-        const char * textureFileNameFrom = ":/Images/Images/no-image-001.png", const char *textureNameFrom = nullptr,
-        const char * textureFileNameTo = ":/Images/Images/no-image-002.png", const char *textureNameTo = nullptr,
+        const QString &textureFileNameFrom = ":/Images/Images/no-image-001.png", const QString &textureNameFrom = nullptr,
+        const QString &textureFileNameTo = ":/Images/Images/no-image-002.png", const QString &textureNameTo = nullptr,
         const QStringList &textureNamesList = QStringList{}
         )
 {
@@ -1105,7 +1105,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
     // textures artefacts
     static const int textureBaseArtefactId = 3;
     static const int textureBaseObjectArtefactId = 3;
-    if(textureFileNameFrom && textureFileNameTo)
+    if(!textureFileNameFrom.isEmpty() && !textureFileNameTo.isEmpty())
     {
         static const TextureTuple textures[] =
         {
@@ -1122,7 +1122,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 textures
                 );
     }
-    else if(textureNameFrom && textureNameTo)
+    else if(!textureNameFrom.isEmpty() && !textureNameTo.isEmpty())
     {
         static const TextureTuple textures[] =
         {
@@ -2424,10 +2424,10 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
         const char *effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep,
-        const char * vertexShaderFilename_,
-        const char * fragmentShaderFilename_,
-        const char * fromImage_,
-        const char * toImage_,
+        const QString &vertexShaderFilename_,
+        const QString &fragmentShaderFilename_,
+        const QString &fromImage_,
+        const QString &toImage_,
         const std::vector<GLfloat> &fromCoords_,
         const std::vector<GLfloat> &toCoords_,
         const QString &geomertySize_,
@@ -2673,8 +2673,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
         int effectObjectStep,
         const char * vertexShaderFilename_,
         const char * fragmentShaderFilename_,
-        const char * fromImage_,
-        const char * toImage_,
+        const QString &fromImage_,
+        const QString &toImage_,
         const std::vector<GLfloat> &fromCoords_,
         const std::vector<GLfloat> &toCoords_,
         const QString &geomertySize_,
@@ -2890,8 +2890,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectDrawingBufferTestObject(
         int effectObjectStep,
         const char * vertexShaderFilename_,
         const char * fragmentShaderFilename_,
-        const char * imageTextureName_,
-        const char * image_,
+        const QString &imageTextureName_,
+        const QString &image_,
         const char * textureCoordsAtttributeName_,
         const std::vector<GLfloat> &coords_,
         const QString &geomertySize_
@@ -3404,9 +3404,9 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     modules->create(addonsDir);
 
     QString inputJson = QString(g_inputJson).arg(
-                "~/Pictures/test_images/20220116_145321.jpg",
-                "~/Pictures/test_images/20220116_145325.jpg",
-                "~/tmp/"
+                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                absoluteHomePath("~/tmp/")
                 );
     //20220116_145321.jpg",
     //20220116_145325.jpg",
@@ -3434,8 +3434,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectObjectStep0,
                 g_walkEffectFromVertexShaderFilename,
                 g_walkEffectFromFragmentShaderFilename,
-                "~/Pictures/test_images/20220116_145321.jpg",
-                "~/Pictures/test_images/20220116_145325.jpg",
+                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
                 "10.0 10.0"
@@ -3448,8 +3448,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectObjectStep1,
                 g_walkEffectToVertexShaderFilename,
                 g_walkEffectToFragmentShaderFilename,
-                "~/Pictures/test_images/20220116_145321.jpg",
-                "~/Pictures/test_images/20220116_145325.jpg",
+                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
                 "10.0 10.0",
@@ -3516,9 +3516,9 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     modules->create(addonsDir);
 
     QString inputJson = QString(g_inputJson).arg(
-                "~/Pictures/test_images/from_image.jpg",
-                "~/Pictures/test_images/to_image.jpg",
-                "~/tmp/"
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/tmp/")
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
@@ -3547,8 +3547,8 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep1,
                 g_walkEffectFromVertexShaderFilename,
                 g_walkEffectFromFragmentShaderFilename,
-                "~/Pictures/test_images/from_image.jpg",
-                "~/Pictures/test_images/to_image.jpg",
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                 fromCoords,
                 toCoords,
                 "15.0 13.0",
@@ -3562,8 +3562,8 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep2,
                 g_walkEffectToVertexShaderFilename,
                 g_walkEffectToConstFragmentShaderFilename,
-                "~/Pictures/test_images/from_image.jpg",
-                "~/Pictures/test_images/to_image.jpg",
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                 fromCoords,
                 toCoords,
                 "15.0 13.0",
@@ -3637,9 +3637,9 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     modules->create(addonsDir);
 
     QString inputJson = QString(g_inputJson).arg(
-                "~/Pictures/test_images/from_image.jpg",
-                "~/Pictures/test_images/to_image.jpg",
-                "~/tmp/"
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/tmp/")
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
@@ -3723,7 +3723,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     g_walkEffectFromVertexShaderV1Filename,
                     g_walkEffectFragmentShaderV1Filename,
                     g_renderFromImageName,
-                    "~/Pictures/test_images/from_image.jpg",
+                    absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
                     "textureAttributeFrom",
                     fromCoords,
                     //toCoords,
@@ -3764,7 +3764,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     g_walkEffectToVertexShaderV1Filename,
                     g_walkEffectFragmentShaderV1Filename,
                     g_renderToImageName,
-                    "~/Pictures/test_images/to_image.jpg",
+                    absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                     "textureAttributeTo",
                     //fromCoords,
                     toCoords,
