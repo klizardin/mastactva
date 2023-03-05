@@ -610,7 +610,7 @@ void QuizImageQWindowSingleThread::startQuick(const QString &filename)
     bool startRun = false;
     for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
     {
-        if(!surface.startQuick(filename)) // TODO: correct filename
+        if(!surface.startQuick(filename))
         {
             connect(surface.getQmlComponent(), &QQmlComponent::statusChanged, this, &QuizImageQWindowSingleThread::run);
         }
