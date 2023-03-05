@@ -191,5 +191,3 @@ opencv addon test
     - implementation
     - find better implementation
 
-- fix compilation
-
