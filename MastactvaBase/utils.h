@@ -80,6 +80,7 @@ bool isSymbol(const QChar &ch_);                // is char a symbol
 bool isLetterNumeric(const QChar &ch_);         // is char somewhat a letter or a number
 bool isNumeric(const QChar &ch_);               // is char a number
 bool isNumeric(const QString &str_);            // is atrinmg is number
+QString absoluteHomePath(const QString &path_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);    // return shader's comments
 void getLuaComments(const QString &shaderText_, QVector<Comment> &comments_);       // return lua's comments
 QString calculateHash(const QString &data_);            // return hash value for the text data
