@@ -90,7 +90,7 @@ public:
     qreal t() const;
     bool isImageDataUpdated() const;
     std::shared_ptr<drawing_data::QuizImageObjects> getData();
-    void setDataToFree(std::unique_ptr<drawing_data::QuizImageObjects> &&old_);
+    void setDataToFree(std::shared_ptr<drawing_data::QuizImageObjects> &&old_);
     void renderBuildError(const QString &compilerLog_);
     bool isFromImageReady() const;
     bool isToImageReady() const;

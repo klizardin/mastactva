@@ -35,6 +35,28 @@
 #include "../MastactvaBase/names.h"
 
 
+TextureNames::TextureNames(const std::vector<QString> &textureNames_)
+    :std::vector<QString>(textureNames_)
+{
+    addDefaultTextureName();
+}
+
+bool TextureNames::hasDefaultTextureName() const
+{
+    return std::find(std::begin(*this), std::end(*this), g_renderTextureDefault) == std::end(*this)
+                || std::find(std::begin(*this), std::end(*this), g_renderTextureDefaultSynonim) == std::end(*this)
+            ;
+}
+
+void TextureNames::addDefaultTextureName()
+{
+    if(!hasDefaultTextureName())
+    {
+        push_back(g_renderTextureDefault);
+    }
+}
+
+
 class RenderControl : public QQuickRenderControl
 {
 public:
@@ -222,6 +244,17 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         return false;
     }
 
+    // set renderingTextureName property of the QuizImage quick item
+    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QStringLiteral("renderer"));
+    QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
+    if(!quizImageQuickItem)
+    {
+        qWarning("run: Not a QQuickItem");
+        delete rootObject;
+        return false;
+    }
+    quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
+
     // The root item is ready. Associate it with the window.
     m_rootItem->setParentItem(m_quickWindow->contentItem());
 
@@ -321,6 +354,13 @@ const QString &QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getText
 void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(const QString &texture)
 {
     m_textureName = texture;
+
+    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QStringLiteral("renderer"));
+    QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
+    if(quizImageQuickItem)
+    {
+        quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
+    }
 }
 
 
@@ -392,41 +432,30 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
     m_context.reset();
 }
 
-void QuizImageQWindowSingleThread::setTextures(const std::vector<QString> & textures_)
+void QuizImageQWindowSingleThread::setTextures(const TextureNames & textures_)
 {
     /*
      * here test if it is the first QuizImage
      * if none first ignore
     */
 
-    std::vector<QString> textures = textures_;
-    // TODO: refactoring - extract methods
-    // defaultTextureExists()
-    // addDefaultTexture()
-    // to the interface methods
-    if(std::find(std::begin(textures), std::end(textures), g_renderTextureDefault) == std::end(textures)
-            && std::find(std::begin(textures), std::end(textures), g_renderTextureDefaultSynonim) == std::end(textures)
-            )
+    if(m_drawingSurfaces.size() > textures_.size())
     {
-        textures.push_back(g_renderTextureDefault);
-    }
-    if(m_drawingSurfaces.size() > textures.size())
-    {
-        for(int i = 0; i < (int)m_drawingSurfaces.size() - (int)textures.size(); ++i)
+        for(int i = 0; i < (int)m_drawingSurfaces.size() - (int)textures_.size(); ++i)
         {
             const auto it = std::prev(std::end(m_drawingSurfaces));
             m_drawingSurfaces.erase(it);
         }
     }
-    else if(m_drawingSurfaces.size() < textures.size())
+    else if(m_drawingSurfaces.size() < textures_.size())
     {
-        for(int i = 0; i < (int)textures.size() - (int)m_drawingSurfaces.size(); ++i)
+        for(int i = 0; i < (int)textures_.size() - (int)m_drawingSurfaces.size(); ++i)
         {
             createSurface();
         }
     }
-    auto tit = std::begin(textures);
-    auto tite = std::end(textures);
+    auto tit = std::begin(textures_);
+    auto tite = std::end(textures_);
     auto sit = std::begin(m_drawingSurfaces);
     auto site = std::end(m_drawingSurfaces);
     for(;tit != tite && sit != site; ++tit, ++sit)
@@ -581,7 +610,7 @@ void QuizImageQWindowSingleThread::startQuick(const QString &filename)
     bool startRun = false;
     for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
     {
-        if(!surface.startQuick(filename)) // TODO: correct filename
+        if(!surface.startQuick(filename))
         {
             connect(surface.getQmlComponent(), &QQmlComponent::statusChanged, this, &QuizImageQWindowSingleThread::run);
         }
@@ -655,7 +684,7 @@ std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
     return result;
 }
 
-void QuizImageQWindows::setTextures(const std::vector<QString> & textures)
+void QuizImageQWindows::setTextures(const TextureNames & textures)
 {
     if(m_processor)
     {

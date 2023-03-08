@@ -95,6 +95,11 @@ bool isNumeric(const QString &str_)
     });
 }
 
+QString absoluteHomePath(const QString &path_)
+{
+    return path_.startsWith("~/") ? QDir{QDir::homePath()}.filePath(path_.mid(2)) : path_;
+}
+
 
 static const char *g_nl = "\n";
 static const char *g_cb = "/*";

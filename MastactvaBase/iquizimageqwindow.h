@@ -7,6 +7,17 @@
 #include "../MastactvaBase/quizimagedrawingdata.h"
 
 
+class TextureNames : public std::vector<QString>
+{
+public:
+    TextureNames(const std::vector<QString> &textureNames_);
+
+private:
+    bool hasDefaultTextureName() const;
+    void addDefaultTextureName();
+};
+
+
 /*
  * interface to add textures
  * TODO: change to IQuizImageQWindows
@@ -17,7 +28,7 @@ class IQuizImageQWindow
 {
 public:
     // TODO: add base texture pointer void*
-    virtual void setTextures(const std::vector<QString> & textures) = 0;
+    virtual void setTextures(const TextureNames & textures) = 0;
     virtual int count() const = 0;
     virtual QString at(int index) const = 0;
 

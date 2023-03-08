@@ -186,7 +186,7 @@ std::shared_ptr<drawing_data::QuizImageObjects> QuizImage::getData()
     return std::move(m_drawingData);
 }
 
-void QuizImage::setDataToFree(std::unique_ptr<drawing_data::QuizImageObjects> &&old_)
+void QuizImage::setDataToFree(std::shared_ptr<drawing_data::QuizImageObjects> &&old_)
 {
     m_drawingOldData = std::move(old_);
 }
