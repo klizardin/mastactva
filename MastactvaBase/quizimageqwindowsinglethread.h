@@ -98,6 +98,7 @@ public:
     void setTextures(const TextureNames & textures_) override;
     int count() const override;
     QString at(int index) const override;
+    bool isDefaultTexture(int index) const override;
 
 protected:
     void exposeEvent(QExposeEvent *e) override;
@@ -149,6 +150,7 @@ public:
     void setTextures(const TextureNames & textures) override;
     int count() const override;
     QString at(int index) const override;
+    bool isDefaultTexture(int index) const override;
 
     void set(IQuizImageQWindow *processor);
 

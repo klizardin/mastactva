@@ -15,6 +15,9 @@ public:
 private:
     bool hasDefaultTextureName() const;
     void addDefaultTextureName();
+
+public:
+    static bool isDefaultTexcture(const QString &textureName_);
 };
 
 
@@ -31,6 +34,7 @@ public:
     virtual void setTextures(const TextureNames & textures) = 0;
     virtual int count() const = 0;
     virtual QString at(int index) const = 0;
+    virtual bool isDefaultTexture(int index) const = 0;
 
     virtual void setDrawingData(std::shared_ptr<drawing_data::QuizImageObjects> data)
     {
