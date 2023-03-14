@@ -35,6 +35,13 @@
 #include "../MastactvaBase/names.h"
 
 
+bool TextureNames::isDefaultTexcture(const QString &textureName_)
+{
+    return QString(g_renderTextureDefault) == textureName_
+            || QString(g_renderTextureDefaultSynonim) == textureName_
+            ;
+}
+
 TextureNames::TextureNames(const std::vector<QString> &textureNames_)
     :std::vector<QString>(textureNames_)
 {
@@ -476,6 +483,13 @@ QString QuizImageQWindowSingleThread::at(int index) const
     return it != std::end(m_drawingSurfaces) ? it->getTextureName() : g_renderTextureDefault;
 }
 
+bool QuizImageQWindowSingleThread::isDefaultTexture(int index) const
+{
+    auto it = std::begin(m_drawingSurfaces);
+    std::advance(it, index);
+    return it != std::end(m_drawingSurfaces) ? TextureNames::isDefaultTexcture(it->getTextureName()) : true;
+}
+
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
 {
     Q_UNUSED(e);
@@ -713,6 +727,18 @@ QString QuizImageQWindows::at(int index) const
     else
     {
         return g_renderTextureDefault;
+    }
+}
+
+bool QuizImageQWindows::isDefaultTexture(int index) const
+{
+    if(m_processor)
+    {
+        return m_processor->isDefaultTexture(index);
+    }
+    else
+    {
+        return true;
     }
 }
 
