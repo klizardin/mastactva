@@ -313,6 +313,11 @@ void QuizImage::setTestIndex(const int &testIndex_)
     emit testIndexChanged();
 }
 
+bool QuizImage::isDefaultTexture() const
+{
+    return TextureNames::isDefaultTexcture(m_renderingTextureName);
+}
+
 
 QuizImages &QuizImages::getInstance()
 {
