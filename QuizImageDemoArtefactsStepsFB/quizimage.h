@@ -98,6 +98,7 @@ public:
     const QString &getToImageUrl() const;
     int testIndex() const;
     void setTestIndex(const int &testIndex_);
+    bool isDefaultTexture() const;
 
 protected:
     void setT(const qreal &t_);
