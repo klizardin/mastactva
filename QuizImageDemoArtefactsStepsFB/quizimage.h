@@ -79,6 +79,7 @@ public:
     Q_PROPERTY(QString compilerLog READ log WRITE setLog NOTIFY logChanged)
     Q_PROPERTY(int testIndex READ testIndex WRITE setTestIndex NOTIFY testIndexChanged)
     Q_PROPERTY(QString renderingTextureName READ renderingTextureName WRITE setRenderingTextureName NOTIFY renderingTextureNameChanged)
+    Q_PROPERTY(int renderingWindowsId READ renderingWindowsId WRITE setRenderingWindowsId NOTIFY renderingWindowsIdChanged)
 
     Q_INVOKABLE void updateState();
     Q_INVOKABLE void updateProject();
@@ -98,6 +99,8 @@ public:
     const QString &getToImageUrl() const;
     int testIndex() const;
     void setTestIndex(const int &testIndex_);
+    int renderingWindowsId() const;
+    void setRenderingWindowsId(int id_);
     bool isDefaultTexture() const;
 
 protected:
@@ -129,6 +132,7 @@ signals:
     void logChanged();
     void testIndexChanged();
     void renderingTextureNameChanged();
+    void renderingWindowsIdChanged();
 
 private:
     qreal m_t = 0.0;
@@ -140,6 +144,7 @@ private:
     QString m_compilerLog;
     int m_testIndex = -1;
     QString m_renderingTextureName;
+    int m_renderingWindowsId = -1;
 };
 
 

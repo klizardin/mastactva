@@ -313,6 +313,18 @@ void QuizImage::setTestIndex(const int &testIndex_)
     emit testIndexChanged();
 }
 
+int QuizImage::renderingWindowsId() const
+{
+    return m_renderingWindowsId;
+}
+
+void QuizImage::setRenderingWindowsId(int id_)
+{
+    m_renderingWindowsId = id_;
+
+    emit renderingWindowsIdChanged();
+}
+
 bool QuizImage::isDefaultTexture() const
 {
     return TextureNames::isDefaultTexcture(m_renderingTextureName);

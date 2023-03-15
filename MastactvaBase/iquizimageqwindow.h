@@ -31,6 +31,8 @@ class IQuizImageQWindow
 {
 public:
     // TODO: add base texture pointer void*
+    //virtual int createRenderingWindowsId() = 0;
+    //virtual void removeRenderingWindowsId(int id_) = 0;
     virtual void setTextures(const TextureNames & textures) = 0;
     virtual int count() const = 0;
     virtual QString at(int index) const = 0;
