@@ -4,6 +4,7 @@
 
 #include <QString>
 #include <vector>
+#include <set>
 #include "../MastactvaBase/quizimagedrawingdata.h"
 
 
@@ -31,8 +32,27 @@ class IQuizImageQWindow
 {
 public:
     // TODO: add base texture pointer void*
-    //virtual int createRenderingWindowsId() = 0;
-    //virtual void removeRenderingWindowsId(int id_) = 0;
+    int createRenderingWindowsId()
+    {
+        for(;;++m_lastWindowsId)
+        {
+            if(m_windowsIds.find(m_lastWindowsId) == std::end(m_windowsIds))
+            {
+                break;
+            }
+        }
+        const int result = m_lastWindowsId;
+        m_windowsIds.insert(result);
+        ++m_lastWindowsId;
+        return result;
+    }
+
+    void removeRenderingWindowsId(int id_)
+    {
+        auto fit = m_windowsIds.find(id_);
+        m_windowsIds.erase(fit);
+    }
+
     virtual void setTextures(const TextureNames & textures) = 0;
     virtual int count() const = 0;
     virtual QString at(int index) const = 0;
@@ -53,6 +73,8 @@ public:
 
 private:
     std::shared_ptr<drawing_data::QuizImageObjects> m_drawingData;
+    int m_lastWindowsId = 0;
+    std::set<int> m_windowsIds;
 };
 
 
