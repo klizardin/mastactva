@@ -53,6 +53,9 @@ public:
         m_windowsIds.erase(fit);
     }
 
+    // virtual void addQuizImageWindows(IQuizImageQWindow* windows_);
+    // virtual void removeQuizImageWindows(IQuizImageQWindow* windows_);
+    // virtual IQuizImageQWindow* findQuizImageWindows(int windowsId_) const;
     virtual void setTextures(const TextureNames & textures) = 0;
     virtual int count() const = 0;
     virtual QString at(int index) const = 0;
