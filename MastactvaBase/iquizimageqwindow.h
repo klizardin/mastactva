@@ -5,6 +5,7 @@
 #include <QString>
 #include <vector>
 #include <set>
+#include <map>
 #include "../MastactvaBase/quizimagedrawingdata.h"
 
 
@@ -22,6 +23,29 @@ public:
 };
 
 
+class IQuizImageQWindowOperations
+{
+public:
+    virtual void setTextures(const TextureNames & textures) = 0;
+    virtual int count() const = 0;
+    virtual QString at(int index) const = 0;
+    virtual bool isDefaultTexture(int index) const = 0;
+
+    virtual void setDrawingData(std::shared_ptr<drawing_data::QuizImageObjects> data)
+    {
+        m_drawingData = data;
+    }
+
+    virtual std::shared_ptr<drawing_data::QuizImageObjects> getDrawingData() const
+    {
+        return m_drawingData;
+    }
+
+private:
+    std::shared_ptr<drawing_data::QuizImageObjects> m_drawingData;
+};
+
+
 /*
  * interface to add textures
  * TODO: change to IQuizImageQWindows
@@ -31,7 +55,65 @@ public:
 class IQuizImageQWindow
 {
 public:
-    // TODO: add base texture pointer void*
+    static IQuizImageQWindowOperations* findQuizImageWindows(int windowsId_)
+    {
+        const IQuizImageQWindow* inst = getInstance();
+        auto fit = inst->m_quizImageWindows.find(windowsId_);
+        return std::end(inst->m_quizImageWindows) == fit ? nullptr : fit->second;
+    }
+
+
+    static void addQuizImageWindows(IQuizImageQWindowOperations* windowsOperation_)
+    {
+        IQuizImageQWindow* inst = getInstance();
+        if(!inst)
+        {
+            return;
+        }
+        const int id = inst->createRenderingWindowsId();
+        inst->m_quizImageWindows.insert(std::map<int, IQuizImageQWindowOperations*>::value_type{id, windowsOperation_});
+    }
+
+    static void removeQuizImageWindows(IQuizImageQWindowOperations* windowsOperation_)
+    {
+        IQuizImageQWindow* inst = getInstance();
+        auto fit = std::find_if(std::begin(inst->m_quizImageWindows), std::end(inst->m_quizImageWindows),
+                     [windowsOperation_](const std::map<int, IQuizImageQWindowOperations*>::value_type &it)
+        {
+            return it.second == windowsOperation_;
+        });
+        if(std::end(inst->m_quizImageWindows) == fit)
+        {
+            return;
+        }
+        inst->removeRenderingWindowsId(fit->first);
+        inst->m_quizImageWindows.erase(fit);
+    }
+
+    static bool findWindowsId(IQuizImageQWindowOperations* windowsOperation_)
+    {
+        const IQuizImageQWindow* inst = getInstance();
+        return getWindowsId(windowsOperation_) != inst->m_lastWindowsId;
+    }
+
+    static int getWindowsId(IQuizImageQWindowOperations* windowsOperation_)
+    {
+        const IQuizImageQWindow* inst = getInstance();
+        auto fit = std::find_if(std::begin(inst->m_quizImageWindows), std::end(inst->m_quizImageWindows),
+                     [windowsOperation_](const std::map<int, IQuizImageQWindowOperations*>::value_type &it)
+        {
+            return it.second == windowsOperation_;
+        });
+        return std::end(inst->m_quizImageWindows) == fit? inst->m_lastWindowsId : fit->first;
+    }
+
+private:
+    static IQuizImageQWindow * getInstance()
+    {
+        static IQuizImageQWindow inst;
+        return &inst;
+    }
+
     int createRenderingWindowsId()
     {
         for(;;++m_lastWindowsId)
@@ -53,31 +135,10 @@ public:
         m_windowsIds.erase(fit);
     }
 
-    // virtual void addQuizImageWindows(IQuizImageQWindow* windows_);
-    // virtual void removeQuizImageWindows(IQuizImageQWindow* windows_);
-    // virtual IQuizImageQWindow* findQuizImageWindows(int windowsId_) const;
-    virtual void setTextures(const TextureNames & textures) = 0;
-    virtual int count() const = 0;
-    virtual QString at(int index) const = 0;
-    virtual bool isDefaultTexture(int index) const = 0;
-
-    virtual void setDrawingData(std::shared_ptr<drawing_data::QuizImageObjects> data)
-    {
-        m_drawingData = data;
-    }
-
-    virtual std::shared_ptr<drawing_data::QuizImageObjects> getDrawingData() const
-    {
-        return m_drawingData;
-    }
-
-public:
-    static IQuizImageQWindow * getInstance();
-
 private:
-    std::shared_ptr<drawing_data::QuizImageObjects> m_drawingData;
     int m_lastWindowsId = 0;
     std::set<int> m_windowsIds;
+    std::map<int, IQuizImageQWindowOperations*> m_quizImageWindows;
 };
 
 

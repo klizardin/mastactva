@@ -371,15 +371,12 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(co
 }
 
 
-static QuizImageQWindows g_quizImageQWindows;
-
-
 // TODO: add implementation
 // just simple possible implementation
 QuizImageQWindowSingleThread::QuizImageQWindowSingleThread(const QString & qmlFileName)
     : m_qmlFileName(qmlFileName)
 {
-    g_quizImageQWindows.set(this);
+    IQuizImageQWindow::addQuizImageWindows(this);
     setSurfaceType(QSurface::OpenGLSurface);
 
     QSurfaceFormat format;
@@ -423,7 +420,7 @@ QuizImageQWindowSingleThread::QuizImageQWindowSingleThread(const QString & qmlFi
 
 QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 {
-    g_quizImageQWindows.set(nullptr);
+    IQuizImageQWindow::removeQuizImageWindows(this);
     m_updateTimer.reset();
     QuizImageQMLDrawingSurface::prepareContext(m_context.get(), m_offscreenSurface.get());
     for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
@@ -698,56 +695,4 @@ std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
     return result;
 }
 
-void QuizImageQWindows::setTextures(const TextureNames & textures)
-{
-    if(m_processor)
-    {
-        return m_processor->setTextures(textures);
-    }
-}
 
-int QuizImageQWindows::count() const
-{
-    if(m_processor)
-    {
-        return m_processor->count();
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-QString QuizImageQWindows::at(int index) const
-{
-    if(m_processor)
-    {
-        return m_processor->at(index);
-    }
-    else
-    {
-        return g_renderTextureDefault;
-    }
-}
-
-bool QuizImageQWindows::isDefaultTexture(int index) const
-{
-    if(m_processor)
-    {
-        return m_processor->isDefaultTexture(index);
-    }
-    else
-    {
-        return true;
-    }
-}
-
-void QuizImageQWindows::set(IQuizImageQWindow *processor)
-{
-    m_processor = processor;
-}
-
-IQuizImageQWindow * IQuizImageQWindow::getInstance()
-{
-    return &g_quizImageQWindows;
-}
