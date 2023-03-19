@@ -45,7 +45,7 @@ QT_END_NAMESPACE
 
 
 // TODO: add interface for new drawing surface
-class QuizImageQWindowSingleThread : public QWindow, public IQuizImageQWindow
+class QuizImageQWindowSingleThread : public QWindow, public IQuizImageQWindowOperations
 {
     Q_OBJECT
 
@@ -140,22 +140,6 @@ private:
     qreal m_dpr = 1.0;
     std::unique_ptr<DefaultTextureRender> m_defaultRenderer;
     QString m_qmlFileName;
-};
-
-class QuizImageQWindows : public IQuizImageQWindow
-{
-public:
-    QuizImageQWindows() = default;
-
-    void setTextures(const TextureNames & textures) override;
-    int count() const override;
-    QString at(int index) const override;
-    bool isDefaultTexture(int index) const override;
-
-    void set(IQuizImageQWindow *processor);
-
-protected:
-    IQuizImageQWindow *m_processor = nullptr;
 };
 
 

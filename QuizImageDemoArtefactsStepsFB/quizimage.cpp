@@ -248,12 +248,12 @@ void QuizImage::initDefaultDrawingData()
      * So here we add all, but interface will filter calls
     */
 
-    if(IQuizImageQWindow::getInstance()
-            && IQuizImageQWindow::getInstance()->getDrawingData()
-            )
-    {
-        //m_drawingData = IQuizImageQWindow::getInstance()->getDrawingData();
-    }
+    //if(IQuizImageQWindow::getInstance()
+    //        && IQuizImageQWindow::getInstance()->getDrawingData()
+    //        )
+    //{
+    //    //m_drawingData = IQuizImageQWindow::getInstance()->getDrawingData();
+    //}
 
     if(m_testIndex < 0)
     {
@@ -271,11 +271,11 @@ void QuizImage::initDefaultDrawingData()
         m_drawingData = std::move(data);
     }
 
-    if(IQuizImageQWindow::getInstance())
-    {
-        //IQuizImageQWindow::getInstance()->setDrawingData(m_drawingData);
-        IQuizImageQWindow::getInstance()->setTextures(m_drawingData->getTargetTextures());
-    }
+    //if(IQuizImageQWindow::getInstance())
+    //{
+    //    //IQuizImageQWindow::getInstance()->setDrawingData(m_drawingData);
+    //    IQuizImageQWindow::getInstance()->setTextures(m_drawingData->getTargetTextures());
+    //}
 }
 
 bool QuizImage::isFromImageReady() const
