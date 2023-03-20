@@ -88,6 +88,11 @@ QWindow *RenderControl::renderWindow(QPoint *offset)
 }
 
 
+QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::QuizImageQMLDrawingSurface(int renderingWindowsId_)
+    :m_renderingWindowsId(renderingWindowsId_)
+{
+}
+
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::prepareContext(QOpenGLContext *context, QOffscreenSurface *offscreenSurface)
 {
     if(!context || !offscreenSurface)
@@ -261,6 +266,8 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         return false;
     }
     quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
+    const int renderingWindowsId = getRenderingWindowsId();
+    quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
 
     // The root item is ready. Associate it with the window.
     m_rootItem->setParentItem(m_quickWindow->contentItem());
@@ -360,14 +367,21 @@ const QString &QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getText
 
 void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(const QString &texture)
 {
+    const int renderingWindowsId = getRenderingWindowsId();
     m_textureName = texture;
 
     QObject * quizImageObject = m_rootItem->findChild<QObject *>(QStringLiteral("renderer"));
     QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
     if(quizImageQuickItem)
     {
+        quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
         quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     }
+}
+
+int QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getRenderingWindowsId() const
+{
+    return m_renderingWindowsId;
 }
 
 
@@ -669,7 +683,8 @@ void QuizImageQWindowSingleThread::connectDrawingSurface(QQuickRenderControl * r
 
 bool QuizImageQWindowSingleThread::createSurface()
 {
-    m_drawingSurfaces.emplace_back();
+    const int renderingWindowsId = IQuizImageQWindow::getWindowsId(this);
+    m_drawingSurfaces.emplace_back(renderingWindowsId);
     if(m_drawingSurfaces.back().create(this))
     {
         return true;
