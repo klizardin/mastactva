@@ -53,7 +53,7 @@ protected:
     class QuizImageQMLDrawingSurface
     {
     public:
-        QuizImageQMLDrawingSurface() = default;
+        QuizImageQMLDrawingSurface(int renderingWindowsId_);
         ~QuizImageQMLDrawingSurface() = default;
         bool create(QuizImageQWindowSingleThread *qwindow);
         static bool prepareContext(QOpenGLContext *context, QOffscreenSurface *offscreenSurface);
@@ -80,6 +80,7 @@ protected:
         uint getTexture() const;
         const QString &getTextureName() const;
         void setTextureName(const QString &texture);
+        int getRenderingWindowsId() const;
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
@@ -89,6 +90,7 @@ protected:
         QQuickItem * m_rootItem = nullptr;
         uint m_textureId = 0;
         QString m_textureName;
+        int m_renderingWindowsId = 0;
     };
 
 public:
