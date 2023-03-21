@@ -269,7 +269,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     const int renderingWindowsId = getRenderingWindowsId();
     quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
-    //QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
+    QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 
 
     // The root item is ready. Associate it with the window.
@@ -380,7 +380,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(co
         quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
         quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     }
-    //QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
+    QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 }
 
 int QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getRenderingWindowsId() const

@@ -36,7 +36,7 @@
 
 QuizImage::QuizImage()
 {
-    initDefaultDrawingData();
+    //initDefaultDrawingData();
 }
 
 QQuickFramebufferObject::Renderer *QuizImage::createRenderer() const

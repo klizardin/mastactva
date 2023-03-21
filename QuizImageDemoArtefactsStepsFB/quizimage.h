@@ -83,6 +83,7 @@ public:
 
     Q_INVOKABLE void updateState();
     Q_INVOKABLE void updateProject();
+    Q_INVOKABLE void initDefaultDrawingData();
 
 public:
     virtual QQuickFramebufferObject::Renderer *createRenderer() const override;
@@ -120,9 +121,6 @@ protected:
     void loadProject();
     void setProjectFromImage();
     void setProjectToImage();
-
-private:
-    void initDefaultDrawingData();
 
 signals:
     void tChanged();
