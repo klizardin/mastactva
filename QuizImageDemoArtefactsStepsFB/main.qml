@@ -32,7 +32,8 @@ ApplicationWindow {
 
 
     QuizImageDemo {
-        id: renderer
+        objectName: "quizImage"
+        id: quizImage
         anchors.fill: parent
         anchors.margins: 10
         t: 0.0
@@ -40,12 +41,12 @@ ApplicationWindow {
 
     SequentialAnimation {
         id: animationCycle
-        NumberAnimation { target: renderer; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
-        NumberAnimation { target: renderer; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
+        NumberAnimation { target: quizImage; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
+        NumberAnimation { target: quizImage; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
         PauseAnimation { duration: 2000 }
-        NumberAnimation { target: renderer; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
+        NumberAnimation { target: quizImage; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
         PauseAnimation { duration: 2000 }
-        NumberAnimation { target: renderer; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
+        NumberAnimation { target: quizImage; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
         PauseAnimation { duration: 2000 }
         running: true
         loops: Animation.Infinite
@@ -57,14 +58,14 @@ ApplicationWindow {
         function onFinished()
         {
             console.log("animationCycle.onFinished()")
-            //renderer.testIndex = renderer.testIndex + 1
+            //quizImage.testIndex = quizImage.testIndex + 1
             animationCycle.start()
         }
 
         function onStarted()
         {
             console.log("animationCycle.onStarted()")
-            console.log("renderer.testIndex =", renderer.testIndex)
+            console.log("renderer.testIndex =", quizImage.testIndex)
         }
     }
 }
