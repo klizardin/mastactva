@@ -32,6 +32,7 @@
 #include <QCoreApplication>
 #include <QQuickRenderTarget>
 #include <QQuickGraphicsDevice>
+#include "../MastactvaBase/quizimage.h"
 #include "../MastactvaBase/names.h"
 
 
@@ -257,7 +258,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     }
 
     // set renderingTextureName property of the QuizImage quick item
-    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QStringLiteral("renderer"));
+    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QStringLiteral("quizImage"));
     QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
     if(!quizImageQuickItem)
     {
@@ -268,6 +269,8 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     const int renderingWindowsId = getRenderingWindowsId();
     quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
+    QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
+
 
     // The root item is ready. Associate it with the window.
     m_rootItem->setParentItem(m_quickWindow->contentItem());
@@ -377,6 +380,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(co
         quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
         quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     }
+    QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 }
 
 int QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getRenderingWindowsId() const
