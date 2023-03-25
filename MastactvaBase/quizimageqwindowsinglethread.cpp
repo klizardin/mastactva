@@ -470,7 +470,16 @@ void QuizImageQWindowSingleThread::setTextures(const TextureNames & textures_)
     {
         for(int i = 0; i < (int)m_drawingSurfaces.size() - (int)textures_.size(); ++i)
         {
-            const auto it = std::prev(std::end(m_drawingSurfaces));
+            auto it = std::prev(std::end(m_drawingSurfaces));
+            // skip default texture remove
+            if(it->isDefaultTexture())
+            {
+                if(std::begin(m_drawingSurfaces) == it)
+                {
+                    break;
+                }
+                it = std::prev(it);
+            }
             m_drawingSurfaces.erase(it);
         }
     }
@@ -487,6 +496,10 @@ void QuizImageQWindowSingleThread::setTextures(const TextureNames & textures_)
     auto site = std::end(m_drawingSurfaces);
     for(;tit != tite && sit != site; ++tit, ++sit)
     {
+        if(site->isDefaultTexture() && TextureNames::isDefaultTexcture(*tit))
+        {
+            continue;
+        }
         sit->setTextureName(*tit);
     }
 }
@@ -693,18 +706,34 @@ void QuizImageQWindowSingleThread::connectDrawingSurface(QQuickRenderControl * r
 bool QuizImageQWindowSingleThread::createSurface()
 {
     const int renderingWindowsId = IQuizImageQWindow::getWindowsId(this);
-    m_drawingSurfaces.emplace_back(renderingWindowsId);
-    if(m_drawingSurfaces.back().create(this))
+    const auto itLast = std::prev(std::end(m_drawingSurfaces));
+    if(!m_drawingSurfaces.empty() && itLast->isDefaultTexture())
     {
-        return true;
+        m_drawingSurfaces.insert(itLast, QuizImageQMLDrawingSurface(renderingWindowsId));
+        const auto it = std::prev(itLast);
+        if(it->create(this))
+        {
+            return true;
+        }
+        if(!m_drawingSurfaces.empty())
+        {
+            m_drawingSurfaces.erase(it);
+        }
+    }
+    else
+    {
+        m_drawingSurfaces.emplace_back(renderingWindowsId);
+        if(m_drawingSurfaces.back().create(this))
+        {
+            return true;
+        }
+        if(!m_drawingSurfaces.empty())
+        {
+            const auto itBack = std::prev(std::end(m_drawingSurfaces));
+            m_drawingSurfaces.erase(itBack);
+        }
     }
 
-    if(!m_drawingSurfaces.empty())
-    {
-        auto itback = std::end(m_drawingSurfaces);
-        --itback;
-        m_drawingSurfaces.erase(itback);
-    }
     return false;
 }
 

@@ -54,7 +54,11 @@ protected:
     {
     public:
         QuizImageQMLDrawingSurface(int renderingWindowsId_);
+        QuizImageQMLDrawingSurface(QuizImageQMLDrawingSurface &&surface_) = default;
         ~QuizImageQMLDrawingSurface() = default;
+
+        QuizImageQMLDrawingSurface & operator=(QuizImageQMLDrawingSurface &&surface_) = default;
+
         bool create(QuizImageQWindowSingleThread *qwindow);
         static bool prepareContext(QOpenGLContext *context, QOffscreenSurface *offscreenSurface);
         bool free(QOpenGLContext *context);

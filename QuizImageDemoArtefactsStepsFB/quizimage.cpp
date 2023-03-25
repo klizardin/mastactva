@@ -254,8 +254,8 @@ void QuizImage::initDefaultDrawingData()
             && quizImageOperations->getDrawingData()
             )
     {
-        //m_drawingData = quizImageOperations->getDrawingData();
-        //return;
+        m_drawingData = quizImageOperations->getDrawingData();
+        return;
     }
 
     if(m_testIndex < 0)
@@ -278,7 +278,7 @@ void QuizImage::initDefaultDrawingData()
             && isDefaultTexture())
     {
         quizImageOperations->setDrawingData(m_drawingData);
-        //quizImageOperations->setTextures(m_drawingData->getTargetTextures());
+        quizImageOperations->setTextures(m_drawingData->getTargetTextures());
     }
 }
 
