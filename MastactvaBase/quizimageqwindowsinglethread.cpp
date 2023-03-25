@@ -388,6 +388,11 @@ int QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getRenderingWindow
     return m_renderingWindowsId;
 }
 
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::isDefaultTexture() const
+{
+    return TextureNames::isDefaultTexcture(getTextureName());
+}
+
 
 // TODO: add implementation
 // just simple possible implementation

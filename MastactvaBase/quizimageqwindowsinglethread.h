@@ -81,6 +81,7 @@ protected:
         const QString &getTextureName() const;
         void setTextureName(const QString &texture);
         int getRenderingWindowsId() const;
+        bool isDefaultTexture() const;
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
