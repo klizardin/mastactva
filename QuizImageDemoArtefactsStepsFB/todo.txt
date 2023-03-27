@@ -189,5 +189,14 @@ opencv addon test
     * format
     * base test
     - implementation
-    - find better implementation
+        * static class as interface
+        * quizimagewindowsinglethread implementation
+            * create textures
+            * return info
+            - do we need extend?
+            - order of drawing
+        * quizimage
+            * init drawing data
+            - drawing for specific steps
+
 
