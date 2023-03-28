@@ -106,6 +106,7 @@ public:
     int count() const override;
     QString at(int index) const override;
     bool isDefaultTexture(int index) const override;
+    QString getCurrentTextureName() const override;
 
 protected:
     void exposeEvent(QExposeEvent *e) override;
@@ -147,6 +148,7 @@ private:
     qreal m_dpr = 1.0;
     std::unique_ptr<DefaultTextureRender> m_defaultRenderer;
     QString m_qmlFileName;
+    QString m_currentTextureName;
 };
 
 

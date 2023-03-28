@@ -184,10 +184,19 @@ opencv addon test
     - test modes
     * test 1 + (1 - alpha) mode
     - test 1 + (1 - alpha) mode with tex attrs
-    - debug .
+    - debug ...
 - multi steps
     * format
     * base test
     - implementation
-    - find better implementation
+        * static class as interface
+        * quizimagewindowsinglethread implementation
+            * create textures
+            * return info
+            - do we need extend?
+            - order of drawing
+        * quizimage
+            * init drawing data
+            - drawing for specific steps
+
 

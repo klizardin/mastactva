@@ -308,7 +308,10 @@ namespace opengl_drawing
          * init from quiz image drawing objcts list datas
          * capture quiz image objects list datas
         */
-        void init(std::shared_ptr<drawing_data::QuizImageObjects> &&imageData_);
+        void init(std::shared_ptr<drawing_data::QuizImageObjects> &&imageData_,
+                  int windowsId_,
+                  const QString &_renderTextureName
+                  );
 
         /*
          * do low level reinitialization
@@ -527,6 +530,8 @@ namespace opengl_drawing
         QStringList m_updated;                                                      // list of variable that was updated duiring last calculations
         std::unique_ptr<States> m_states;                                           // global states
         QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
+        int m_renderWindowsId = 0;
+        QString m_renderTextureName;
     };
 }
 
@@ -545,7 +550,11 @@ public:
     /*
      * set up quiz image data
     */
-    void setImageData(std::shared_ptr<drawing_data::QuizImageObjects> imageData_);
+    void setImageData(
+            std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
+            int windowsId_,
+            const QString &_renderTextureName
+            );
 
     /*
      * release the current quiz image data
@@ -772,7 +781,11 @@ protected:
     /*
      * set up quiz image objects
     */
-    void setImageData(std::shared_ptr<drawing_data::QuizImageObjects> imageData_);
+    void setImageData(
+            std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
+            int windowsId_,
+            const QString &_renderTextureName
+            );
 
     /*
      * set g_renderFromImageName texture
@@ -833,7 +846,10 @@ public:
         if(imageDataChanged)
         {
             quizImage->setDataToFree(releaseImageData());
-            setImageData(quizImage->getData());
+            setImageData(quizImage->getData(),
+                         quizImage->renderingWindowsId(),
+                         quizImage->renderingTextureName()
+                         );
         }
         synchronizeImpl(rectSize, t);
         if(quizImage->isFromImageReady() && !quizImage->getFromImageUrl().isEmpty())
