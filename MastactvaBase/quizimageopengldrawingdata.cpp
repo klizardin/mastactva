@@ -17,6 +17,7 @@
 
 #include <math.h>
 #include "quizimageopengldrawingdata.h"
+#include "../MastactvaBase/iquizimageqwindow.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaBase/utils.h"
@@ -1207,9 +1208,13 @@ GeometryMatrixDefaultCalculation g_geometryMatrixDefaultCalculation;
 GeometryDefaultCalculation g_geometryDefaultCalculation;
 
 void opengl_drawing::Objects::init(
-        std::shared_ptr<drawing_data::QuizImageObjects> &&imageData_
+        std::shared_ptr<drawing_data::QuizImageObjects> &&imageData_,
+        int windowsId_,
+        const QString &_renderTextureName
         )
 {
+    m_renderWindowsId = windowsId_;
+    m_renderTextureName = _renderTextureName;
     m_imageData = std::move(imageData_);
     if(m_imageData)
     {
@@ -1361,9 +1366,16 @@ void opengl_drawing::Objects::calculate()
 
 void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
 {
+    const IQuizImageQWindowOperations* windowsOperations = IQuizImageQWindow::findQuizImageWindows(m_renderWindowsId);
     for(std::unique_ptr<opengl_drawing::Object> &object_ : m_objects)
     {
         if(!object_.operator bool())
+        {
+            continue;
+        }
+        if(windowsOperations
+                && windowsOperations->getCurrentTextureName() != m_renderTextureName
+                )
         {
             continue;
         }
@@ -1614,11 +1626,13 @@ void ObjectsRenderer::setCurrentFrameBufferObject(QOpenGLFramebufferObject *fbob
 }
 
 void ObjectsRenderer::setImageData(
-        std::shared_ptr<drawing_data::QuizImageObjects> imageData_
+        std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
+        int windowsId_,
+        const QString &_renderTextureName
         )
 {
     m_openglData = std::make_unique<opengl_drawing::Objects>();
-    m_openglData->init(std::move(imageData_));
+    m_openglData->init(std::move(imageData_), windowsId_, _renderTextureName);
     m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject);
     initialize();
 }
@@ -1945,9 +1959,13 @@ std::shared_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releas
     return m_objectRenderer.releaseImageData();
 }
 
-void QuizImageFboRendererImpl::setImageData(std::shared_ptr<drawing_data::QuizImageObjects> imageData_)
+void QuizImageFboRendererImpl::setImageData(
+        std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
+        int windowsId_,
+        const QString &_renderTextureName
+        )
 {
-    m_objectRenderer.setImageData(std::move(imageData_));
+    m_objectRenderer.setImageData(std::move(imageData_), windowsId_, _renderTextureName);
 }
 
 void QuizImageFboRendererImpl::setFromImage(const QString &url_)

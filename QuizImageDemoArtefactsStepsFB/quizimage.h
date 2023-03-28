@@ -103,6 +103,7 @@ public:
     int renderingWindowsId() const;
     void setRenderingWindowsId(int id_);
     bool isDefaultTexture() const;
+    QString renderingTextureName() const;
 
 protected:
     void setT(const qreal &t_);
@@ -114,7 +115,6 @@ protected:
     void setProject(const QString &project_);
     QString log() const;
     void setLog(const QString &log_);
-    QString renderingTextureName() const;
     void setRenderingTextureName(const QString &renderingTextureName_);
 
     void freeProject();
