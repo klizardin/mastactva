@@ -523,6 +523,11 @@ bool QuizImageQWindowSingleThread::isDefaultTexture(int index) const
     return it != std::end(m_drawingSurfaces) ? TextureNames::isDefaultTexcture(it->getTextureName()) : true;
 }
 
+QString QuizImageQWindowSingleThread::getCurrentTextureName() const
+{
+    return m_currentTextureName;
+}
+
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
 {
     Q_UNUSED(e);
@@ -631,6 +636,7 @@ void QuizImageQWindowSingleThread::render()
     QuizImageQMLDrawingSurface::prepareContext(m_context.get(), m_offscreenSurface.get());
     for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
     {
+        m_currentTextureName = surface.getTextureName();
         m_quickReady &= surface.render(m_context.get());
     }
     m_defaultRenderer->render(this, m_context.get(), getTextures());
