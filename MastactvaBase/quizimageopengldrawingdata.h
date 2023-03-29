@@ -200,6 +200,11 @@ namespace opengl_drawing
                 const QColor &backgroundColor_
                 );
 
+        /*
+         * check if allowed to draw this object for specific target texture name
+        */
+        bool allowedForTargetTexture(const QString& tartgetTextureName_) const;
+
         // pipeline operations
         // {
         /*
@@ -309,8 +314,7 @@ namespace opengl_drawing
          * capture quiz image objects list datas
         */
         void init(std::shared_ptr<drawing_data::QuizImageObjects> &&imageData_,
-                  int windowsId_,
-                  const QString &_renderTextureName
+                  int windowsId_
                   );
 
         /*
@@ -531,7 +535,6 @@ namespace opengl_drawing
         std::unique_ptr<States> m_states;                                           // global states
         QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
         int m_renderWindowsId = 0;
-        QString m_renderTextureName;
     };
 }
 
@@ -552,8 +555,7 @@ public:
     */
     void setImageData(
             std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
-            int windowsId_,
-            const QString &_renderTextureName
+            int windowsId_
             );
 
     /*
@@ -783,8 +785,7 @@ protected:
     */
     void setImageData(
             std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
-            int windowsId_,
-            const QString &_renderTextureName
+            int windowsId_
             );
 
     /*
@@ -847,8 +848,7 @@ public:
         {
             quizImage->setDataToFree(releaseImageData());
             setImageData(quizImage->getData(),
-                         quizImage->renderingWindowsId(),
-                         quizImage->renderingTextureName()
+                         quizImage->renderingWindowsId()
                          );
         }
         synchronizeImpl(rectSize, t);

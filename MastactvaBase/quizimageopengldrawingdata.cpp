@@ -585,6 +585,15 @@ void opengl_drawing::Object::init(
     setTextureIndexes();
 }
 
+bool opengl_drawing::Object::allowedForTargetTexture(const QString& tartgetTextureName_) const
+{
+    if(!m_imageData)
+    {
+        return true;
+    }
+    return m_imageData->allowedForTargetTexture(tartgetTextureName_);
+}
+
 void opengl_drawing::Object::bind()
 {
     if(!isUsable())
@@ -1209,12 +1218,10 @@ GeometryDefaultCalculation g_geometryDefaultCalculation;
 
 void opengl_drawing::Objects::init(
         std::shared_ptr<drawing_data::QuizImageObjects> &&imageData_,
-        int windowsId_,
-        const QString &_renderTextureName
+        int windowsId_
         )
 {
     m_renderWindowsId = windowsId_;
-    m_renderTextureName = _renderTextureName;
     m_imageData = std::move(imageData_);
     if(m_imageData)
     {
@@ -1374,7 +1381,7 @@ void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
             continue;
         }
         if(windowsOperations
-                && windowsOperations->getCurrentTextureName() != m_renderTextureName
+                && !object_->allowedForTargetTexture(windowsOperations->getCurrentTextureName())
                 )
         {
             continue;
@@ -1627,12 +1634,11 @@ void ObjectsRenderer::setCurrentFrameBufferObject(QOpenGLFramebufferObject *fbob
 
 void ObjectsRenderer::setImageData(
         std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
-        int windowsId_,
-        const QString &_renderTextureName
+        int windowsId_
         )
 {
     m_openglData = std::make_unique<opengl_drawing::Objects>();
-    m_openglData->init(std::move(imageData_), windowsId_, _renderTextureName);
+    m_openglData->init(std::move(imageData_), windowsId_);
     m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject);
     initialize();
 }
@@ -1961,11 +1967,10 @@ std::shared_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releas
 
 void QuizImageFboRendererImpl::setImageData(
         std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
-        int windowsId_,
-        const QString &_renderTextureName
+        int windowsId_
         )
 {
-    m_objectRenderer.setImageData(std::move(imageData_), windowsId_, _renderTextureName);
+    m_objectRenderer.setImageData(std::move(imageData_), windowsId_);
 }
 
 void QuizImageFboRendererImpl::setFromImage(const QString &url_)
