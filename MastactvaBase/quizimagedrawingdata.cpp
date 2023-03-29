@@ -16,6 +16,8 @@
 */
 
 #include "quizimagedrawingdata.h"
+#include "../MastactvaBase/iquizimageqwindow.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/opengldrawing_calculations.h"
 #include "../MastactvaBase/utils.h"
 
@@ -383,6 +385,19 @@ void drawing_data::QuizImageObject::addTargetTexture(const QString &targetTextur
 
 bool drawing_data::QuizImageObject::allowedForTargetTexture(const QString& tartgetTextureName_) const
 {
+    if(TextureNames::isDefaultTexcture(tartgetTextureName_))
+    {
+        if(textureTargets.empty())
+        {
+            return true;
+        }
+        if(textureTargets.find(g_renderTextureDefault) != std::end(textureTargets)
+                || textureTargets.find(g_renderTextureDefaultSynonim) != std::end(textureTargets)
+                )
+        {
+            return true;
+        }
+    }
     return textureTargets.find(tartgetTextureName_) != std::end(textureTargets);
 }
 
