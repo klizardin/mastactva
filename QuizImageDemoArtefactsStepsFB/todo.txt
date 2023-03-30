@@ -197,6 +197,8 @@ opencv addon test
             - order of drawing
         * quizimage
             * init drawing data
-            - drawing for specific steps
+            * drawing for specific steps
+        - data
+            - similar data with special type for render textures
 
 
