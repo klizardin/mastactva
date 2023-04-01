@@ -58,7 +58,8 @@ using Tests = std::tuple<
     drawing_objects::ArgSetBaseTest,
     drawing_objects::AlphaBlendingMultipleObjectsTest,
     drawing_objects::WalkEffectTest,
-    drawing_objects::WalkEffectDrawingBufferTest
+    drawing_objects::WalkEffectDrawingBufferTest/*,
+    drawing_objects::WalkEffectMultiTextureStepsTest*/
     >;
 
 
