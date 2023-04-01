@@ -269,8 +269,6 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     const int renderingWindowsId = getRenderingWindowsId();
     quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
-    QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
-
 
     // The root item is ready. Associate it with the window.
     m_rootItem->setParentItem(m_quickWindow->contentItem());
@@ -287,6 +285,8 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     // setup graphic device into the QQuickWindow
     m_quickWindow->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(context));
     m_renderControl->initialize();
+
+    QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 
     return true;
 }
