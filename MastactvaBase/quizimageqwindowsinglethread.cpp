@@ -286,7 +286,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     m_quickWindow->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(context));
     m_renderControl->initialize();
 
-    QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
+    //QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 
     return true;
 }
@@ -373,6 +373,11 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(co
     const int renderingWindowsId = getRenderingWindowsId();
     m_textureName = texture;
 
+    if(!m_rootItem)
+    {
+        return;
+    }
+
     QObject * quizImageObject = m_rootItem->findChild<QObject *>(QStringLiteral("renderer"));
     QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
     if(quizImageQuickItem)
@@ -380,7 +385,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(co
         quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
         quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     }
-    QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
+    //QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 }
 
 int QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getRenderingWindowsId() const

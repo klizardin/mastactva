@@ -247,6 +247,10 @@ void QuizImage::initDefaultDrawingData()
      * Who knows about neighborhuds? (interface)
      * So here we add all, but interface will filter calls
     */
+    if(m_drawingData)
+    {
+        return;
+    }
 
     IQuizImageQWindowOperations *quizImageOperations = IQuizImageQWindow::findQuizImageWindows(renderingWindowsId());
     if(quizImageOperations
