@@ -839,7 +839,7 @@ public:
             return;
         }
 
-        quizImage->initDefaultDrawingData();
+        //quizImage->initDefaultDrawingData();
         const QVector2D rectSize(quizImage->width(), quizImage->height());
         setWindowSize(rectSize);
         const qreal t = quizImage->t();
