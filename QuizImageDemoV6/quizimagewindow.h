@@ -81,6 +81,7 @@ public:
         QQmlComponent *m_qmlComponent = nullptr;
         QQuickItem *m_rootItem = nullptr;
         uint m_textureId = 0;
+        bool m_initialize = false;
     };
 
 public:
