@@ -754,7 +754,10 @@ std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
     result.reserve(m_drawingSurfaces.size());
     for(const QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
     {
-        result.push_back(surface.getTexture());
+        if(surface.isDefaultTexture())
+        {
+            result.push_back(surface.getTexture());
+        }
     }
     return result;
 }
