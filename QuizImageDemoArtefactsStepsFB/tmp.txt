@@ -1,0 +1,53 @@
+1)
+QuizImageQWindowSingleThread::QuizImageQWindowSingleThread
+QuizImageQWindowSingleThread::createSurface
+QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create
+QuizImageQWindowSingleThread::connectDrawingSurface
+
+2)
+QuizImageQWindowSingleThread::resizeEvent
+
+3)
+QuizImageQWindowSingleThread::exposeEvent
+QuizImageQWindowSingleThread::startQuick
+QuizImageQWindowSingleThread::run
+QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run
+... QuizImageQWindowSingleThread::createTexture
+... QuizImage::initDefaultDrawingData
+    QuizImageQWindowSingleThread::setTextures
+
+-----
+
+1)
+QuizImageQWindowSingleThread::QuizImageQWindowSingleThread
+QuizImageQWindowSingleThread::createSurface
+QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::create
+QuizImageQWindowSingleThread::connectDrawingSurface
+
+2)
+QuizImageQWindowSingleThread::resizeEvent
+... 1) DefaultTextureRender::render
+... 2) QuizImageQWindowSingleThread::startQuick
+       QuizImageQWindowSingleThread::run
+        ... 1,2,3) QuizImageQWindowSingleThread::requestUpdate
+        ... 4) QuizImageQWindowSingleThread::createTexture
+        ... 5) QuizImageQWindowSingleThread::setTextures
+
+3)
+QuizImageQWindowSingleThread::exposeEvent
+
+4)
+QuizImageQWindowSingleThread::render
+
+5)
+QuizImageQWindowSingleThread::requestUpdate
+
+6)
+QuizImageQWindowSingleThread::render
+DefaultTextureRender::render
+
+
+
+
+
+
