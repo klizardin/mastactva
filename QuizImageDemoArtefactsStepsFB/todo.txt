@@ -195,6 +195,7 @@ opencv addon test
             * return info
             - do we need extend?
             - order of drawing
+            - reinit
         * quizimage
             * init drawing data
             * drawing for specific steps
