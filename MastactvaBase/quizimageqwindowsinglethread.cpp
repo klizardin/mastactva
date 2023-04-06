@@ -221,7 +221,8 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         //QuizImageQWindowSingleThread* qwindow,
         QOpenGLContext *context,
         QOffscreenSurface *offscreenSurface,
-        const QSize &windowSize
+        const QSize &windowSize,
+        bool runTestByTest
         )
 {
     //disconnect(m_qmlComponent, &QQmlComponent::statusChanged, qwindow, &QuizImageQWindowSingleThread::run);
@@ -262,13 +263,25 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
     if(!quizImageQuickItem)
     {
-        qWarning("run: Not a QQuickItem");
+        qWarning("run: Cannot find the quizImage QQuickItem");
         delete rootObject;
         return false;
     }
     quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     const int renderingWindowsId = getRenderingWindowsId();
     quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
+
+    QObject * animationCycleObject = m_rootItem->findChild<QObject *>(QStringLiteral("animationCycle"));
+    if(!animationCycleObject)
+    {
+        qWarning("run: Cannot find the animationCycle QQuickItem");
+        delete rootObject;
+        return false;
+    }
+    if(runTestByTest)
+    {
+        animationCycleObject->setProperty("loops", QVariant::fromValue(1));
+    }
 
     // The root item is ready. Associate it with the window.
     m_rootItem->setParentItem(m_quickWindow->contentItem());
@@ -401,8 +414,9 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::isDefaultTexture(
 
 // TODO: add implementation
 // just simple possible implementation
-QuizImageQWindowSingleThread::QuizImageQWindowSingleThread(const QString & qmlFileName)
-    : m_qmlFileName(qmlFileName)
+QuizImageQWindowSingleThread::QuizImageQWindowSingleThread(const QString & qmlFileName, bool runMultipleTests)
+    : m_qmlFileName(qmlFileName),
+      m_runTestByTest(runMultipleTests)
 {
     IQuizImageQWindow::addQuizImageWindows(this);
     setSurfaceType(QSurface::OpenGLSurface);
@@ -612,7 +626,7 @@ void QuizImageQWindowSingleThread::run()
     m_quickInitialized = true;
     for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
     {
-        m_quickInitialized &= surface.run(m_context.get(), m_offscreenSurface.get(), QSize{width(), height()});
+        m_quickInitialized &= surface.run(m_context.get(), m_offscreenSurface.get(), QSize{width(), height()}, m_runTestByTest);
     }
 }
 

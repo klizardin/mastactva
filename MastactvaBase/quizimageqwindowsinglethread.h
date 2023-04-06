@@ -73,7 +73,8 @@ protected:
                 //QuizImageQWindowSingleThread* qwindow,
                 QOpenGLContext *context,
                 QOffscreenSurface *offscreenSurface,
-                const QSize &windowSize
+                const QSize &windowSize,
+                bool runTestByTest
                 );
         void updateSizes(const QSize &windowSize);
         QQmlComponent* getQmlComponent();
@@ -99,7 +100,7 @@ protected:
     };
 
 public:
-    QuizImageQWindowSingleThread(const QString & qmlFileName);
+    QuizImageQWindowSingleThread(const QString & qmlFileName, bool runMultipleTests);
     ~QuizImageQWindowSingleThread() override;
 
     void setTextures(const TextureNames & textures_) override;
@@ -148,6 +149,7 @@ private:
     qreal m_dpr = 1.0;
     std::unique_ptr<DefaultTextureRender> m_defaultRenderer;
     QString m_qmlFileName;
+    bool m_runTestByTest = false;
     QString m_currentTextureName;
 };
 

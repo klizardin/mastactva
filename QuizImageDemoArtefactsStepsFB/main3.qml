@@ -17,6 +17,7 @@ Rectangle {
     }
 
     SequentialAnimation {
+        objectName: "animationCycle"
         id: animationCycle
         NumberAnimation { target: quizImage; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
         NumberAnimation { target: quizImage; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
@@ -26,7 +27,7 @@ Rectangle {
         NumberAnimation { target: quizImage; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
         PauseAnimation { duration: 2000 }
         running: true
-        //loops: Animation.Infinite
+        loops: Animation.Infinite
     }
 
     Connections {
