@@ -278,10 +278,9 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         delete rootObject;
         return false;
     }
-    if(runTestByTest)
-    {
-        animationCycleObject->setProperty("loops", QVariant::fromValue(1));
-    }
+    qDebug() << "runTestByTest :" << runTestByTest;
+    animationCycleObject->setProperty("loops", QVariant::fromValue(runTestByTest ? 1: -1));
+    qDebug() << "loops : " << animationCycleObject->property("loops");
 
     // The root item is ready. Associate it with the window.
     m_rootItem->setParentItem(m_quickWindow->contentItem());
