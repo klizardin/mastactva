@@ -36,7 +36,6 @@ Rectangle {
         function onFinished()
         {
             console.log("animationCycle.onFinished()")
-            console.log("animationCycle.loops = " + animationCycle.loops)
             if(animationCycle.loops !== -1)
             {
                 quizImage.testIndex = quizImage.testIndex + 1
