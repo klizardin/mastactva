@@ -17,6 +17,7 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QCommandLineParser>
 #include "../MastactvaBase/quizimageqwindowsinglethread.h"
 
 int main(int argc, char *argv[])
@@ -26,6 +27,19 @@ int main(int argc, char *argv[])
 #endif
 
     QGuiApplication app(argc, argv);
+
+    QCommandLineParser commandLineParser;
+    commandLineParser.setApplicationDescription("Graphics engine test application");
+    commandLineParser.addHelpOption();
+    commandLineParser.addVersionOption();
+
+    QCommandLineOption commandLineRunTestByTestOption(QStringList{} << "t" << "test-by-test", "run multiple tests");
+    commandLineParser.addOption(commandLineRunTestByTestOption);
+
+    commandLineParser.process(app);
+
+    qDebug() << "command line:";
+    qDebug() << "\t" << commandLineRunTestByTestOption.names() << " :" << commandLineParser.isSet(commandLineRunTestByTestOption);
 
     /*QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -42,7 +56,7 @@ int main(int argc, char *argv[])
     // use of the window
     // (standard steps for QWindow):
     // create
-    QuizImageQWindowSingleThread window(QStringLiteral("qrc:/main3.qml"));
+    QuizImageQWindowSingleThread window(QStringLiteral("qrc:/main3.qml"), commandLineParser.isSet(commandLineRunTestByTestOption));
     // set default size
     window.resize(800, 600);
     // show
