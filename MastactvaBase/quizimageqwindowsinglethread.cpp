@@ -270,15 +270,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     const int renderingWindowsId = getRenderingWindowsId();
     quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
-
-    QObject * animationCycleObject = m_rootItem->findChild<QObject *>(QStringLiteral("animationCycle"));
-    if(!animationCycleObject)
-    {
-        qWarning("run: Cannot find the animationCycle QQuickItem");
-        delete rootObject;
-        return false;
-    }
-    animationCycleObject->setProperty("loops", QVariant::fromValue(runTestByTest ? 1: -1));
+    quizImageQuickItem->setProperty("doRunTestsStepByStep", QVariant::fromValue(runTestByTest));
 
     // The root item is ready. Associate it with the window.
     m_rootItem->setParentItem(m_quickWindow->contentItem());
