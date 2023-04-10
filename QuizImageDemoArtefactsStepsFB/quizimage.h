@@ -81,6 +81,7 @@ public:
     Q_PROPERTY(int testIndex READ testIndex WRITE setTestIndex NOTIFY testIndexChanged)
     Q_PROPERTY(QString renderingTextureName READ renderingTextureName WRITE setRenderingTextureName NOTIFY renderingTextureNameChanged)
     Q_PROPERTY(int renderingWindowsId READ renderingWindowsId WRITE setRenderingWindowsId NOTIFY renderingWindowsIdChanged)
+    Q_PROPERTY(bool doRunTestsStepByStep READ doRunTestsStepByStep WRITE setDoRunTestsStepByStep NOTIFY doRunTestsStepByStepChanged)
 
     Q_INVOKABLE void updateState();
     Q_INVOKABLE void updateProject();
@@ -105,6 +106,8 @@ public:
     void setRenderingWindowsId(int id_);
     bool isDefaultTexture() const;
     QString renderingTextureName() const;
+    bool doRunTestsStepByStep() const;
+    void setDoRunTestsStepByStep(const bool &stepByStep_);
 
 protected:
     void setT(const qreal &t_);
@@ -132,6 +135,7 @@ signals:
     void testIndexChanged();
     void renderingTextureNameChanged();
     void renderingWindowsIdChanged();
+    void doRunTestsStepByStepChanged();
 
 private:
     qreal m_t = 0.0;
@@ -144,6 +148,7 @@ private:
     int m_testIndex = -1;
     QString m_renderingTextureName;
     int m_renderingWindowsId = -1;
+    bool m_doRunTestsStepByStep = false;
 };
 
 

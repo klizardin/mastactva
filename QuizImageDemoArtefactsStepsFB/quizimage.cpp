@@ -126,6 +126,18 @@ QString QuizImage::renderingTextureName() const
     return m_renderingTextureName;
 }
 
+bool QuizImage::doRunTestsStepByStep() const
+{
+    return m_doRunTestsStepByStep;
+}
+
+void QuizImage::setDoRunTestsStepByStep(const bool &stepByStep_)
+{
+    m_doRunTestsStepByStep = stepByStep_;
+
+    emit doRunTestsStepByStepChanged();
+}
+
 void QuizImage::setRenderingTextureName(const QString &renderingTextureName_)
 {
     m_renderingTextureName = renderingTextureName_;
