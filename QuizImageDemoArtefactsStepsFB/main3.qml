@@ -49,4 +49,20 @@ Rectangle {
             console.log("renderer.testIndex =", quizImage.testIndex)
         }
     }
+
+    Connections {
+        target: quizImage
+
+        function onDoRunTestsStepByStepChanged()
+        {
+            if(quizImage.doRunTestsStepByStep)
+            {
+                animationCycle.loops = 1
+            }
+            else
+            {
+                animationCycle.loops = Animation.Infinite
+            }
+        }
+    }
 }
