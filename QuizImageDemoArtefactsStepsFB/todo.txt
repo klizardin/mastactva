@@ -202,5 +202,6 @@ opencv addon test
             * drawing for specific steps
         - data
             - similar data with special type for render textures (special type for texture target)
+            - simpilify data structures
 
 
