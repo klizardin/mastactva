@@ -184,7 +184,7 @@ opencv addon test
     - test modes
     * test 1 + (1 - alpha) mode
     - test 1 + (1 - alpha) mode with tex attrs
-    - debug ...
+    - debug .
 * debug/run modes
 - multi steps
     * format
@@ -202,5 +202,7 @@ opencv addon test
             * drawing for specific steps
         - data
             - similar data with special type for render textures (special type for texture target)
-
+            - simpilify data structures
+- new add-on
+    - learn how to build .
 
