@@ -580,13 +580,13 @@ std::tuple<QJsonValue, bool> Variables::getJsonValue(const QJsonObject &varObjec
 {
     if(!varObject.contains(g_jsonDataVariableValueName))
     {
-        return {{}, false};
+        return {QJsonValue{}, false};
     }
     QJsonValue val = varObject[g_jsonDataVariableValueName];
     if(val.isUndefined()
             || !val.isArray())
     {
-        return {{}, false};
+        return {QJsonValue{}, false};
     }
     return {val, true};
 }
