@@ -192,6 +192,10 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::createTexture(QOp
     {
         return false;
     }
+    if(m_textureCreated)
+    {
+        return true;
+    }
 
     f->glGenTextures(1, &m_textureId);
     f->glBindTexture(GL_TEXTURE_2D, m_textureId);
@@ -200,6 +204,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::createTexture(QOp
     f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureSize.width(), textureSize.height(), 0,
                     GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     m_quickWindow->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId, textureSize));
+    m_textureCreated = true;
 
     return true;
 }
@@ -213,11 +218,12 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::deleteTexture(QOp
 
     context->functions()->glDeleteTextures(1, &m_textureId);
     m_textureId = 0;
+    m_textureCreated = false;
 
     return true;
 }
 
-bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
+void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         //QuizImageQWindowSingleThread* qwindow,
         QOpenGLContext *context,
         QOffscreenSurface *offscreenSurface,
@@ -226,6 +232,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         )
 {
     //disconnect(m_qmlComponent, &QQmlComponent::statusChanged, qwindow, &QuizImageQWindowSingleThread::run);
+    m_quickInitialized = false;
 
     if (m_qmlComponent->isError())
     {
@@ -234,7 +241,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         {
             qWarning() << error.url() << error.line() << error;
         }
-        return false;
+        return;
     }
 
     // TODO: can we here set QQuickItem properties
@@ -247,7 +254,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         {
             qWarning() << error.url() << error.line() << error;
         }
-        return false;
+        return;
     }
 
     m_rootItem = qobject_cast<QQuickItem *>(rootObject);
@@ -255,7 +262,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     {
         qWarning("run: Not a QQuickItem");
         delete rootObject;
-        return false;
+        return;
     }
 
     // set renderingTextureName property of the QuizImage quick item
@@ -265,7 +272,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     {
         qWarning("run: Cannot find the quizImage QQuickItem");
         delete rootObject;
-        return false;
+        return;
     }
     quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     const int renderingWindowsId = getRenderingWindowsId();
@@ -290,7 +297,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
 
     QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 
-    return true;
+    m_quickInitialized = true;
 }
 
 void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::updateSizes(
@@ -342,6 +349,10 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::hasTexture() cons
 
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::startQuick(const QString &filename)
 {
+    if(m_qmlComponent)
+    {
+        return !m_qmlComponent->isLoading();
+    }
     m_qmlEngine->addImportPath("qrc:/Mastactva");
     // TODO: is it possible to parametrise filename?
     m_qmlComponent = std::make_unique<QQmlComponent>(m_qmlEngine.get(), QUrl(filename));
@@ -398,6 +409,11 @@ int QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getRenderingWindow
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::isDefaultTexture() const
 {
     return TextureNames::isDefaultTexcture(getTextureName());
+}
+
+bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::isQuickInitialized() const
+{
+    return m_quickInitialized;
 }
 
 
@@ -541,7 +557,13 @@ void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
     Q_UNUSED(e);
     if (isExposed())
     {
-        if (!m_quickInitialized)
+        const bool quickInitialized = std::all_of(
+                    std::begin(m_drawingSurfaces), std::end(m_drawingSurfaces),
+                    [](const QuizImageQMLDrawingSurface &surface)->bool
+        {
+            return surface.isQuickInitialized();
+        });
+        if (!quickInitialized)
         {
             // run rendering
             // for this QWindow and m_context QOpenGLContext
@@ -612,10 +634,19 @@ void QuizImageQWindowSingleThread::run()
     {
         disconnect(surface.getQmlComponent(), &QQmlComponent::statusChanged, this, &QuizImageQWindowSingleThread::run);
     }
-    m_quickInitialized = true;
     for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
     {
-        m_quickInitialized &= surface.run(m_context.get(), m_offscreenSurface.get(), QSize{width(), height()}, m_runTestByTest);
+        if(!surface.isQuickInitialized())
+        {
+            surface.run(m_context.get(), m_offscreenSurface.get(), QSize{width(), height()}, m_runTestByTest);
+        }
+    }
+    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    {
+        if(!surface.isQuickInitialized())
+        {
+            connect(surface.getQmlComponent(), &QQmlComponent::statusChanged, this, &QuizImageQWindowSingleThread::run);
+        }
     }
 }
 

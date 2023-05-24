@@ -37,7 +37,8 @@ enum class ArtefactTypeEn{
     scriptLua,
     scriptLuaRuntime,
     scriptLibrary,
-    argumentReference   /* TODO: implement */
+    argumentReference,   /* TODO: implement */
+    textureSurfaceNames
 };
 
 
