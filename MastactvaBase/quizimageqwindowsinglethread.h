@@ -69,7 +69,7 @@ protected:
         void keyReleaseEvent(QKeyEvent *e);
         bool createTexture(QOpenGLContext *context, const QSize &textureSize);
         bool deleteTexture(QOpenGLContext *context);
-        bool run(
+        void run(
                 //QuizImageQWindowSingleThread* qwindow,
                 QOpenGLContext *context,
                 QOffscreenSurface *offscreenSurface,
@@ -87,6 +87,7 @@ protected:
         void setTextureName(const QString &texture);
         int getRenderingWindowsId() const;
         bool isDefaultTexture() const;
+        bool isQuickInitialized() const;
 
     private:
         std::unique_ptr<QQuickRenderControl> m_renderControl;
@@ -97,6 +98,7 @@ protected:
         uint m_textureId = 0;
         QString m_textureName;
         int m_renderingWindowsId = 0;
+        bool m_quickInitialized = false;
     };
 
 public:
@@ -143,7 +145,6 @@ private:
     std::list<QuizImageQMLDrawingSurface> m_drawingSurfaces;
 
     QSize m_textureSize = QSize{};
-    bool m_quickInitialized = false;
     bool m_quickReady = false;
     std::unique_ptr<QTimer> m_updateTimer;
     qreal m_dpr = 1.0;
