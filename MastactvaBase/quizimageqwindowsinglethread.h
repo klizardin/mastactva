@@ -99,6 +99,7 @@ protected:
         QString m_textureName;
         int m_renderingWindowsId = 0;
         bool m_quickInitialized = false;
+        bool m_textureCreated = false;
     };
 
 public:
