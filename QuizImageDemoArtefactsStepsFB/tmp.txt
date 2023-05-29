@@ -46,6 +46,262 @@ QuizImageQWindowSingleThread::requestUpdate
 QuizImageQWindowSingleThread::render
 DefaultTextureRender::render
 
+---------------------------------------------------------------------
+
+1 WindowSingleThreaded::WindowSingleThreaded quizimagewindow.cpp 97 0x55555555b862
+2 main                                       main.cpp            67 0x55555555b533
+
+----------
+
+1  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        383  0x55555555dcda
+2  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+3  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+4  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+5  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+6  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+10 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+11 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+12 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+13 main                                           main.cpp                   74   0x55555555b560
+
+----------
+
+1  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        385  0x55555555dd00
+2  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+3  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+4  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+5  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+6  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+10 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+11 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+12 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+13 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        389  0x55555555dd19
+2  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+3  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+4  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+5  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+6  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+10 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+11 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+12 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+13 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  DefaultRenderer::render                        cuberenderer.cpp           181  0x555555562d68
+2  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        389  0x55555555dd8c
+3  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+4  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+5  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+6  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+7  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+11 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+12 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+13 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+14 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  DefaultRenderer::init                          cuberenderer.cpp           86   0x5555555622cb
+2  DefaultRenderer::render                        cuberenderer.cpp           184  0x555555562db1
+3  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        389  0x55555555dd8c
+4  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+5  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+6  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+7  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+8  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+12 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+13 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+14 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+15 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  DefaultRenderer::init                          cuberenderer.cpp           96   0x5555555623f2
+2  DefaultRenderer::render                        cuberenderer.cpp           184  0x555555562db1
+3  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        389  0x55555555dd8c
+4  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+5  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+6  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+7  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+8  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+12 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+13 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+14 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+15 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  DefaultRenderer::setupVertexAttribs            cuberenderer.cpp           168  0x555555562c38
+2  DefaultRenderer::init                          cuberenderer.cpp           157  0x555555562b49
+3  DefaultRenderer::render                        cuberenderer.cpp           184  0x555555562db1
+4  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        389  0x55555555dd8c
+5  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+6  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+7  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+8  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+9  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+13 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+14 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+15 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+16 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  DefaultRenderer::render                        cuberenderer.cpp           187  0x555555562db1
+2  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        389  0x55555555dd8c
+3  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+4  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+5  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+6  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+7  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+11 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+12 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+13 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+14 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  DefaultRenderer::render                        cuberenderer.cpp           192  0x555555562df9
+2  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        389  0x55555555dd8c
+3  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+4  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+5  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+6  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+7  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+11 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+12 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+13 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+14 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  WindowSingleThreaded::startQuick               quizimagewindow.cpp        366  0x55555555da3f
+2  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        390  0x55555555de28
+3  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+4  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+5  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+6  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+7  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+11 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+12 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+13 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+14 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  WindowSingleThreaded::run                      quizimagewindow.cpp        282  0x55555555caf5
+2  WindowSingleThreaded::startQuick               quizimagewindow.cpp        379  0x55555555dc27
+3  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        390  0x55555555de28
+4  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+5  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+6  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+7  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+8  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+12 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+13 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+14 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+15 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  WindowSingleThreaded::requestUpdate                                                                                                                                                     quizimagewindow.cpp        277  0x55555555caa8
+2  QtPrivate::FunctorCall<QtPrivate::IndexesList<>, QtPrivate::List<>, void, void (WindowSingleThreaded:: *)()>::call(void (WindowSingleThreaded:: *)(), WindowSingleThreaded *, void * *) qobjectdefs_impl.h         171  0x555555561643
+3  QtPrivate::FunctionPointer<void (WindowSingleThreaded:: *)()>::call<QtPrivate::List<>, void>(void (WindowSingleThreaded:: *)(), WindowSingleThreaded *, void * *)                       qobjectdefs_impl.h         208  0x555555561479
+4  QtPrivate::QSlotObject<void (WindowSingleThreaded:: *)(), QtPrivate::List<>, void>::impl(int, QtPrivate::QSlotObjectBase *, QObject *, void * *, bool *)                                qobjectdefs_impl.h         419  0x55555556101d
+5  QtPrivate::QSlotObjectBase::call                                                                                                                                                        qobjectdefs_impl.h         399  0x7ffff620829a
+6  doActivate<false>                                                                                                                                                                       qobject.cpp                3921 0x7ffff620829a
+7  QQuickItemPrivate::dirty                                                                                                                                                                qquickitem.cpp             6501 0x7ffff776776e
+8  QQuickItemPrivate::addChild                                                                                                                                                             qquickitem.cpp             2946 0x7ffff77752e4
+9  QQuickItem::setParentItem                                                                                                                                                               qquickitem.h               482  0x7ffff7775dc9
+10 WindowSingleThreaded::run                                                                                                                                                               quizimagewindow.cpp        328  0x55555555d4d1
+11 WindowSingleThreaded::startQuick                                                                                                                                                        quizimagewindow.cpp        379  0x55555555dc27
+12 WindowSingleThreaded::exposeEvent                                                                                                                                                       quizimagewindow.cpp        390  0x55555555de28
+13 QWindow::event                                                                                                                                                                          qwindow.cpp                2538 0x7ffff6e2d168
+14 QCoreApplication::notifyInternal2                                                                                                                                                       qcoreapplication.cpp       1067 0x7ffff61a96ba
+15 QGuiApplicationPrivate::processExposeEvent                                                                                                                                              qguiapplication.cpp        3197 0x7ffff6de094b
+16 QWindowSystemInterface::sendWindowSystemEvents                                                                                                                                          qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+17 xcbSourceDispatch                                                                                                                                                                       qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+
+(requestUpdate * N)
+
+---------
+
+1  WindowSingleThreaded::updateSizes              quizimagewindow.cpp        352  0x55555555d8ab
+2  WindowSingleThreaded::run                      quizimagewindow.cpp        332  0x55555555d50c
+3  WindowSingleThreaded::startQuick               quizimagewindow.cpp        379  0x55555555dc27
+4  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        390  0x55555555de28
+5  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+6  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+7  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+8  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+9  xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+13 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+14 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+15 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+16 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  DefaultRenderer::resize                        cuberenderer.cpp           162  0x555555562bd2
+2  WindowSingleThreaded::updateSizes              quizimagewindow.cpp        362  0x55555555da14
+3  WindowSingleThreaded::run                      quizimagewindow.cpp        332  0x55555555d50c
+4  WindowSingleThreaded::startQuick               quizimagewindow.cpp        379  0x55555555dc27
+5  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        390  0x55555555de28
+6  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+7  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+8  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+9  QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+10 xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+14 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+15 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+16 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+17 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  RenderControl::renderWindow                    quizimagewindow.cpp        85   0x55555555b731
+2  QQuickWindow::effectiveDevicePixelRatio        qquickwindow.cpp           3755 0x7ffff780cf7b
+3  QQuickRenderControl::initialize                qquickrendercontrol.cpp    331  0x7ffff77abc5a
+4  WindowSingleThreaded::run                      quizimagewindow.cpp        343  0x55555555d5cc
+5  WindowSingleThreaded::startQuick               quizimagewindow.cpp        379  0x55555555dc27
+6  WindowSingleThreaded::exposeEvent              quizimagewindow.cpp        390  0x55555555de28
+7  QWindow::event                                 qwindow.cpp                2538 0x7ffff6e2d168
+8  QCoreApplication::notifyInternal2              qcoreapplication.cpp       1067 0x7ffff61a96ba
+9  QGuiApplicationPrivate::processExposeEvent     qguiapplication.cpp        3197 0x7ffff6de094b
+10 QWindowSystemInterface::sendWindowSystemEvents qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+11 xcbSourceDispatch                              qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+15 QEventDispatcherGlib::processEvents            qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+16 QEventLoop::exec                               qflags.h                   70   0x7ffff61b596b
+17 QCoreApplication::exec                         qflags.h                   110  0x7ffff61b152e
+18 main                                           main.cpp                   74   0x55555555b560
+
+---------
+
+1  WindowSingleThreaded::createTexture                                                                                                                                                     quizimagewindow.cpp        206  0x55555555c555
+2  QtPrivate::FunctorCall<QtPrivate::IndexesList<>, QtPrivate::List<>, void, void (WindowSingleThreaded:: *)()>::call(void (WindowSingleThreaded:: *)(), WindowSingleThreaded *, void * *) qobjectdefs_impl.h         171  0x555555561643
+3  QtPrivate::FunctionPointer<void (WindowSingleThreaded:: *)()>::call<QtPrivate::List<>, void>(void (WindowSingleThreaded:: *)(), WindowSingleThreaded *, void * *)                       qobjectdefs_impl.h         208  0x555555561479
+4  QtPrivate::QSlotObject<void (WindowSingleThreaded:: *)(), QtPrivate::List<>, void>::impl(int, QtPrivate::QSlotObjectBase *, QObject *, void * *, bool *)                                qobjectdefs_impl.h         419  0x55555556101d
+5  QtPrivate::QSlotObjectBase::call                                                                                                                                                        qobjectdefs_impl.h         399  0x7ffff620829a
+6  doActivate<false>                                                                                                                                                                       qobject.cpp                3921 0x7ffff620829a
+7  doActivate<false>                                                                                                                                                                       qobject.cpp                3933 0x7ffff6208610
+8  QQuickRenderControl::initialize                                                                                                                                                         qquickrendercontrol.cpp    333  0x7ffff77abd22
+9  WindowSingleThreaded::run                                                                                                                                                               quizimagewindow.cpp        343  0x55555555d5cc
+10 WindowSingleThreaded::startQuick                                                                                                                                                        quizimagewindow.cpp        379  0x55555555dc27
+11 WindowSingleThreaded::exposeEvent                                                                                                                                                       quizimagewindow.cpp        390  0x55555555de28
+12 QWindow::event                                                                                                                                                                          qwindow.cpp                2538 0x7ffff6e2d168
+13 QCoreApplication::notifyInternal2                                                                                                                                                       qcoreapplication.cpp       1067 0x7ffff61a96ba
+14 QGuiApplicationPrivate::processExposeEvent                                                                                                                                              qguiapplication.cpp        3197 0x7ffff6de094b
+15 QWindowSystemInterface::sendWindowSystemEvents                                                                                                                                          qwindowsysteminterface.cpp 1137 0x7ffff6e301dc
+16 xcbSourceDispatch                                                                                                                                                                       qxcbeventdispatcher.cpp    93   0x7ffff1bd7a2a
+20 QEventDispatcherGlib::processEvents                                                                                                                                                     qeventdispatcher_glib.cpp  429  0x7ffff644dd3a
+
+
+
 
 
 
