@@ -68,11 +68,6 @@ public:
             const drawingdata::Details &details_        // details from parent class
             ) const override;
 
-    void addTetureTargets(
-            drawing_data::QuizImageObject &object_,
-            const drawingdata::Details &details_
-            ) const override;
-
     /*
      * return true if any arterfact has arguments
     */

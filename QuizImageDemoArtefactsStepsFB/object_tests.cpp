@@ -496,8 +496,7 @@ void processArtefact(
         const int &objectArtefactStep_,
         const int &effectId_,
         const QDateTime &now_,
-        const ArgumentsTuple (&vertexArgs_)[size_],
-        const QStringList &texturesList_ = QStringList{}
+        const ArgumentsTuple (&vertexArgs_)[size_]
         )
 {
     std::unique_ptr<ArtefactData> artefact = std::make_unique<ArtefactData>(
@@ -532,8 +531,7 @@ void processArtefact(
                 artefactId_,
                 objectArtefactStep_,
                 artefact.release(),
-                MergeId(),
-                texturesList_
+                MergeId()
                 );
     effectObject_->m_objectArtefactData->push_back(objectArtefactData.release());
 }
@@ -549,8 +547,7 @@ void processTexturesArtefacts(
         const int &objectArtefactStep_,
         const int &effectId_,
         const QDateTime &now_,
-        const TextureTuple (&textures_)[size_],
-        const QStringList &tetureNamesList = QStringList{}
+        const TextureTuple (&textures_)[size_]
         )
 {
     for(std::size_t i = 0; i < sizeof(textures_)/sizeof(textures_[0]); ++i)
@@ -571,8 +568,7 @@ void processTexturesArtefacts(
                     textureBaseArtefactId_ + i,
                     objectArtefactStep_,
                     textureArtefact.release(),
-                    MergeId(),
-                    tetureNamesList
+                    MergeId()
                     );
         effectObject_->m_objectArtefactData->push_back(textureObjectArtefactData.release());
     }
@@ -586,8 +582,7 @@ void processTextureNamesArtefacts(
         const int &objectArtefactStep_,
         const int &effectId_,
         const QDateTime &now_,
-        const TextureTuple (&textures_)[size_],
-        const QStringList &tetureNamesList = QStringList{}
+        const TextureTuple (&textures_)[size_]
         )
 {
     for(std::size_t i = 0; i < sizeof(textures_)/sizeof(textures_[0]); ++i)
@@ -608,8 +603,7 @@ void processTextureNamesArtefacts(
                     textureBaseArtefactId_ + i,
                     objectArtefactStep_,
                     textureArtefact.release(),
-                    MergeId(),
-                    tetureNamesList
+                    MergeId()
                     );
         effectObject_->m_objectArtefactData->push_back(textureObjectArtefactData.release());
     }
@@ -771,8 +765,7 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
                 artefactId1,
                 objectArtefactStep0,
                 artefact1.release(),
-                MergeId(),
-                QStringList{}
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -797,8 +790,7 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
                 artefactId2,
                 objectArtefactStep0,
                 artefact2.release(),
-                MergeId(),
-                QStringList{}
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -928,8 +920,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 artefactId1,
                 objectArtefactStep0,
                 artefact1.release(),
-                MergeId(),
-                QStringList{}
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -954,8 +945,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 artefactId2,
                 objectArtefactStep0,
                 artefact2.release(),
-                MergeId(),
-                QStringList{}
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -1087,6 +1077,13 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
             g_renderTName,
             "0.5"
         },
+        {
+            103,
+            ArtefactArgTypeEn::stringsType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderTexturesListName,
+            textureNamesList.join(g_renderObjectsStatesSpliter)
+        }
     };
     processArtefact(
         effectObject,
@@ -1098,8 +1095,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
         objectArtefactStep0,
         effectId,
         now,
-        fragmentArgs1,
-        textureNamesList // it is required just for a fragment shader
+        fragmentArgs1
     );
 
     // textures artefacts
@@ -1426,8 +1422,7 @@ std::unique_ptr<EffectObjectsData> createEffectObjectWithOneArtefactWithArgument
                 artefactId_,
                 objectArtefactStep0,
                 artefact.release(),
-                MergeId(),
-                QStringList{}
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData.release());
 
@@ -2847,6 +2842,13 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
             g_renderTName,
             "0.5"
         },
+        {
+            103,
+            ArtefactArgTypeEn::stringsType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderTexturesListName,
+            textureNamesList.join(g_renderObjectsStatesSpliter)
+        }
     };
     processArtefact(
         effectObject,
@@ -2858,8 +2860,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
         objectArtefactStep0,
         effectId,
         now,
-        fragmentArgs1,
-        textureNamesList    // it is required just for fragment shader
+        fragmentArgs1
     );
 
     // textures artefacts
@@ -3256,6 +3257,13 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
             ArtefactArgStorageEn::uniformStorage,
             g_renderGlobalCalculationsName,
             globalCalculations_
+        },
+        {
+            103,
+            ArtefactArgTypeEn::stringsType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderTexturesListName,
+            textureNamesList_.join(g_renderObjectsStatesSpliter)
         }
     };
     static const int objectArtefactStep0 = 0;
@@ -3269,8 +3277,7 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
         objectArtefactStep0,
         effectId,
         now,
-        globalArgs,
-        textureNamesList_ // also requred for future calculations
+        globalArgs
     );
 
     return effectObject;

@@ -542,10 +542,11 @@ namespace utils
     }
 
     inline
-    void splitTo(const QString &argument_, const QString &splitter_, std::vector<QString> &objectStates_)
+    QStringList splitTo(const QString &argument_, const QString &splitter_, std::vector<QString> &objectStates_)
     {
-        const QStringList splitted = argument_.split(splitter_);
+        QStringList splitted = argument_.split(splitter_);
         addStates(splitted, objectStates_);
+        return splitted;
     }
 }
 
