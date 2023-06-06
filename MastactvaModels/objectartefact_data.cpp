@@ -30,15 +30,13 @@ ObjectArtefactData::ObjectArtefactData(
         int artefactId_,
         int stepIndex_,
         ArtefactData *artefact_,
-        const MergeId &mergeid_,
-        const QStringList &textures_
+        const MergeId &mergeid_
         )
     : m_id(id_),
      m_objectInfoId(objectInfoId_),
      m_artefactId(artefactId_),
      m_stepIndex(stepIndex_),
-     m_mergeid(mergeid_),
-     m_textures(textures_)
+     m_mergeid(mergeid_)
 {
     createArrays();
     if(m_artefactData.operator bool())
@@ -60,7 +58,6 @@ ObjectArtefactData &ObjectArtefactData::operator = (ObjectArtefactData &&data_)
     m_stepIndex = std::move(data_.m_stepIndex);
     m_artefactData = std::move(data_.m_artefactData);
     m_mergeid = std::move(data_.m_mergeid);
-    m_textures = std::move(data_.m_textures);
 
     return *this;
 }
@@ -73,7 +70,6 @@ std::unique_ptr<ObjectArtefactData> ObjectArtefactData::getDataCopy() const
     result->m_artefactId = m_artefactId;
     result->m_stepIndex = m_stepIndex;
     result->m_mergeid = m_mergeid;
-    result->m_textures = m_textures;
     data_object::utils::copyDataVector(m_artefactData.get(), result->m_artefactData.get());
     return result;
 }

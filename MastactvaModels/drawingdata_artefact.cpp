@@ -81,15 +81,6 @@ void DrawingDataArtefact::addArguments(
     }
 }
 
-void DrawingDataArtefact::addTetureTargets(
-        drawing_data::QuizImageObject &object_,
-        const drawingdata::Details &details_
-        ) const
-{
-    Q_UNUSED(object_);
-    Q_UNUSED(details_);
-}
-
 bool DrawingDataArtefact::hasArguments() const
 {
     return (m_effectArgData.operator bool()

@@ -137,7 +137,8 @@ public:
         {
             g_renderFillColor,
             g_renderGlobalStatesName,
-            g_renderGlobalCalculationsName
+            g_renderGlobalCalculationsName,
+            g_renderTexturesListName
         };
         return std::find_if(
                     std::begin(s_globalArgumnentNames),
@@ -195,13 +196,26 @@ public:
         {
             setStringListValue(details_, data_.globalCalculations);
         }
+        else if(g_renderTexturesListName == m_name)
+        {
+            const QStringList textures = setStringListValue(details_, data_.targetTextures);
+            for(const QString &textureTargetName : textures)
+            {
+                if(details_.textureTargets
+                    && !details_.textureTargets->contains(textureTargetName)
+                    )
+                {
+                    *(details_.textureTargets) << textureTargetName;
+                }
+            }
+        }
     }
 
 protected:
     /*
      * the helper function to setup some value of the vector<string> type.
     */
-    void setStringListValue(
+    QStringList setStringListValue(
             const drawingdata::Details &details_,
             std::vector<QString> &states_
             ) const
@@ -211,10 +225,11 @@ protected:
                 details_.variables->get(m_name, details_.position.get(), states))
         {
             drawingdata::utils::addStates(states, states_);
+            return states;
         }
         else
         {
-            drawingdata::utils::splitTo(m_defaultValue, g_renderObjectsStatesSpliter, states_);
+            return drawingdata::utils::splitTo(m_defaultValue, g_renderObjectsStatesSpliter, states_);
         }
     }
 

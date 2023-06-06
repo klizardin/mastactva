@@ -60,14 +60,6 @@ public:
             ) const = 0;
 
     /*
-     * add texture targets
-    */
-    virtual void addTetureTargets(
-            drawing_data::QuizImageObject &object_,
-            const drawingdata::Details &details_
-            ) const = 0;
-
-    /*
      * return true if the artefact has arguments
     */
     virtual bool hasArguments() const = 0;
@@ -176,10 +168,6 @@ public:
             const drawingdata::Details &details_
             ) const override;
     void addArguments(
-            drawing_data::QuizImageObject &object_,
-            const drawingdata::Details &details_
-            ) const override;
-    void addTetureTargets(
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const override;
