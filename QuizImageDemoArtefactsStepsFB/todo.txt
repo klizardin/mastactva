@@ -204,5 +204,5 @@ opencv addon test
             - similar data with special type for render textures (special type for texture target)
             - simpilify data structures
 - new add-on
-    - learn how to build .
+    - learn how to build ..
 
