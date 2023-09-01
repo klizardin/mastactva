@@ -395,10 +395,7 @@ void WindowSingleThreaded::exposeEvent(QExposeEvent *)
 void WindowSingleThreaded::resizeTexture()
 {
     if (m_qmlTextureRrenderer[0].m_rootItem && m_qmlTextureRrenderer[1].m_rootItem && m_context->makeCurrent(m_offscreenSurface)) {
-        m_context->functions()->glDeleteTextures(1, &(m_qmlTextureRrenderer[0].m_textureId));
-        m_context->functions()->glDeleteTextures(1, &(m_qmlTextureRrenderer[1].m_textureId));
-        m_qmlTextureRrenderer[0].m_textureId = 0;
-        m_qmlTextureRrenderer[1].m_textureId = 0;
+        destroyTexture();
         createTexture();
         m_context->doneCurrent();
         updateSizes();
