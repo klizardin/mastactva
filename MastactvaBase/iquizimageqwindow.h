@@ -26,7 +26,7 @@ public:
 class IQuizImageQWindowOperations
 {
 public:
-    virtual void setTextures(const TextureNames & textures) = 0;
+    virtual bool setTextures(const TextureNames & textures) = 0;
     virtual int count() const = 0;
     virtual QString at(int index) const = 0;
     virtual bool isDefaultTexture(int index) const = 0;

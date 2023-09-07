@@ -483,54 +483,20 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
     m_context.reset();
 }
 
-void QuizImageQWindowSingleThread::setTextures(const TextureNames & textures_)
+bool QuizImageQWindowSingleThread::setTextures(const TextureNames & textures_)
 {
-    /*
-     * here test if it is the first QuizImage
-     * if none first ignore
-    */
-
-    if(m_drawingSurfaces.size() > textures_.size())
+    m_activeOffscreenSurafaces = std::max((int)textures_.size(), (int)m_drawingSurfaces.size());
+    auto it = m_drawingSurfaces.begin();
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != m_drawingSurfaces.end(); i++, ++it)
     {
-        for(int i = 0; i < (int)m_drawingSurfaces.size() - (int)textures_.size(); ++i)
-        {
-            auto it = std::prev(std::end(m_drawingSurfaces));
-            // skip default texture remove
-            if(it->isDefaultTexture())
-            {
-                if(std::begin(m_drawingSurfaces) == it)
-                {
-                    break;
-                }
-                it = std::prev(it);
-            }
-            m_drawingSurfaces.erase(it);
-        }
+        it->setTextureName(textures_[i]);
     }
-    else if(m_drawingSurfaces.size() < textures_.size())
-    {
-        for(int i = 0; i < (int)textures_.size() - (int)m_drawingSurfaces.size(); ++i)
-        {
-            createSurface();
-        }
-    }
-    auto tit = std::begin(textures_);
-    auto tite = std::end(textures_);
-    auto sit = std::begin(m_drawingSurfaces);
-    auto site = std::end(m_drawingSurfaces);
-    for(;tit != tite && sit != site; ++tit, ++sit)
-    {
-        if(site->isDefaultTexture() && TextureNames::isDefaultTexcture(*tit))
-        {
-            continue;
-        }
-        sit->setTextureName(*tit);
-    }
+    return textures_.size() <= m_drawingSurfaces.size();
 }
 
 int QuizImageQWindowSingleThread::count() const
 {
-    return m_drawingSurfaces.size();
+    return m_activeOffscreenSurafaces; // m_drawingSurfaces.size();
 }
 
 QString QuizImageQWindowSingleThread::at(int index) const
@@ -582,9 +548,10 @@ void QuizImageQWindowSingleThread::resizeEvent(QResizeEvent *e)
     // Quick item and scene.
     bool hasTexture = false;
     const auto newTextureSize = size() * devicePixelRatio();
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::cbegin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::cend(m_drawingSurfaces); ++i, ++it)
     {
-        hasTexture |= surface.hasTexture();
+        hasTexture |= it->hasTexture();
     }
     if (hasTexture && newTextureSize != m_textureSize)
     {
@@ -655,17 +622,19 @@ void QuizImageQWindowSingleThread::createTexture()
     m_dpr = devicePixelRatio();
     m_textureSize = size() * m_dpr;
 
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        surface.createTexture(m_context.get(), m_textureSize);
+        it->createTexture(m_context.get(), m_textureSize);
     }
 }
 
 void QuizImageQWindowSingleThread::destroyTexture()
 {
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        surface.deleteTexture(m_context.get());
+        it->deleteTexture(m_context.get());
     }
 }
 
@@ -673,10 +642,11 @@ void QuizImageQWindowSingleThread::render()
 {
     m_quickReady = true;
     QuizImageQMLDrawingSurface::prepareContext(m_context.get(), m_offscreenSurface.get());
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        m_currentTextureName = surface.getTextureName();
-        m_quickReady &= surface.render(m_context.get());
+        m_currentTextureName = it->getTextureName();
+        m_quickReady &= it->render(m_context.get());
     }
     m_defaultRenderer->render(this, m_context.get(), getTextures());
 }
@@ -730,10 +700,7 @@ void QuizImageQWindowSingleThread::updateSizes()
 void QuizImageQWindowSingleThread::resizeTexture()
 {
     QuizImageQMLDrawingSurface::prepareContext(m_context.get(), m_offscreenSurface.get());
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
-    {
-        surface.deleteTexture(m_context.get());
-    }
+    destroyTexture();
     createTexture();
     QuizImageQMLDrawingSurface::postContext(m_context.get());
     updateSizes();
@@ -750,35 +717,14 @@ void QuizImageQWindowSingleThread::connectDrawingSurface(QQuickRenderControl * r
 
 bool QuizImageQWindowSingleThread::createSurface()
 {
-    const int renderingWindowsId = IQuizImageQWindow::getWindowsId(this);
-    const auto itLast = std::prev(std::end(m_drawingSurfaces));
-    if(!m_drawingSurfaces.empty() && itLast->isDefaultTexture())
+    for(int i = 0; i < g_maxDrawingSurfaceCount; ++i )
     {
-        m_drawingSurfaces.insert(itLast, QuizImageQMLDrawingSurface(renderingWindowsId));
-        const auto it = std::prev(itLast);
-        if(it->create(this))
+        m_drawingSurfaces.push_back(QuizImageQMLDrawingSurface{i});
+        if(!m_drawingSurfaces.back().create(this))
         {
-            return true;
-        }
-        if(!m_drawingSurfaces.empty())
-        {
-            m_drawingSurfaces.erase(it);
+            return false;
         }
     }
-    else
-    {
-        m_drawingSurfaces.emplace_back(renderingWindowsId);
-        if(m_drawingSurfaces.back().create(this))
-        {
-            return true;
-        }
-        if(!m_drawingSurfaces.empty())
-        {
-            const auto itBack = std::prev(std::end(m_drawingSurfaces));
-            m_drawingSurfaces.erase(itBack);
-        }
-    }
-
     return false;
 }
 
@@ -786,16 +732,13 @@ std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
 {
     std::vector<uint> result;
     result.reserve(m_drawingSurfaces.size());
-    for(std::list<QuizImageQMLDrawingSurface>::const_reverse_iterator it = m_drawingSurfaces.rbegin()
-        ; it != m_drawingSurfaces.rend()
+    auto it = m_drawingSurfaces.cbegin();
+    for(int i = 0
+        ; it != m_drawingSurfaces.cend() && i < m_activeOffscreenSurafaces
         ; ++it
         )
     {
-        if(it->isDefaultTexture())
-        {
-            result.push_back(it->getTexture());
-            break;
-        }
+        result.push_back(it->getTexture());
     }
     return result;
 }

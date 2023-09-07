@@ -44,6 +44,8 @@ class QQuickItem;
 QT_END_NAMESPACE
 
 
+const int g_maxDrawingSurfaceCount = 16;
+
 // TODO: add interface for new drawing surface
 class QuizImageQWindowSingleThread : public QWindow, public IQuizImageQWindowOperations
 {
@@ -106,7 +108,7 @@ public:
     QuizImageQWindowSingleThread(const QString & qmlFileName, bool runMultipleTests);
     ~QuizImageQWindowSingleThread() override;
 
-    void setTextures(const TextureNames & textures_) override;
+    bool setTextures(const TextureNames & textures_) override;
     int count() const override;
     QString at(int index) const override;
     bool isDefaultTexture(int index) const override;
@@ -142,6 +144,7 @@ private:
 
     // https://doc.qt.io/qt-6/qoffscreensurface.html
     std::unique_ptr<QOffscreenSurface> m_offscreenSurface;
+    int m_activeOffscreenSurafaces = 0;
 
     std::list<QuizImageQMLDrawingSurface> m_drawingSurfaces;
 
