@@ -502,14 +502,14 @@ int QuizImageQWindowSingleThread::count() const
 QString QuizImageQWindowSingleThread::at(int index) const
 {
     auto it = std::begin(m_drawingSurfaces);
-    std::advance(it, index);
+    std::advance(it, std::max(index, m_activeOffscreenSurafaces));
     return it != std::end(m_drawingSurfaces) ? it->getTextureName() : g_renderTextureDefault;
 }
 
 bool QuizImageQWindowSingleThread::isDefaultTexture(int index) const
 {
     auto it = std::begin(m_drawingSurfaces);
-    std::advance(it, index);
+    std::advance(it, std::max(index, m_activeOffscreenSurafaces));
     return it != std::end(m_drawingSurfaces) ? TextureNames::isDefaultTexcture(it->getTextureName()) : true;
 }
 
@@ -565,33 +565,37 @@ void QuizImageQWindowSingleThread::mousePressEvent(QMouseEvent *e)
     // event's position and scenePosition, and globalPosition into the event's globalPosition. This way
     // the scenePosition in e is ignored and is replaced by position. This is necessary
     // because QQuickWindow thinks of itself as a top-level window always.
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        surface.mousePressEvent(e);
+        it->mousePressEvent(e);
     }
 }
 
 void QuizImageQWindowSingleThread::mouseReleaseEvent(QMouseEvent *e)
 {
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        surface.mouseReleaseEvent(e);
+        it->mouseReleaseEvent(e);
     }
 }
 
 void QuizImageQWindowSingleThread::keyPressEvent(QKeyEvent *e)
 {
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        surface.keyPressEvent(e);
+        it->keyPressEvent(e);
     }
 }
 
 void QuizImageQWindowSingleThread::keyReleaseEvent(QKeyEvent *e)
 {
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        surface.keyReleaseEvent(e);
+        it->keyReleaseEvent(e);
     }
 }
 
@@ -690,9 +694,10 @@ void QuizImageQWindowSingleThread::startQuick(const QString &filename)
 
 void QuizImageQWindowSingleThread::updateSizes()
 {
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        surface.setWindowSize(QSize(width(), height()));
+        it->setWindowSize(QSize(width(), height()));
     }
     m_defaultRenderer->resize(width(), height());
 }
@@ -725,7 +730,7 @@ bool QuizImageQWindowSingleThread::createSurface()
             return false;
         }
     }
-    return false;
+    return true;
 }
 
 std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
