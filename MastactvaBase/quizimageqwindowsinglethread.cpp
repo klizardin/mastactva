@@ -509,14 +509,14 @@ int QuizImageQWindowSingleThread::count() const
 QString QuizImageQWindowSingleThread::at(int index) const
 {
     auto it = std::begin(m_drawingSurfaces);
-    std::advance(it, std::min(std::max(0, index), m_activeOffscreenSurafaces));
+    std::advance(it, std::max(0, std::min(index, m_activeOffscreenSurafaces - 1)));
     return it != std::end(m_drawingSurfaces) ? it->getTextureName() : g_renderTextureDefault;
 }
 
 bool QuizImageQWindowSingleThread::isDefaultTexture(int index) const
 {
     auto it = std::begin(m_drawingSurfaces);
-    std::advance(it, std::min(std::max(0, index), m_activeOffscreenSurafaces));
+    std::advance(it, std::max(0, std::min(index, m_activeOffscreenSurafaces - 1)));
     return it != std::end(m_drawingSurfaces) ? TextureNames::isDefaultTexcture(it->getTextureName()) : true;
 }
 
