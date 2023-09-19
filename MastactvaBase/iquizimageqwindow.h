@@ -12,6 +12,7 @@
 class TextureNames : public std::vector<QString>
 {
 public:
+    TextureNames();
     TextureNames(const std::vector<QString> &textureNames_);
 
 private:

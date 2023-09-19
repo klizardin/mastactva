@@ -43,6 +43,11 @@ bool TextureNames::isDefaultTexcture(const QString &textureName_)
             ;
 }
 
+TextureNames::TextureNames()
+{
+    addDefaultTextureName();
+}
+
 TextureNames::TextureNames(const std::vector<QString> &textureNames_)
     :std::vector<QString>(textureNames_)
 {
@@ -51,8 +56,10 @@ TextureNames::TextureNames(const std::vector<QString> &textureNames_)
 
 bool TextureNames::hasDefaultTextureName() const
 {
-    return std::find(std::begin(*this), std::end(*this), g_renderTextureDefault) == std::end(*this)
-                || std::find(std::begin(*this), std::end(*this), g_renderTextureDefaultSynonim) == std::end(*this)
+    return !empty() &&
+            (std::find(std::begin(*this), std::end(*this), g_renderTextureDefault) != std::end(*this)
+                || std::find(std::begin(*this), std::end(*this), g_renderTextureDefaultSynonim) != std::end(*this)
+            )
             ;
 }
 
@@ -485,7 +492,7 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 
 bool QuizImageQWindowSingleThread::setTextures(const TextureNames & textures_)
 {
-    m_activeOffscreenSurafaces = std::max((int)textures_.size(), (int)m_drawingSurfaces.size());
+    m_activeOffscreenSurafaces = std::min((int)textures_.size(), (int)m_drawingSurfaces.size());
     auto it = m_drawingSurfaces.begin();
     for(int i = 0; i < m_activeOffscreenSurafaces && it != m_drawingSurfaces.end(); i++, ++it)
     {
@@ -730,6 +737,7 @@ bool QuizImageQWindowSingleThread::createSurface()
             return false;
         }
     }
+    setTextures(TextureNames{});
     return true;
 }
 
