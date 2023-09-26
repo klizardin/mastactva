@@ -748,7 +748,7 @@ std::vector<uint> QuizImageQWindowSingleThread::getTextures() const
     auto it = m_drawingSurfaces.cbegin();
     for(int i = 0
         ; it != m_drawingSurfaces.cend() && i < m_activeOffscreenSurafaces
-        ; ++it
+        ; ++i, ++it
         )
     {
         result.push_back(it->getTexture());
