@@ -204,7 +204,7 @@ opencv addon test
             - similar data with special type for render textures (special type for texture target)
             - simpilify data structures
     * reimplemnt constant reallocation
-        - debug ..
+        - debug ...
 - new add-on
     - learn how to build ...
 
