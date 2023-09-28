@@ -300,9 +300,10 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     context->makeCurrent(offscreenSurface);
     // setup graphic device into the QQuickWindow
     m_quickWindow->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(context));
-    m_renderControl->initialize();
 
     QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
+
+    m_renderControl->initialize();
 
     m_quickInitialized = true;
 }
@@ -496,7 +497,7 @@ bool QuizImageQWindowSingleThread::setTextures(const TextureNames & textures_)
     auto it = m_drawingSurfaces.begin();
     for(int i = 0; i < m_activeOffscreenSurafaces && it != m_drawingSurfaces.end(); i++, ++it)
     {
-        it->setTextureName(textures_[i]);
+        it->setTextureName(textures_[std::max(0, std::min(m_activeOffscreenSurafaces - 1 - i, m_activeOffscreenSurafaces - 1))]);
     }
     return textures_.size() <= m_drawingSurfaces.size();
 }
@@ -509,14 +510,14 @@ int QuizImageQWindowSingleThread::count() const
 QString QuizImageQWindowSingleThread::at(int index) const
 {
     auto it = std::begin(m_drawingSurfaces);
-    std::advance(it, std::max(0, std::min(index, m_activeOffscreenSurafaces - 1)));
+    std::advance(it, std::max(0, std::min(m_activeOffscreenSurafaces - 1 - index, m_activeOffscreenSurafaces - 1)));
     return it != std::end(m_drawingSurfaces) ? it->getTextureName() : g_renderTextureDefault;
 }
 
 bool QuizImageQWindowSingleThread::isDefaultTexture(int index) const
 {
     auto it = std::begin(m_drawingSurfaces);
-    std::advance(it, std::max(0, std::min(index, m_activeOffscreenSurafaces - 1)));
+    std::advance(it, std::max(0, std::min(m_activeOffscreenSurafaces - 1 - index, m_activeOffscreenSurafaces - 1)));
     return it != std::end(m_drawingSurfaces) ? TextureNames::isDefaultTexcture(it->getTextureName()) : true;
 }
 
@@ -612,18 +613,20 @@ void QuizImageQWindowSingleThread::run()
     {
         disconnect(surface.getQmlComponent(), &QQmlComponent::statusChanged, this, &QuizImageQWindowSingleThread::run);
     }
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    auto it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        if(!surface.isQuickInitialized())
+        if(!it->isQuickInitialized())
         {
-            surface.run(m_context.get(), m_offscreenSurface.get(), QSize{width(), height()}, m_runTestByTest);
+            it->run(m_context.get(), m_offscreenSurface.get(), QSize{width(), height()}, m_runTestByTest);
         }
     }
-    for(QuizImageQMLDrawingSurface &surface : m_drawingSurfaces)
+    it = std::begin(m_drawingSurfaces);
+    for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
-        if(!surface.isQuickInitialized())
+        if(!it->isQuickInitialized())
         {
-            connect(surface.getQmlComponent(), &QQmlComponent::statusChanged, this, &QuizImageQWindowSingleThread::run);
+            connect(it->getQmlComponent(), &QQmlComponent::statusChanged, this, &QuizImageQWindowSingleThread::run);
         }
     }
 }
