@@ -67,7 +67,7 @@ void TextureNames::addDefaultTextureName()
 {
     if(!hasDefaultTextureName())
     {
-        push_back(g_renderTextureDefault);
+        push_back(g_renderTextureDefaultSynonim);
     }
 }
 
