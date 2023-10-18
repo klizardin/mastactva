@@ -67,6 +67,7 @@ void TextureNames::addDefaultTextureName()
 {
     if(!hasDefaultTextureName())
     {
+        // TODO: why does the g_renderTextureDefault constant not work
         push_back(g_renderTextureDefaultSynonim);
     }
 }
