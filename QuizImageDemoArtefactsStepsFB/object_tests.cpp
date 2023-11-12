@@ -3654,15 +3654,15 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     convertJsonResultToCoordinates(result.object().value("1").toObject(), walkEffectDataFromValues);
     convertJsonResultToCoordinates(result.object().value("0").toObject(), walkEffectDataToValues);
 
-    //qDebug() << "fromValues" << fromValues;
-    //qDebug() << "toValues" << toValues;
+    //qDebug() << "walkEffectDataFromValues" << walkEffectDataFromValues;
+    //qDebug() << "walkEffectDataToValues" << walkEffectDataToValues;
 
     std::vector<GLfloat> walkEffectFromCoords, walkEffectToCoords;
     createGeometry(15, 13, walkEffectDataFromValues, walkEffectFromCoords);
     createGeometry(15, 13, walkEffectDataToValues, walkEffectToCoords);
 
-    //qDebug() << "fromCoords" << fromCoords;
-    //qDebug() << "toCoords" << toCoords;
+    //qDebug() << "walkEffectFromCoords" << walkEffectFromCoords;
+    //qDebug() << "walkEffectToCoords" << walkEffectToCoords;
 
     std::unique_ptr<EffectData> effectData = std::make_unique<EffectData>(
                 effectId,
