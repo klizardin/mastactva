@@ -3328,7 +3328,7 @@ static const char * g_inputJson =
             "\"output_cols\":10"
             "}";
 
-void convert(const QJsonObject &object_, std::vector<QVector4D> &values_)
+void convertJsonResultToCoordinates(const QJsonObject &object_, std::vector<QVector4D> &values_)
 {
     values_.clear();
     for(int i = 0;;i++)
@@ -3420,8 +3420,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
     std::vector<QVector4D> fromValues, toValues;
-    convert(result.object().value("1").toObject(), fromValues);
-    convert(result.object().value("0").toObject(), toValues);
+    convertJsonResultToCoordinates(result.object().value("1").toObject(), fromValues);
+    convertJsonResultToCoordinates(result.object().value("0").toObject(), toValues);
 
     //qDebug() << "fromValues" << fromValues;
     //qDebug() << "toValues" << toValues;
@@ -3530,8 +3530,8 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
     std::vector<QVector4D> fromValues, toValues;
-    convert(result.object().value("1").toObject(), fromValues);
-    convert(result.object().value("0").toObject(), toValues);
+    convertJsonResultToCoordinates(result.object().value("1").toObject(), fromValues);
+    convertJsonResultToCoordinates(result.object().value("0").toObject(), toValues);
 
     //qDebug() << "fromValues" << fromValues;
     //qDebug() << "toValues" << toValues;
@@ -3651,8 +3651,8 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
     std::vector<QVector4D> fromValues, toValues;
-    convert(result.object().value("1").toObject(), fromValues);
-    convert(result.object().value("0").toObject(), toValues);
+    convertJsonResultToCoordinates(result.object().value("1").toObject(), fromValues);
+    convertJsonResultToCoordinates(result.object().value("0").toObject(), toValues);
 
     //qDebug() << "fromValues" << fromValues;
     //qDebug() << "toValues" << toValues;
