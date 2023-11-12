@@ -3650,16 +3650,16 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
-    std::vector<QVector4D> fromValues, toValues;
-    convertJsonResultToCoordinates(result.object().value("1").toObject(), fromValues);
-    convertJsonResultToCoordinates(result.object().value("0").toObject(), toValues);
+    std::vector<QVector4D> walkEffectDataFromValues, walkEffectDataToValues;
+    convertJsonResultToCoordinates(result.object().value("1").toObject(), walkEffectDataFromValues);
+    convertJsonResultToCoordinates(result.object().value("0").toObject(), walkEffectDataToValues);
 
     //qDebug() << "fromValues" << fromValues;
     //qDebug() << "toValues" << toValues;
 
     std::vector<GLfloat> fromCoords, toCoords;
-    createGeometry(15, 13, fromValues, fromCoords);
-    createGeometry(15, 13, toValues, toCoords);
+    createGeometry(15, 13, walkEffectDataFromValues, fromCoords);
+    createGeometry(15, 13, walkEffectDataToValues, toCoords);
 
     //qDebug() << "fromCoords" << fromCoords;
     //qDebug() << "toCoords" << toCoords;
