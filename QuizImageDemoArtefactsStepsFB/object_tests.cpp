@@ -3657,9 +3657,9 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     //qDebug() << "fromValues" << fromValues;
     //qDebug() << "toValues" << toValues;
 
-    std::vector<GLfloat> fromCoords, toCoords;
-    createGeometry(15, 13, walkEffectDataFromValues, fromCoords);
-    createGeometry(15, 13, walkEffectDataToValues, toCoords);
+    std::vector<GLfloat> walkEffectFromCoords, walkEffectToCoords;
+    createGeometry(15, 13, walkEffectDataFromValues, walkEffectFromCoords);
+    createGeometry(15, 13, walkEffectDataToValues, walkEffectToCoords);
 
     //qDebug() << "fromCoords" << fromCoords;
     //qDebug() << "toCoords" << toCoords;
@@ -3732,7 +3732,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     g_renderFromImageName,
                     absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
                     "textureAttributeFrom",
-                    fromCoords,
+                    walkEffectFromCoords,
                     //toCoords,
                     "15.0 13.0"
                     ).release()
@@ -3774,7 +3774,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                     "textureAttributeTo",
                     //fromCoords,
-                    toCoords,
+                    walkEffectToCoords,
                     "15.0 13.0"
                     ).release()
                 );
