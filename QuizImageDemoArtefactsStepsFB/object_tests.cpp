@@ -3664,7 +3664,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     //qDebug() << "fromCoords" << fromCoords;
     //qDebug() << "toCoords" << toCoords;
 
-    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+    std::unique_ptr<EffectData> effectData = std::make_unique<EffectData>(
                 effectId,
                 effectName,
                 emptyStr,
@@ -3688,7 +3688,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
             102 + 1
         }
     };
-    effect->m_effectArgsData = createEffectArgsData(
+    effectData->m_effectArgsData = createEffectArgsData(
                 args,
                 effectId,
                 1000,
@@ -3709,9 +3709,9 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
             },
         },
     };
-    effect->m_effectArgSetsData = createEffectArgSetsData(
+    effectData->m_effectArgSetsData = createEffectArgSetsData(
                 argSets,
-                effect->m_effectArgsData.get(),
+                effectData->m_effectArgsData.get(),
                 effectId,
                 1,
                 1,
@@ -3720,7 +3720,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                 now
                 );
 
-    effect->m_effectObjectsData->push_back(
+    effectData->m_effectObjectsData->push_back(
                 createWalkEffectDrawingBufferTestObject(
                     effectId,
                     effectName,
@@ -3746,7 +3746,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
             "renderGeneratedFromImage"
         }
     };
-    effect->m_effectObjectsData->push_back(
+    effectData->m_effectObjectsData->push_back(
                 createEffectObjectWithOneArtefactWithArguments(
                         effectId,
                     now,
@@ -3761,7 +3761,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     luaScriptArgs1
                     ).release()
                 );
-    effect->m_effectObjectsData->push_back(
+    effectData->m_effectObjectsData->push_back(
                 createWalkEffectDrawingBufferTestObject(
                     effectId,
                     effectName,
@@ -3787,7 +3787,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
             "renderGeneratedToImage"
         }
     };
-    effect->m_effectObjectsData->push_back(
+    effectData->m_effectObjectsData->push_back(
                 createEffectObjectWithOneArtefactWithArguments(
                         effectId,
                         now,
@@ -3802,7 +3802,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                         luaScriptArgs2
                     ).release()
                 );
-    effect->m_effectObjectsData->push_back(
+    effectData->m_effectObjectsData->push_back(
                 createWalkEffectDrawingBufferTestObjectStep2(
                         effectId,
                         effectName,
@@ -3811,7 +3811,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                         effectObjectStep2
                     ).release()
                 );
-    return effect;
+    return effectData;
 }
 
 namespace drawing_objects
