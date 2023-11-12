@@ -3283,7 +3283,7 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
     return effectObject;
 }
 
-bool findDynLibs(const QDir &dir_, QDir &result_)
+bool findDynamicLibrariesDir(const QDir &dir_, QDir &result_)
 {
     QFileInfoList files = dir_.entryInfoList(QStringList{} << "*.so", QDir::Files);
     if(!files.isEmpty())
@@ -3298,7 +3298,7 @@ bool findDynLibs(const QDir &dir_, QDir &result_)
         {
             continue;
         }
-        if(findDynLibs(QDir(fi_.absoluteFilePath()), result_))
+        if(findDynamicLibrariesDir(QDir(fi_.absoluteFilePath()), result_))
         {
             return true;
         }
@@ -3406,7 +3406,7 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     static const int effectObjectStep1 = 1;
 
     QDir addonsDir;
-    findDynLibs(QDir("./"), addonsDir);
+    findDynamicLibrariesDir(QDir("./"), addonsDir);
     auto modules = std::make_shared<AddonModules>();
     modules->create(addonsDir);
 
@@ -3518,7 +3518,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     static const int effectObjectStep3 = 3;
 
     QDir addonsDir;
-    findDynLibs(QDir("./"), addonsDir);
+    findDynamicLibrariesDir(QDir("./"), addonsDir);
     auto modules = std::make_shared<AddonModules>();
     modules->create(addonsDir);
 
@@ -3639,7 +3639,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     static const int effectObjectStep2 = 20;
 
     QDir addonsDir;
-    findDynLibs(QDir("./"), addonsDir);
+    findDynamicLibrariesDir(QDir("./"), addonsDir);
     auto modules = std::make_shared<AddonModules>();
     modules->create(addonsDir);
 
