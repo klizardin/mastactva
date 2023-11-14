@@ -3692,7 +3692,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                 args,
                 effectId,
                 1000,
-                "description of %d",
+                "description of %1",
                 now
                 );
     // args data set contains setup values for atrguments
@@ -3715,8 +3715,8 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                 effectId,
                 1,
                 1,
-                "arg value description %d",
-                "arg set description %d",
+                "arg value description %1",
+                "arg set description %1",
                 now
                 );
 
