@@ -2895,7 +2895,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectDrawingBufferTestObject(
         const QString &image_,
         const char * textureCoordsAtttributeName_,
         const std::vector<GLfloat> &coords_,
-        const QString &geomertySize_
+        const QPoint &geometrySize_
         )
 {
     std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
@@ -2909,7 +2909,9 @@ std::unique_ptr<EffectObjectsData> createWalkEffectDrawingBufferTestObject(
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
 
-    opengl_drawing::makeGeometry(2, 2, 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
+    const QString geomertySizeStr = QString("%1 %2").arg(geometrySize_.x(), geometrySize_.y());
+
+    opengl_drawing::makeGeometry(geometrySize_.x(), geometrySize_.y(), 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
 
     // vertex shader artefact
     const ArgumentsTuple vertexArgs1[] =
@@ -2954,7 +2956,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectDrawingBufferTestObject(
             ArtefactArgTypeEn::vec2Type,
             ArtefactArgStorageEn::uniformStorage,
             g_renderGeomertySizeName,
-            geomertySize_
+            geomertySizeStr
         },
         {
             7,
@@ -3734,7 +3736,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     "textureAttributeFrom",
                     walkEffectFromCoords,
                     //toCoords,
-                    "15.0 13.0"
+                    QPoint(15, 13)
                     ).release()
                 );
     const std::vector<Argument> luaScriptArgs1 = {
@@ -3775,7 +3777,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     "textureAttributeTo",
                     //fromCoords,
                     walkEffectToCoords,
-                    "15.0 13.0"
+                    QPoint(15, 13)
                     ).release()
                 );
     const std::vector<Argument> luaScriptArgs2 = {
