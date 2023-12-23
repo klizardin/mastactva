@@ -1,0 +1,59 @@
+ArtefactData
+    -> artefact -> file
+    -> 1:N arguments -> ArtefactArgData
+
+ArtefactArgData
+    -> back artefacts id
+    -> id
+    -> 1:1 EffectArgumentData
+    -> merge id
+
+ArtefactArgStorageEn -> OpenGL arguments' storage type
+
+ArtefactArgTypeEn -> OpenGL arguments' data type
+
+ArtefactTypeEn -> type of the file to process
+
+EffectData // effect's data
+    -> id, name, description, created, merge id
+    -> 1:N EffectObjectsData
+    -> 1:N EffectArgData
+    -> 1:N EffectArgSetData
+
+EffectArgData // arguments of the effect
+    -> id, effect id, objecta artefact id,
+        description, created, merge id
+    -> 1:1 EffectArgumentData
+
+EffectArgSetData // sets of arguments you can choose one set for display effect
+    -> id, effect id, easing type id
+        description, created merge id
+    -> 1:N EffectArgValueData
+
+EffectArgumentData // argument's base class
+    -> arg storage id, arg type id, name, default value,
+    has file refrerence, has file, file, file hash // TODO: why we need file reference
+
+EffectArgValueData // value of the argument
+    -> id, arg set id, arg id,
+    value, description, created merged id,
+    has file reference, has file, file, file hash
+    -> (1:1?) EffectArgData -- it seems it is backreferences
+    -> (1:1?) EffectArgumentData -- it seems it is backreferences
+
+EffectObjectsData // one object of the effect
+    -> id, effect id, object info id,
+    step index,
+    merge id,
+    -> 1:1 ObjectInfoData -- description of the object
+    -> 1:N(?) ObjectArtefactData -- object's artefacts
+
+ObjectArtefactData // artefact of the object
+    -> id, object info id, artefact id,
+    step index,
+    merge id,
+    -> 1:1 ArtefactData -- artefact data of the object
+
+ObjectInfoData // info about the effect object for algorithms and for the GUI
+    -> id, name, programmer name, description, created,
+    merge id,

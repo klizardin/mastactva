@@ -136,5 +136,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     Mastactva/Constants.qml \
     Mastactva/qmldir \
+    data_structures.txt \
     tmp.txt \
     todo.txt
