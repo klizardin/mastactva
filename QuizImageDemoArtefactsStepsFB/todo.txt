@@ -206,5 +206,5 @@ opencv addon test
     * reimplemnt constant reallocation
         - debug ..
 - new add-on
-    - learn how to build ...
+    - learn how to build ..
 
