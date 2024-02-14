@@ -528,6 +528,20 @@ QString QuizImageQWindowSingleThread::getCurrentTextureName() const
     return m_currentTextureName;
 }
 
+uint QuizImageQWindowSingleThread::getCurrentTextureId() const
+{
+    auto fit = std::find_if(std::cbegin(m_drawingSurfaces), std::cend(m_drawingSurfaces)
+                           ,[this](const QuizImageQMLDrawingSurface& surface_)
+    {
+        return surface_.getTextureName() == m_currentTextureName;
+    });
+    if(std::cend(m_drawingSurfaces)==fit)
+    {
+        return 0;
+    }
+    return fit->getTexture();
+}
+
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
 {
     Q_UNUSED(e);

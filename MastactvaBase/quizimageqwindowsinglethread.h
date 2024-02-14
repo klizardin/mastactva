@@ -113,6 +113,7 @@ public:
     QString at(int index) const override;
     bool isDefaultTexture(int index) const override;
     QString getCurrentTextureName() const override;
+    uint getCurrentTextureId() const override;
 
 protected:
     void exposeEvent(QExposeEvent *e) override;

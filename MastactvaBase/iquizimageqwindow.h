@@ -32,6 +32,7 @@ public:
     virtual QString at(int index) const = 0;
     virtual bool isDefaultTexture(int index) const = 0;
     virtual QString getCurrentTextureName() const = 0;
+    virtual uint getCurrentTextureId() const = 0;
 
     virtual void setDrawingData(std::shared_ptr<drawing_data::QuizImageObjects> data)
     {
