@@ -75,6 +75,20 @@ bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject 
     return true;
 }
 
+bool opengl_drawing::Texture::setFromSharedTextureId(std::shared_ptr<uint> textureId_, const QColor &backgroundColor_)
+{
+    m_texture.reset();
+    m_textureId.reset();
+    if(!textureId_)
+    {
+        return false;
+    }
+    m_textureId = textureId_;
+    setWrapClampToBorder();
+    setBorderColor(backgroundColor_);
+    return true;
+}
+
 void opengl_drawing::Texture::setLocation(int location_)
 {
     m_location = location_;

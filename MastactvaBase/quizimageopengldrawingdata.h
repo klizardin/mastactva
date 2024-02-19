@@ -55,6 +55,11 @@ namespace opengl_drawing
         bool setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_, const QColor &backgroundColor_);
 
         /*
+         * set texture from the shared texture id
+        */
+        bool setFromSharedTextureId(std::shared_ptr<uint> textureId_, const QColor &backgroundColor_);
+
+        /*
          * set up texture location
         */
         void setLocation(int location_);
