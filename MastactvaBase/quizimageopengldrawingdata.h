@@ -111,6 +111,7 @@ namespace opengl_drawing
         int m_location{locationWrongValue};
         QImage m_image;
         std::shared_ptr<QOpenGLTexture> m_texture;
+        std::shared_ptr<uint> m_textureId;
     };
 
 

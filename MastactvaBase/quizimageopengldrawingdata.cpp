@@ -27,6 +27,7 @@
 bool opengl_drawing::Texture::setFilename(const QString &fileName_, const QColor &backgroundColor_)
 {
     m_texture.reset();
+    m_textureId.reset();
     if(fileName_.isEmpty())
     {
         return true;
@@ -45,6 +46,7 @@ bool opengl_drawing::Texture::setFilename(const QString &fileName_, const QColor
 bool opengl_drawing::Texture::setPipelineTexture(const QString &textureName_, const QColor &backgroundColor_)
 {
     m_texture.reset();
+    m_textureId.reset();
     if(textureName_.isEmpty())
     {
         return false;
@@ -57,6 +59,7 @@ bool opengl_drawing::Texture::setPipelineTexture(const QString &textureName_, co
 bool opengl_drawing::Texture::setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_, const QColor &backgroundColor_)
 {
     m_texture.reset();
+    m_textureId.reset();
     if(!frameBufferObject_)
     {
         return false;
@@ -95,13 +98,16 @@ void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_) const
 
 void opengl_drawing::Texture::bind(QOpenGLFunctions *f_) const
 {
-    if(!m_texture)
+    if(m_texture)
     {
-        return;
+        f_->glActiveTexture(GL_TEXTURE0 + m_index);
+        m_texture->bind();
     }
-
-    f_->glActiveTexture(GL_TEXTURE0 + m_index);
-    m_texture->bind();
+    if(m_textureId)
+    {
+        f_->glActiveTexture(GL_TEXTURE0 + m_index);
+        f_->glBindTexture(GL_TEXTURE0 + m_index, *m_textureId);
+    }
 }
 
 bool opengl_drawing::Texture::getSize(QSize &size_) const
@@ -121,6 +127,10 @@ void opengl_drawing::Texture::setWrapClampToBorder()
     {
         m_texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
     }
+    if(m_textureId)
+    {
+        //TODO: implement
+    }
 }
 
 void opengl_drawing::Texture::setWrapClampToEdge()
@@ -129,6 +139,10 @@ void opengl_drawing::Texture::setWrapClampToEdge()
     {
         m_texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToEdge);
     }
+    if(m_textureId)
+    {
+        //TODO: implement
+    }
 }
 
 void opengl_drawing::Texture::setBorderColor(const QColor &backgroundColor_)
@@ -136,6 +150,10 @@ void opengl_drawing::Texture::setBorderColor(const QColor &backgroundColor_)
     if(m_texture)
     {
         m_texture->setBorderColor(backgroundColor_);
+    }
+    if(m_textureId)
+    {
+        //TODO: implement
     }
 }
 
