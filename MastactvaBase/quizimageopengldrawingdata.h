@@ -42,15 +42,17 @@ namespace opengl_drawing
     {
     public:
         /*
-         * set file name of the texture
-         * setTexture()
+         * set the file name of the texture
         */
         bool setFilename(const QString &fileName_, const QColor &backgroundColor_);
 
+        /*
+         * set the name of the texture for the pipeline
+        */
         bool setPipelineTexture(const QString &textureName_, const QColor &backgroundColor_);
 
         /*
-         * setTexture() from the open gl frame buffer object
+         * set texture from the open gl frame buffer object
         */
         bool setFromFrameBufferObject(QOpenGLFramebufferObject *frameBufferObject_, const QColor &backgroundColor_);
 
