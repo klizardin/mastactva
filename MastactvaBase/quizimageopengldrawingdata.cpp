@@ -126,6 +126,11 @@ void opengl_drawing::Texture::bind(QOpenGLFunctions *f_) const
 
 bool opengl_drawing::Texture::getSize(QSize &size_) const
 {
+    if(m_textureId)
+    {
+        // TODO: implementation
+        return false;
+    }
     if(m_image.isNull())
     {
         return false;
