@@ -84,7 +84,7 @@ namespace opengl_drawing
         /*
          * return size of the texture
         */
-        bool getSize(QSize &size_) const;
+        bool getSize(QOpenGLFunctions *f_, QSize &size_) const;
 
         /*
          * (for drawing states)
@@ -271,7 +271,7 @@ namespace opengl_drawing
         /*
          * return texture size
         */
-        bool getTextureSize(const QString &name_, QSize &imageSize_) const;
+        bool getTextureSize(QOpenGLFunctions *f_, const QString &name_, QSize &imageSize_) const;
 
         /*
          * is object correctly minimum initialized
@@ -528,6 +528,9 @@ namespace opengl_drawing
         */
         void setCurrentFrameBufferObject(QOpenGLFramebufferObject *currentFrameBufferObject_);
 
+        void setOpenGlFunctions(QOpenGLFunctions *openGlFunctions_);
+        void clearOpenGlFunctions();
+
     private:
         QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
         void clearUpdated();
@@ -543,6 +546,7 @@ namespace opengl_drawing
         std::unique_ptr<States> m_states;                                           // global states
         QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
         int m_renderWindowsId = 0;
+        QOpenGLFunctions *m_openGlFunctions = nullptr;
     };
 }
 

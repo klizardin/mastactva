@@ -124,12 +124,16 @@ void opengl_drawing::Texture::bind(QOpenGLFunctions *f_) const
     }
 }
 
-bool opengl_drawing::Texture::getSize(QSize &size_) const
+bool opengl_drawing::Texture::getSize(QOpenGLFunctions *f_, QSize &size_) const
 {
     if(m_textureId)
     {
-        // TODO: implementation
-        return false;
+        int w = 0,h = 0;
+        f_->glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WIDTH, &w);
+        f_->glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_HEIGHT, &h);
+        size_.setWidth(w);
+        size_.setHeight(h);
+        return true;
     }
     if(m_image.isNull())
     {
@@ -889,6 +893,7 @@ void opengl_drawing::Object::setTextureFromFrameBuffer(
 }
 
 bool opengl_drawing::Object::getTextureSize(
+        QOpenGLFunctions *f_,
         const QString &name_,
         QSize &imageSize_
         ) const
@@ -901,7 +906,7 @@ bool opengl_drawing::Object::getTextureSize(
         return false;
     }
 
-    return fit->second->getSize(imageSize_);
+    return fit->second->getSize(f_, imageSize_);
 }
 
 bool opengl_drawing::Object::isUsable() const
@@ -1538,7 +1543,7 @@ bool opengl_drawing::Objects::getTextureSize(
 {
     for(const std::unique_ptr<Object> &object_ : qAsConst(m_objects))
     {
-        if(object_->getTextureSize(name_, size_))
+        if(object_->getTextureSize(m_openGlFunctions, name_, size_))
         {
             return true;
         }
@@ -1620,6 +1625,16 @@ void opengl_drawing::Objects::setCurrentFrameBufferObject(QOpenGLFramebufferObje
     m_currentFrameBufferObject = currentFrameBufferObject_;
 }
 
+void opengl_drawing::Objects::setOpenGlFunctions(QOpenGLFunctions *openGlFunctions_)
+{
+    m_openGlFunctions = openGlFunctions_;
+}
+
+void opengl_drawing::Objects::clearOpenGlFunctions()
+{
+    m_openGlFunctions = nullptr;
+}
+
 QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
 {
     const QSize imageSize = getTextureSize(imageName_ , windowSize_);
@@ -1677,6 +1692,7 @@ void ObjectsRenderer::setImageData(
     m_openglData = std::make_unique<opengl_drawing::Objects>();
     m_openglData->init(std::move(imageData_), windowsId_);
     m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject);
+    m_openglData->setOpenGlFunctions(this);
     initialize();
 }
 
@@ -1690,6 +1706,7 @@ std::shared_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageDat
     if(m_openglData)
     {
         m_openglData->setCurrentFrameBufferObject(nullptr);
+        m_openglData->clearOpenGlFunctions();
     }
     return m_openglData ? m_openglData->free() : std::shared_ptr<drawing_data::QuizImageObjects>{nullptr};
 }
