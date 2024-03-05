@@ -20,16 +20,7 @@
 
 
 #include "../MastactvaBase/quizimageopengldrawingdata.h"
-
-
-namespace test
-{
-
-void createQTLogoGeometry(
-        std::vector<QVector3D> &vertices,
-        std::vector<QVector3D> &normals
-        );
-}
+#include "./tests/logoGeomerty.h"
 
 /*
  * QuizImageObjects tests

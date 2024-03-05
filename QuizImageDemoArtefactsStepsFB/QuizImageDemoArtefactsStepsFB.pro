@@ -21,7 +21,8 @@ SOURCES += \
         drawing_tests.cpp \
         main.cpp \
         object_tests.cpp \
-        quizimage.cpp
+        quizimage.cpp \
+        tests/logoGeometry.cpp
 
 unix: SOURCES +=    \
     quizimagedrawingdata.cpp    \
@@ -68,7 +69,8 @@ unix: SOURCES +=    \
 HEADERS += \
     drawing_tests.h \
     object_tests.h \
-    quizimage.h
+    quizimage.h \
+    tests/logoGeomerty.h
 
 unix: HEADERS +=    \
     quizimagedrawingdata.h  \
