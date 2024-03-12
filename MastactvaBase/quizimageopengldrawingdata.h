@@ -499,6 +499,9 @@ namespace opengl_drawing
         void setTextureFromCurrentFrameBuffer(const QString &textureName_) override;
         void setTextureFromCurrentFrameBuffer(const QString &textureName_, const QColor &newBackgroundColor_) override;
 
+        void setTextureFromSharedTextureId(const QString &textureName_) override;
+        void setTextureFromSharedTextureId(const QString &textureName_, const QColor &newBackgroundColor_) override;
+
         /*
          * return clear color
         */
@@ -529,7 +532,8 @@ namespace opengl_drawing
         /*
          * helper function to set up frame buffer object
         */
-        void setCurrentFrameBufferObject(QOpenGLFramebufferObject *currentFrameBufferObject_);
+        void setCurrentFrameBufferObject(QOpenGLFramebufferObject *currentFrameBufferObject_,
+                                         std::shared_ptr<uint> currentTextureId_);
 
         void setOpenGlFunctions(QOpenGLFunctions *openGlFunctions_);
         void clearOpenGlFunctions();
@@ -548,6 +552,7 @@ namespace opengl_drawing
         QStringList m_updated;                                                      // list of variable that was updated duiring last calculations
         std::unique_ptr<States> m_states;                                           // global states
         QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
+        std::shared_ptr<uint> m_currentTextureId;
         int m_renderWindowsId = 0;
         QOpenGLFunctions *m_openGlFunctions = nullptr;
     };
@@ -563,7 +568,7 @@ public:
     ObjectsRenderer();
     ~ObjectsRenderer();
 
-    void setCurrentFrameBufferObject(QOpenGLFramebufferObject *fbobj_);
+    void setCurrentFrameBufferObject(QOpenGLFramebufferObject *fbobj_, std::shared_ptr<uint> currentTextureId_);
 
     /*
      * set up quiz image data
@@ -753,6 +758,7 @@ private:
 private:
     std::shared_ptr<opengl_drawing::Objects> m_openglData;  // contains opne gl drawing objects
     QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
+    std::shared_ptr<uint> m_currentTextureId;
 };
 
 

@@ -1654,6 +1654,28 @@ void opengl_drawing::Objects::setTextureFromCurrentFrameBuffer(
     }
 }
 
+void opengl_drawing::Objects::setTextureFromSharedTextureId(
+        const QString &textureName_
+        )
+{
+    setTextureFromSharedTextureId(textureName_, getClearColor());
+}
+
+void opengl_drawing::Objects::setTextureFromSharedTextureId(
+        const QString &textureName_,
+        const QColor &newBackgroundColor_
+        )
+{
+    if(!m_updated.contains(textureName_))
+    {
+        m_updated.push_back(textureName_);
+    }
+    for(std::unique_ptr<Object> &object_ : m_objects)
+    {
+        object_->setTextureFromSharedTextureId(textureName_, m_currentTextureId, newBackgroundColor_);
+    }
+}
+
 void opengl_drawing::Objects::setFromImage(const QString &url_)
 {
     setTexture(g_renderFromImageName, url_, m_imageData ? m_imageData->clearColor : QColor(0,0,0));    // TODO: dependency inversion
@@ -1664,9 +1686,13 @@ void opengl_drawing::Objects::setToImage(const QString &url_)
     setTexture(g_renderToImageName, url_, m_imageData ? m_imageData->clearColor : QColor(0,0,0));  // TODO: dependency inversion
 }
 
-void opengl_drawing::Objects::setCurrentFrameBufferObject(QOpenGLFramebufferObject *currentFrameBufferObject_)
+void opengl_drawing::Objects::setCurrentFrameBufferObject(
+        QOpenGLFramebufferObject *currentFrameBufferObject_,
+        std::shared_ptr<uint> currentTextureId_
+        )
 {
     m_currentFrameBufferObject = currentFrameBufferObject_;
+    m_currentTextureId = currentTextureId_;
 }
 
 void opengl_drawing::Objects::setOpenGlFunctions(QOpenGLFunctions *openGlFunctions_)
@@ -1719,12 +1745,15 @@ ObjectsRenderer::~ObjectsRenderer()
 {
 }
 
-void ObjectsRenderer::setCurrentFrameBufferObject(QOpenGLFramebufferObject *fbobj_)
+void ObjectsRenderer::setCurrentFrameBufferObject(
+        QOpenGLFramebufferObject *fbobj_,
+        std::shared_ptr<uint> currentTextureId_
+        )
 {
     m_currentFrameBufferObject = fbobj_;
     if(m_openglData)
     {
-        m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject);
+        m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject, currentTextureId_);
     }
 }
 
@@ -1735,7 +1764,7 @@ void ObjectsRenderer::setImageData(
 {
     m_openglData = std::make_unique<opengl_drawing::Objects>();
     m_openglData->init(std::move(imageData_), windowsId_);
-    m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject);
+    m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject, m_currentTextureId);
     m_openglData->setOpenGlFunctions(this);
     initialize();
 }
@@ -1749,7 +1778,7 @@ std::shared_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageDat
 
     if(m_openglData)
     {
-        m_openglData->setCurrentFrameBufferObject(nullptr);
+        m_openglData->setCurrentFrameBufferObject(nullptr, nullptr);
         m_openglData->clearOpenGlFunctions();
     }
     return m_openglData ? m_openglData->free() : std::shared_ptr<drawing_data::QuizImageObjects>{nullptr};
@@ -2036,7 +2065,7 @@ QOpenGLFramebufferObject *QuizImageFboRendererImpl::createFramebufferObjectImpl(
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
     //format.setSamples(4);
     auto fbobj = new QOpenGLFramebufferObject(size_, format);
-    m_objectRenderer.setCurrentFrameBufferObject(fbobj);
+    m_objectRenderer.setCurrentFrameBufferObject(fbobj, nullptr);
     return fbobj;
 }
 

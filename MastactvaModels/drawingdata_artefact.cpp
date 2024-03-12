@@ -423,6 +423,8 @@ public:
     void setTexture(const QString &textureName_, const QString &newFilename_, const QColor &newBackgroundColor_) override;
     void setTextureFromCurrentFrameBuffer(const QString &textureName_) override;
     void setTextureFromCurrentFrameBuffer(const QString &textureName_, const QColor &backgroundColor_) override;
+    void setTextureFromSharedTextureId(const QString &textureName_) override;
+    void setTextureFromSharedTextureId(const QString &textureName_, const QColor &newBackgroundColor_) override;
 
 private:
     drawingdata::ITextures *m_proxy = nullptr;
@@ -472,6 +474,25 @@ void TexturesProxy::setTextureFromCurrentFrameBuffer(const QString &textureName_
         return;
     }
     m_proxy->setTextureFromCurrentFrameBuffer(textureName_, backgroundColor_);
+}
+
+
+void TexturesProxy::setTextureFromSharedTextureId(const QString &textureName_)
+{
+    if(!m_proxy)
+    {
+        return;
+    }
+    m_proxy->setTextureFromSharedTextureId(textureName_);
+}
+
+void TexturesProxy::setTextureFromSharedTextureId(const QString &textureName_, const QColor &backgroundColor_)
+{
+    if(!m_proxy)
+    {
+        return;
+    }
+    m_proxy->setTextureFromSharedTextureId(textureName_, backgroundColor_);
 }
 
 
