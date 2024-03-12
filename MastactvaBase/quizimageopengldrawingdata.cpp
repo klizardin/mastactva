@@ -892,6 +892,50 @@ void opengl_drawing::Object::setTextureFromFrameBuffer(
     setTextureIndexes();
 }
 
+void opengl_drawing::Object::setFromSharedTextureId(
+        const QString &name_,
+        std::shared_ptr<uint> textureId_,
+        const QColor &backgroundColor_
+        )
+{
+    auto fit = std::find_if(
+                std::begin(m_imageData->textures),
+                std::end(m_imageData->textures),
+                [&name_](const drawing_data::Texture &texture_)->bool
+    {
+        return name_ == texture_.name;
+    });
+
+    if(std::end(m_imageData->textures) == fit)
+    {
+        return;
+    }
+
+    if(textures.find(name_) != std::end(textures)
+            && textures[name_].operator bool()
+            )
+    {
+        textures[name_]->setFromSharedTextureId(textureId_, backgroundColor_);
+        return;
+    }
+
+    std::unique_ptr<Texture> texture = std::make_unique<Texture>();
+    if(!texture->setFromSharedTextureId(textureId_, backgroundColor_))
+    {
+        return;
+    }
+    if(textures.find(name_) == std::end(textures))
+    {
+        textures.insert({name_, std::move(texture)});
+    }
+    else
+    {
+        textures[name_] = std::move(texture);
+    }
+
+    setTextureIndexes();
+}
+
 bool opengl_drawing::Object::getTextureSize(
         QOpenGLFunctions *f_,
         const QString &name_,
