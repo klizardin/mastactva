@@ -269,7 +269,7 @@ namespace opengl_drawing
         void setTextureFromFrameBuffer(const QString &name_, QOpenGLFramebufferObject *currentFrameBufferObject_, const QColor &backgroundColor_);
 
 
-        void setFromSharedTextureId(const QString &name_, std::shared_ptr<uint> textureId_, const QColor &backgroundColor_);
+        void setTextureFromSharedTextureId(const QString &name_, std::shared_ptr<uint> textureId_, const QColor &backgroundColor_);
 
         /*
          * return texture size

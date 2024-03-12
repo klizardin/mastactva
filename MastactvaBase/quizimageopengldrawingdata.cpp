@@ -892,7 +892,7 @@ void opengl_drawing::Object::setTextureFromFrameBuffer(
     setTextureIndexes();
 }
 
-void opengl_drawing::Object::setFromSharedTextureId(
+void opengl_drawing::Object::setTextureFromSharedTextureId(
         const QString &name_,
         std::shared_ptr<uint> textureId_,
         const QColor &backgroundColor_
