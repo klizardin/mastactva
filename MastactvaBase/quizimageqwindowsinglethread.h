@@ -85,6 +85,7 @@ protected:
         bool startQuick(const QString &filename);
         void setWindowSize(const QSize &windowSize);
         uint getTexture() const;
+        std::shared_ptr<uint> getTextureSharedPtr() const;
         const QString &getTextureName() const;
         void setTextureName(const QString &texture);
         int getRenderingWindowsId() const;
@@ -97,11 +98,11 @@ protected:
         std::unique_ptr<QQmlApplicationEngine> m_qmlEngine;
         std::unique_ptr<QQmlComponent> m_qmlComponent;
         QQuickItem * m_rootItem = nullptr;
-        uint m_textureId = 0;
+        std::shared_ptr<uint> m_textureSharedPtrId;
         QString m_textureName;
         int m_renderingWindowsId = 0;
         bool m_quickInitialized = false;
-        bool m_textureCreated = false;
+        //bool m_textureCreated = false;
     };
 
 public:
@@ -114,6 +115,7 @@ public:
     bool isDefaultTexture(int index) const override;
     QString getCurrentTextureName() const override;
     uint getCurrentTextureId() const override;
+    std::shared_ptr<uint> getCurrentTextureSharedId() const override;
 
 protected:
     void exposeEvent(QExposeEvent *e) override;

@@ -201,33 +201,32 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::createTexture(QOp
     {
         return false;
     }
-    if(m_textureCreated)
+    if((bool)m_textureSharedPtrId)
     {
         return true;
     }
 
-    f->glGenTextures(1, &m_textureId);
-    f->glBindTexture(GL_TEXTURE_2D, m_textureId);
+    m_textureSharedPtrId = std::make_shared<uint>(0);
+    f->glGenTextures(1, m_textureSharedPtrId.get());
+    f->glBindTexture(GL_TEXTURE_2D, *m_textureSharedPtrId.get());
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureSize.width(), textureSize.height(), 0,
                     GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    m_quickWindow->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(m_textureId, textureSize));
-    m_textureCreated = true;
+    m_quickWindow->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(*m_textureSharedPtrId.get(), textureSize));
 
     return true;
 }
 
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::deleteTexture(QOpenGLContext *context)
 {
-    if(!context || !m_textureId || !context->functions())
+    if(!context || !m_textureSharedPtrId || !context->functions())
     {
         return false;
     }
 
-    context->functions()->glDeleteTextures(1, &m_textureId);
-    m_textureId = 0;
-    m_textureCreated = false;
+    context->functions()->glDeleteTextures(1, m_textureSharedPtrId.get());
+    m_textureSharedPtrId.reset();
 
     return true;
 }
@@ -354,7 +353,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::render(QOpenGLCon
 
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::hasTexture() const
 {
-    return m_textureId != 0;
+    return (bool)m_textureSharedPtrId;
 }
 
 bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::startQuick(const QString &filename)
@@ -383,7 +382,12 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setWindowSize(con
 
 uint QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getTexture() const
 {
-    return m_textureId;
+    return (bool)m_textureSharedPtrId ? *m_textureSharedPtrId.get() : 0;
+}
+
+std::shared_ptr<uint> QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getTextureSharedPtr() const
+{
+    return m_textureSharedPtrId;
 }
 
 const QString &QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::getTextureName() const
@@ -540,6 +544,20 @@ uint QuizImageQWindowSingleThread::getCurrentTextureId() const
         return 0;
     }
     return fit->getTexture();
+}
+
+std::shared_ptr<uint> QuizImageQWindowSingleThread::getCurrentTextureSharedId() const
+{
+    auto fit = std::find_if(std::cbegin(m_drawingSurfaces), std::cend(m_drawingSurfaces)
+                           ,[this](const QuizImageQMLDrawingSurface& surface_)
+    {
+        return surface_.getTextureName() == m_currentTextureName;
+    });
+    if(std::cend(m_drawingSurfaces)==fit)
+    {
+        return 0;
+    }
+    return fit->getTextureSharedPtr();
 }
 
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
