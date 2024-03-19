@@ -247,6 +247,12 @@ public:
 };
 
 
+std::shared_ptr<uint> QuizImage::getSharedPtrTextureId() const
+{
+    IQuizImageQWindowOperations *quizImageOperations = IQuizImageQWindow::findQuizImageWindows(renderingWindowsId());
+    return quizImageOperations ? quizImageOperations->getCurrentTextureSharedId() : nullptr;
+}
+
 void QuizImage::initDefaultDrawingData()
 {
     /*
