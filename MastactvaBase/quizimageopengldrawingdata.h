@@ -575,7 +575,8 @@ public:
     */
     void setImageData(
             std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
-            int windowsId_
+            int windowsId_,
+            std::shared_ptr<uint> textureIdSharedPtr_
             );
 
     /*
@@ -806,7 +807,8 @@ protected:
     */
     void setImageData(
             std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
-            int windowsId_
+            int windowsId_,
+            std::shared_ptr<uint> textureIdSharedPtr_
             );
 
     /*
@@ -870,7 +872,8 @@ public:
         {
             quizImage->setDataToFree(releaseImageData());
             setImageData(quizImage->getData(),
-                         quizImage->renderingWindowsId()
+                         quizImage->renderingWindowsId(),
+                         quizImage->getSharedPtrTextureId()
                          );
         }
         synchronizeImpl(rectSize, t);

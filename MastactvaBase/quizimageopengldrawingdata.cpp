@@ -1759,11 +1759,13 @@ void ObjectsRenderer::setCurrentFrameBufferObject(
 
 void ObjectsRenderer::setImageData(
         std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
-        int windowsId_
+        int windowsId_,
+        std::shared_ptr<uint> textureIdSharedPtr_
         )
 {
     m_openglData = std::make_unique<opengl_drawing::Objects>();
     m_openglData->init(std::move(imageData_), windowsId_);
+    m_currentTextureId = textureIdSharedPtr_;
     m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject, m_currentTextureId);
     m_openglData->setOpenGlFunctions(this);
     initialize();
@@ -2094,10 +2096,11 @@ std::shared_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releas
 
 void QuizImageFboRendererImpl::setImageData(
         std::shared_ptr<drawing_data::QuizImageObjects> imageData_,
-        int windowsId_
+        int windowsId_,
+        std::shared_ptr<uint> textureIdSharedPtr_
         )
 {
-    m_objectRenderer.setImageData(std::move(imageData_), windowsId_);
+    m_objectRenderer.setImageData(std::move(imageData_), windowsId_, textureIdSharedPtr_);
 }
 
 void QuizImageFboRendererImpl::setFromImage(const QString &url_)
