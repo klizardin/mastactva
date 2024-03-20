@@ -873,7 +873,7 @@ public:
             quizImage->setDataToFree(releaseImageData());
             setImageData(quizImage->getData(),
                          quizImage->renderingWindowsId(),
-                         quizImage->getSharedPtrTextureId()
+                         quizImage->getScreenTextureId()
                          );
         }
         synchronizeImpl(rectSize, t);

@@ -247,7 +247,7 @@ public:
 };
 
 
-std::shared_ptr<uint> QuizImage::getSharedPtrTextureId() const
+std::shared_ptr<uint> QuizImage::getScreenTextureId() const
 {
     IQuizImageQWindowOperations *quizImageOperations = IQuizImageQWindow::findQuizImageWindows(renderingWindowsId());
     return quizImageOperations ? quizImageOperations->getCurrentTextureId() : nullptr;

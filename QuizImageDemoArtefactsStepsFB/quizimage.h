@@ -109,7 +109,7 @@ public:
     bool doRunTestsStepByStep() const;
     void setDoRunTestsStepByStep(const bool &stepByStep_);
 
-    std::shared_ptr<uint> getSharedPtrTextureId() const;
+    std::shared_ptr<uint> getScreenTextureId() const;
 
 protected:
     void setT(const qreal &t_);
