@@ -114,7 +114,7 @@ public:
     QString at(int index) const override;
     bool isDefaultTexture(int index) const override;
     QString getCurrentTextureName() const override;
-    std::shared_ptr<uint> getCurrentTextureSharedId() const override;
+    std::shared_ptr<uint> getCurrentTextureId() const override;
 
 protected:
     void exposeEvent(QExposeEvent *e) override;

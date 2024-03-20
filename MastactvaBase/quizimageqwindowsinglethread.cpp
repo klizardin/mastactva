@@ -532,7 +532,7 @@ QString QuizImageQWindowSingleThread::getCurrentTextureName() const
     return m_currentTextureName;
 }
 
-std::shared_ptr<uint> QuizImageQWindowSingleThread::getCurrentTextureSharedId() const
+std::shared_ptr<uint> QuizImageQWindowSingleThread::getCurrentTextureId() const
 {
     auto fit = std::find_if(std::cbegin(m_drawingSurfaces), std::cend(m_drawingSurfaces)
                            ,[this](const QuizImageQMLDrawingSurface& surface_)
