@@ -759,7 +759,7 @@ private:
 private:
     std::shared_ptr<opengl_drawing::Objects> m_openglData;  // contains opne gl drawing objects
     QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
-    std::shared_ptr<uint> m_currentTextureId;
+    std::shared_ptr<uint> m_screenTextureId;
 };
 
 

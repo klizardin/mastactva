@@ -1765,8 +1765,8 @@ void ObjectsRenderer::setImageData(
 {
     m_openglData = std::make_unique<opengl_drawing::Objects>();
     m_openglData->init(std::move(imageData_), windowsId_);
-    m_currentTextureId = textureIdSharedPtr_;
-    m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject, m_currentTextureId);
+    m_screenTextureId = textureIdSharedPtr_;
+    m_openglData->setCurrentFrameBufferObject(m_currentFrameBufferObject, m_screenTextureId);
     m_openglData->setOpenGlFunctions(this);
     initialize();
 }
