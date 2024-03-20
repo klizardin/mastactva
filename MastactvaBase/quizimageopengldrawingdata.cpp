@@ -1672,7 +1672,7 @@ void opengl_drawing::Objects::setTextureFromSharedTextureId(
     }
     for(std::unique_ptr<Object> &object_ : m_objects)
     {
-        object_->setTextureFromSharedTextureId(textureName_, m_currentTextureId, newBackgroundColor_);
+        object_->setTextureFromSharedTextureId(textureName_, m_screenTextureId, newBackgroundColor_);
     }
 }
 
@@ -1692,7 +1692,7 @@ void opengl_drawing::Objects::setCurrentFrameBufferObject(
         )
 {
     m_currentFrameBufferObject = currentFrameBufferObject_;
-    m_currentTextureId = currentTextureId_;
+    m_screenTextureId = currentTextureId_;
 }
 
 void opengl_drawing::Objects::setOpenGlFunctions(QOpenGLFunctions *openGlFunctions_)

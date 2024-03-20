@@ -552,7 +552,7 @@ namespace opengl_drawing
         QStringList m_updated;                                                      // list of variable that was updated duiring last calculations
         std::unique_ptr<States> m_states;                                           // global states
         QOpenGLFramebufferObject *m_currentFrameBufferObject = nullptr;             // frame buffer object pointer
-        std::shared_ptr<uint> m_currentTextureId;
+        std::shared_ptr<uint> m_screenTextureId;
         int m_renderWindowsId = 0;
         QOpenGLFunctions *m_openGlFunctions = nullptr;
     };
