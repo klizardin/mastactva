@@ -2941,7 +2941,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectDrawingBufferTestObject(
             4,
             ArtefactArgTypeEn::mat4Type,
             ArtefactArgStorageEn::uniformStorage,
-            g_renderImageMatrixName,
+            g_renderImageMatrixBaseName,
             emptyStr
         },
         {
