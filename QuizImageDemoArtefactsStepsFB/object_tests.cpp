@@ -2909,7 +2909,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectDrawingBufferTestObject(
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
 
-    const QString geomertySizeStr = QString("%1 %2").arg(geometrySize_.x(), geometrySize_.y());
+    const QString geomertySizeStr = QString("%1 %2").arg(geometrySize_.x()).arg(geometrySize_.y());
 
     opengl_drawing::makeGeometry(geometrySize_.x(), geometrySize_.y(), 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
 
