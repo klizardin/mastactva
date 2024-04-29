@@ -3639,6 +3639,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     static const int effectObjectStep0 = 0;
     static const int effectObjectStep1 = 10;
     static const int effectObjectStep2 = 20;
+    static const QSize imageSegments{10, 10};
 
     QDir addonsDir;
     findDynamicLibrariesDir(QDir("./"), addonsDir);
@@ -3660,8 +3661,8 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     //qDebug() << "walkEffectDataToValues" << walkEffectDataToValues;
 
     std::vector<GLfloat> walkEffectFromCoords, walkEffectToCoords;
-    createGeometry(15, 13, walkEffectDataFromValues, walkEffectFromCoords);
-    createGeometry(15, 13, walkEffectDataToValues, walkEffectToCoords);
+    createGeometry(imageSegments.width(), imageSegments.height(), walkEffectDataFromValues, walkEffectFromCoords);
+    createGeometry(imageSegments.width(), imageSegments.height(), walkEffectDataToValues, walkEffectToCoords);
 
     //qDebug() << "walkEffectFromCoords" << walkEffectFromCoords;
     //qDebug() << "walkEffectToCoords" << walkEffectToCoords;
@@ -3736,7 +3737,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     "textureAttributeFrom",
                     walkEffectFromCoords,
                     //toCoords,
-                    QPoint(15, 13)
+                    QPoint(imageSegments.width(), imageSegments.height())
                     ).release()
                 );
     const std::vector<Argument> luaScriptArgs1 = {
@@ -3777,7 +3778,7 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     "textureAttributeTo",
                     //fromCoords,
                     walkEffectToCoords,
-                    QPoint(15, 13)
+                    QPoint(imageSegments.width(), imageSegments.height())
                     ).release()
                 );
     const std::vector<Argument> luaScriptArgs2 = {
