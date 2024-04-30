@@ -3649,10 +3649,10 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     modules->create(addonsDir);
 
     QString inputJson = QString(g_inputJson).arg(
-                //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 absoluteHomePath("~/tmp/")
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
@@ -3737,8 +3737,8 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     g_walkEffectFromVertexShaderV1Filename,
                     g_walkEffectFragmentShaderV1Filename,
                     g_renderFromImageName,
-                    //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                    absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                    absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                    //absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
                     "textureAttributeFrom",
                     walkEffectFromCoords,
                     //toCoords,
@@ -3779,8 +3779,8 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
                     g_walkEffectToVertexShaderV1Filename,
                     g_walkEffectFragmentShaderV1Filename,
                     g_renderToImageName,
-                    //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
-                    absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                    absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                    //absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                     "textureAttributeTo",
                     //fromCoords,
                     walkEffectToCoords,
