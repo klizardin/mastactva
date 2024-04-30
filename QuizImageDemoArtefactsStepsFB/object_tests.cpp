@@ -3649,8 +3649,10 @@ std::unique_ptr<EffectData> createWalkEffectDrawingBufferTestData()
     modules->create(addonsDir);
 
     QString inputJson = QString(g_inputJson).arg(
-                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 absoluteHomePath("~/tmp/")
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
