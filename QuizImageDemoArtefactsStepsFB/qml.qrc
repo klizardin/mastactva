@@ -3,6 +3,10 @@
         <file>main.qml</file>
         <file>main2.qml</file>
         <file>main3.qml</file>
+        <file>qml/quizImage0.qml</file>
+        <file>qml/quizImage1.qml</file>
+        <file>qml/quizImage2.qml</file>
+        <file>qml/quizImage3.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
