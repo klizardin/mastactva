@@ -274,7 +274,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     }
 
     // set renderingTextureName property of the QuizImage quick item
-    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QStringLiteral("quizImage"));
+    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QString{"quizImage%1"}.arg(m_renderingWindowsId));
     QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
     if(!quizImageQuickItem)
     {
@@ -364,6 +364,9 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::startQuick(const 
     }
     m_qmlEngine->addImportPath("qrc:/Mastactva");
     // TODO: is it possible to parametrise filename?
+    const QString fileNameWithCurrentParam = filename.first(filename.indexOf('0'))
+            + QString{"%1"}.arg(m_renderingWindowsId)
+            + filename.mid(filename.indexOf('0') + 1);
     m_qmlComponent = std::make_unique<QQmlComponent>(m_qmlEngine.get(), QUrl(filename));
     return !m_qmlComponent->isLoading();
 }

@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     // use of the window
     // (standard steps for QWindow):
     // create
-    QuizImageQWindowSingleThread window(QStringLiteral("qrc:/main3.qml"), commandLineParser.isSet(commandLineRunTestByTestOption));
+    QuizImageQWindowSingleThread window(QStringLiteral("qrc:/qml/quizImage0.qml"), commandLineParser.isSet(commandLineRunTestByTestOption));
     // set default size
     window.resize(800, 600);
     // show
