@@ -138,6 +138,30 @@ void QuizImage::setDoRunTestsStepByStep(const bool &stepByStep_)
     emit doRunTestsStepByStepChanged();
 }
 
+QVariantList QuizImage::delaysVector() const
+{
+    QVariantList result;
+    result.reserve(m_delaysVector.size());
+    for(const auto& val: m_delaysVector)
+    {
+        result << QVariant::fromValue(val);
+    }
+    return result;
+}
+
+void QuizImage::setDelaysVector(const QVariantList& delaysVector)
+{
+    m_delaysVector.resize(delaysVector.length());
+    int i = 0;
+    for(const QVariant& val: delaysVector)
+    {
+        m_delaysVector[i] = val.toReal();
+        ++i;
+    }
+
+    emit delaysVectorChanged();
+}
+
 void QuizImage::setRenderingTextureName(const QString &renderingTextureName_)
 {
     m_renderingTextureName = renderingTextureName_;
