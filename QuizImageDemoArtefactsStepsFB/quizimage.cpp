@@ -212,6 +212,36 @@ void QuizImage::setProjectToImage()
     //m_drawingData->addRenderImage(url.toLocalFile(), false);
 }
 
+qreal QuizImage::getTValue(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
+{
+    delayIndex_ = std::max(0, delayIndex_);
+    while(dt_ > 0.0 && delayIndex_ + 2 < (int)m_delaysVector.size())
+    {
+        const int oldDelayIndex = delayIndex_;
+        const qreal currentDT = fabs(m_delaysVector[oldDelayIndex + 1]);
+        if(dt_ < currentDT)
+        {
+            const qreal startT = m_delaysVector[oldDelayIndex];
+            const qreal endT = m_delaysVector[oldDelayIndex + 2];
+            if(currentDT > 0)
+            {
+                return std::clamp(dt_/currentDT, startT, endT);
+            }
+            else
+            {
+                return endT;
+            }
+        }
+        else
+        {
+            dt_ -= currentDT;
+            tIntermediate_ += currentDT;
+            delayIndex_ += 2;
+        }
+    }
+    return !m_delaysVector.empty() ? m_delaysVector.back() : 1.0;
+}
+
 bool QuizImage::isImageDataUpdated() const
 {
     return m_drawingData.operator bool();

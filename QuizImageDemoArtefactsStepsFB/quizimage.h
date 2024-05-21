@@ -130,6 +130,7 @@ protected:
     void loadProject();
     void setProjectFromImage();
     void setProjectToImage();
+    qreal getTValue(qreal dt_, int& delayIndex_, qreal& tIntermediate_);
 
 signals:
     void tChanged();
