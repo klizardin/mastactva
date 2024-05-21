@@ -156,6 +156,8 @@ private:
     int m_renderingWindowsId = -1;
     bool m_doRunTestsStepByStep = false;
     QVector<qreal> m_delaysVector;
+    int m_currentDelayIndex = 0;
+    qreal m_lastTime = 0.0;
 };
 
 
