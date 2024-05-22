@@ -212,7 +212,7 @@ void QuizImage::setProjectToImage()
     //m_drawingData->addRenderImage(url.toLocalFile(), false);
 }
 
-qreal QuizImage::getTValue(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
+qreal QuizImage::getScaledT(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
 {
     delayIndex_ = std::max(0, delayIndex_);
     while(dt_ > 0.0 && delayIndex_ + 2 < (int)m_delaysVector.size())
