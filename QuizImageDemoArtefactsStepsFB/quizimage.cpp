@@ -138,7 +138,7 @@ void QuizImage::setDoRunTestsStepByStep(const bool &stepByStep_)
     emit doRunTestsStepByStepChanged();
 }
 
-QVariantList QuizImage::delaysVector() const
+QVariantList QuizImage::tScalesVector() const
 {
     QVariantList result;
     result.reserve(m_tScalesVector.size());
@@ -149,7 +149,7 @@ QVariantList QuizImage::delaysVector() const
     return result;
 }
 
-void QuizImage::setDelaysVector(const QVariantList& delaysVector)
+void QuizImage::setTScalesVector(const QVariantList& delaysVector)
 {
     m_tScalesVector.resize(delaysVector.length());
     int i = 0;
@@ -159,7 +159,7 @@ void QuizImage::setDelaysVector(const QVariantList& delaysVector)
         ++i;
     }
 
-    emit delaysVectorChanged();
+    emit tScalesVectorChanged();
 }
 
 void QuizImage::setRenderingTextureName(const QString &renderingTextureName_)
