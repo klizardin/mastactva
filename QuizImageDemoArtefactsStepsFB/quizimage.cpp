@@ -141,8 +141,8 @@ void QuizImage::setDoRunTestsStepByStep(const bool &stepByStep_)
 QVariantList QuizImage::delaysVector() const
 {
     QVariantList result;
-    result.reserve(m_delaysVector.size());
-    for(const auto& val: m_delaysVector)
+    result.reserve(m_tScalesVector.size());
+    for(const auto& val: m_tScalesVector)
     {
         result << QVariant::fromValue(val);
     }
@@ -151,11 +151,11 @@ QVariantList QuizImage::delaysVector() const
 
 void QuizImage::setDelaysVector(const QVariantList& delaysVector)
 {
-    m_delaysVector.resize(delaysVector.length());
+    m_tScalesVector.resize(delaysVector.length());
     int i = 0;
     for(const QVariant& val: delaysVector)
     {
-        m_delaysVector[i] = val.toReal();
+        m_tScalesVector[i] = val.toReal();
         ++i;
     }
 
@@ -215,14 +215,14 @@ void QuizImage::setProjectToImage()
 qreal QuizImage::getScaledT(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
 {
     delayIndex_ = std::max(0, delayIndex_);
-    while(dt_ > 0.0 && delayIndex_ + 2 < (int)m_delaysVector.size())
+    while(dt_ > 0.0 && delayIndex_ + 2 < (int)m_tScalesVector.size())
     {
         const int oldDelayIndex = delayIndex_;
-        const qreal currentDT = fabs(m_delaysVector[oldDelayIndex + 1]);
+        const qreal currentDT = fabs(m_tScalesVector[oldDelayIndex + 1]);
         if(dt_ < currentDT)
         {
-            const qreal startT = m_delaysVector[oldDelayIndex];
-            const qreal endT = m_delaysVector[oldDelayIndex + 2];
+            const qreal startT = m_tScalesVector[oldDelayIndex];
+            const qreal endT = m_tScalesVector[oldDelayIndex + 2];
             if(currentDT > 0)
             {
                 return std::clamp(dt_/currentDT, startT, endT);
@@ -239,7 +239,7 @@ qreal QuizImage::getScaledT(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
             delayIndex_ += 2;
         }
     }
-    return !m_delaysVector.empty() ? m_delaysVector.back() : 1.0;
+    return !m_tScalesVector.empty() ? m_tScalesVector.back() : 1.0;
 }
 
 bool QuizImage::isImageDataUpdated() const
