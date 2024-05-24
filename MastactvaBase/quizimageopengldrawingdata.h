@@ -841,6 +841,11 @@ public:
     void render() override
     {
         renderImpl();
+        if(m_quizImage)
+        {
+            // TODO: synchronize this call
+            m_quizImage->updateT();
+        }
     }
 
     /*
@@ -859,8 +864,10 @@ public:
         QuizImageType_ *quizImage = static_cast<QuizImageType_ *>(frameBufferObject_);
         if(!quizImage)
         {
+            m_quizImage = nullptr;
             return;
         }
+        m_quizImage = quizImage;
 
         //quizImage->initDefaultDrawingData();
         const QVector2D rectSize(quizImage->width(), quizImage->height());
@@ -886,6 +893,8 @@ public:
             setToImage(quizImage->getToImageUrl());
         }
     }
+private:
+    QuizImageType_ *m_quizImage = nullptr;
 };
 
 
