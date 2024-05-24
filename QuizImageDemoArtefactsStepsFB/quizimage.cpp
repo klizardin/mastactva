@@ -158,6 +158,7 @@ void QuizImage::setTScalesVector(const QVariantList& delaysVector)
         m_tScalesVector[i] = val.toReal();
         ++i;
     }
+    m_millisecondsSinceEpoche = QDateTime::currentMSecsSinceEpoch();
 
     emit tScalesVectorChanged();
 }
@@ -360,7 +361,12 @@ void QuizImage::initDefaultDrawingData()
 
 void QuizImage::updateT()
 {
-    //TODO: implement
+    qint64 ctms = QDateTime::currentMSecsSinceEpoch();
+    qreal dt = (ctms - m_millisecondsSinceEpoche)/1000.0;
+    qreal ct = 0.0;
+    qreal t = getScaledT(dt, m_currentTScalesVectorIndex, ct);
+    m_millisecondsSinceEpoche += (qint64)(ct*1000.0);
+    setT(t);
 }
 
 bool QuizImage::isFromImageReady() const

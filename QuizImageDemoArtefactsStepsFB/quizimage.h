@@ -160,6 +160,7 @@ private:
     QVector<qreal> m_tScalesVector;
     int m_currentTScalesVectorIndex = 0;
     qreal m_lastTime = 0.0;
+    qint64 m_millisecondsSinceEpoche = -1;
 };
 
 
