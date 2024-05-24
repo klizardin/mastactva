@@ -358,6 +358,11 @@ void QuizImage::initDefaultDrawingData()
     }
 }
 
+void QuizImage::updateT()
+{
+    //TODO: implement
+}
+
 bool QuizImage::isFromImageReady() const
 {
     return true;
