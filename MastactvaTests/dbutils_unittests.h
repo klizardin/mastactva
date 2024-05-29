@@ -847,7 +847,7 @@ TEST(LocalDataApiNoCache, getList)
     LocalDataAPINoCacheImpl impl;
     impl.setQueryFactory(mockFactory);
 
-    EXPECT_CALL(mockFactory->mock, exec(res0));
+    EXPECT_CALL(mockFactory->mock, exec(res0)).WillOnce(Return(true));
     impl.getListImpl(&dbrequest);
 }
 
