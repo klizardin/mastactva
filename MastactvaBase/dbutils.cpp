@@ -1538,7 +1538,7 @@ QVariant SqlQueryRAII::value(const QString& name_) const
     return m_query.value(name_);
 }
 
-QMap<QString, QVariant> SqlQueryRAII::boundValues() const
+QVariantList SqlQueryRAII::boundValues() const
 {
     return m_query.boundValues();
 }

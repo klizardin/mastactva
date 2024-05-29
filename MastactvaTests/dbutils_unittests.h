@@ -742,7 +742,7 @@ public:
     MOCK_METHOD(QSqlError, lastError, (), (const, override));
     MOCK_METHOD(void, bindValue, (const QString &, const QVariant &), (override));
     MOCK_METHOD(QVariant, value, (const QString &), (const, override));
-    MOCK_METHOD((QMap<QString, QVariant>), boundValues, (), (const, override));
+    MOCK_METHOD(QVariantList, boundValues, (), (const, override));
 };
 
 class SqlQueryOnMock: public db::ISqlQuery
@@ -781,7 +781,7 @@ public:
     {
         return m_mock->value(name_);
     }
-    QMap<QString, QVariant> boundValues() const override
+    QVariantList boundValues() const override
     {
         return m_mock->boundValues();
     }
