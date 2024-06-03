@@ -129,6 +129,7 @@ static const char *g_luaScriptAddonDataTestFmt =
         "    arg[\"%4\"] = \"%5\"\n"
         "    result = addon.call(arg, \"%6\")\n"
         "    test(result, \"%1\")\n"
+        "    return result\n"
         "end\n";
 
 
@@ -137,6 +138,7 @@ static const char *g_luaScriptAddonDataTest2Fmt =
         "    result = {}\n"
         "    result[\"%2\"] = addon.hasName(\"%3\")\n"
         "    test(result, \"%1\")\n"
+        "    return result\n"
         "end\n";
 
 static const char *g_luaScriptAddonDataTest3Fmt =
