@@ -232,6 +232,7 @@ static const char *g_luaScriptAddonComplexDataTest1Fmt =
         "    arg[\"%8\"] = arg1\n"
         "    arg[\"%9\"] = arg2\n"
         "    test(arg, \"%1\")\n"
+        "    return arg\n"
         "end\n";
 
 static const char *g_luaScriptAddonComplexDataTest2Fmt =
@@ -246,6 +247,7 @@ static const char *g_luaScriptAddonComplexDataTest2Fmt =
         "    arg[\"%9\"] = arg2\n"
         "    result = addon.call(arg, \"%10\")\n"
         "    test(result, \"%1\")\n"
+        "    return arg\n"
         "end\n";
 
 TEST(Lua, complexData)
