@@ -23,6 +23,7 @@ static const char *g_luaScriptBaseDataTestFmt =
         "    result = {}\n"
         "    result[\"%2\"] = %3\n"
         "    test(result, \"%1\")\n"
+        "    return result\n"
         "end\n";
 
 static const char *g_luaScriptBaseDataTest3Fmt =
@@ -32,6 +33,7 @@ static const char *g_luaScriptBaseDataTest3Fmt =
         "    result[\"%4\"] = %5\n"
         "    result[\"%6\"] = %7\n"
         "    test(result, \"%1\")\n"
+        "    return result\n"
         "end\n";
 
 class TestObserverMock : public TestObserver
