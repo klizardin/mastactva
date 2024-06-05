@@ -13,12 +13,14 @@ CONFIG += thread
 
 
 HEADERS += \
+        ../MastactvaBase/utils.h \
         addon_unittests.h \
         define_lua_types.h \
         format_unittests.h \
         lua_unittests.h \
         test_utils.h \
-        tst_testcanasserttrue.h
+        tst_testcanasserttrue.h \
+        utils_unittests.h
 
 unix: HEADERS += \
         dbutils.h   \
@@ -38,6 +40,7 @@ unix: HEADERS += \
 
 
 SOURCES += \
+        ../MastactvaBase/utils.cpp \
         main.cpp
 
 unix: SOURCES += \
