@@ -34,63 +34,6 @@
 #include "../MastactvaBase/iquizimageqwindow.h"
 
 
-QVariantList ScalledTime::getVectorValue() const
-{
-    QVariantList result;
-    result.reserve(m_tScalesVector.size());
-    for(const auto& val: m_tScalesVector)
-    {
-        result << QVariant::fromValue(val);
-    }
-    return result;
-}
-
-void ScalledTime::setVectorValue(const QVariantList& delaysVector)
-{
-    m_tScalesVector.resize(delaysVector.length());
-    int i = 0;
-    for(const QVariant& val: delaysVector)
-    {
-        m_tScalesVector[i] = val.toReal();
-        ++i;
-    }
-}
-
-qreal ScalledTime::get(qreal dt_, qreal& tIntermediate_)
-{
-    return get(dt_, m_currentTScalesVectorIndex, tIntermediate_);
-}
-
-qreal ScalledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
-{
-    delayIndex_ = std::max(0, delayIndex_);
-    while(dt_ > 0.0 && delayIndex_ + 2 < (int)m_tScalesVector.size())
-    {
-        const int oldDelayIndex = delayIndex_;
-        const qreal currentDT = fabs(m_tScalesVector[oldDelayIndex + 1]);
-        if(dt_ < currentDT)
-        {
-            const qreal startT = m_tScalesVector[oldDelayIndex];
-            const qreal endT = m_tScalesVector[oldDelayIndex + 2];
-            if(currentDT > 0)
-            {
-                return std::clamp(dt_/currentDT, startT, endT);
-            }
-            else
-            {
-                return endT;
-            }
-        }
-        else
-        {
-            dt_ -= currentDT;
-            tIntermediate_ += currentDT;
-            delayIndex_ += 2;
-        }
-    }
-    return !m_tScalesVector.empty() ? m_tScalesVector.back() : 1.0;
-}
-
 QuizImage::QuizImage()
 {
     //initDefaultDrawingData();

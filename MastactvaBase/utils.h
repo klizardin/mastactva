@@ -582,4 +582,22 @@ private:
 };
 
 
+class ScalledTime
+{
+public:
+    ScalledTime() = default;
+
+    QVariantList getVectorValue() const;
+    void setVectorValue(const QVariantList& delaysVector);
+    qreal get(qreal dt_, qreal& tIntermediate_);
+
+private:
+    qreal get(qreal dt_, int& delayIndex_, qreal& tIntermediate_);
+
+private:
+    QVector<qreal> m_tScalesVector;
+    int m_currentTScalesVectorIndex = 0;
+    qreal m_lastTime = 0.0;
+};
+
 #endif // UTILS_H

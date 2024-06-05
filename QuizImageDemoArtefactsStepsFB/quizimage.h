@@ -23,6 +23,7 @@
 #include <QtQuick/QQuickFramebufferObject>
 //#include "../MastactvaBase/quickframebufferobjects.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
+#include "../MastactvaBase/utils.h"
 #include "drawing_tests.h"
 #include "object_tests.h"
 #include <vector>
@@ -62,24 +63,6 @@ using Tests = std::tuple<
     drawing_objects::WalkEffectMultiTextureStepsTest
     >;
 
-
-class ScalledTime
-{
-public:
-    ScalledTime() = default;
-
-    QVariantList getVectorValue() const;
-    void setVectorValue(const QVariantList& delaysVector);
-    qreal get(qreal dt_, qreal& tIntermediate_);
-
-private:
-    qreal get(qreal dt_, int& delayIndex_, qreal& tIntermediate_);
-
-private:
-    QVector<qreal> m_tScalesVector;
-    int m_currentTScalesVectorIndex = 0;
-    qreal m_lastTime = 0.0;
-};
 
 /*
  * control that wraps the opengl effect drawing
