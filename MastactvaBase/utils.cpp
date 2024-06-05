@@ -779,7 +779,7 @@ qreal ScalledTime::get(qreal dt_, qreal& tIntermediate_)
 qreal ScalledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
 {
     delayIndex_ = std::max(0, delayIndex_);
-    while(dt_ > 0.0 && delayIndex_ + 2 < (int)m_tScalesVector.size())
+    while(dt_ >= 0.0 && delayIndex_ + 2 < (int)m_tScalesVector.size())
     {
         const int oldDelayIndex = delayIndex_;
         const qreal currentDT = fabs(m_tScalesVector[oldDelayIndex + 1]);
