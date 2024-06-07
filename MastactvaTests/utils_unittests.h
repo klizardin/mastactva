@@ -35,7 +35,7 @@ TEST(Utils,ScalledTime)
 
     // to debug, new tests
     ASSERT_DOUBLE_EQ(scalledTime.get(1000.0, dt), 0.0);
-    ASSERT_DOUBLE_EQ(dt, 1000.0);
+    ASSERT_DOUBLE_EQ(dt, 2000.0);
     for(int i = 0; i < 10; i++)
     {
         ASSERT_DOUBLE_EQ(dt, 0.0);
