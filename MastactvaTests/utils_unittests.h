@@ -38,13 +38,13 @@ TEST(Utils,ScalledTime)
     ASSERT_DOUBLE_EQ(dt, 2000.0);
     for(int i = 0; i < 10; i++)
     {
-        ASSERT_DOUBLE_EQ(dt, 0.0);
+        ASSERT_DOUBLE_EQ(dt, 2000.0);
         ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+1), dt), 0.1*(i+1));
     }
     for(int i = 0; i < 10; i++)
     {
-        ASSERT_DOUBLE_EQ(scalledTime.get(100.0, dt), 1.0 - 0.1*(i+1));
-        ASSERT_DOUBLE_EQ(dt, 0.1);
+        ASSERT_DOUBLE_EQ(dt, 3000.0);
+        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+1), dt), 1.0 - 0.1*i);
     }
 }
 
