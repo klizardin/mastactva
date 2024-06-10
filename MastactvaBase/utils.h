@@ -600,4 +600,10 @@ private:
     qreal m_lastTime = 0.0;
 };
 
+template<typename Type> inline
+Type sign(const Type& val)
+{
+    return val > 0 ? 1: val < 0 ? -1 : 0;
+}
+
 #endif // UTILS_H

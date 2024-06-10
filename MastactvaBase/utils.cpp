@@ -789,13 +789,13 @@ qreal ScalledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
             const qreal endT = m_tScalesVector[oldDelayIndex + 2];
             if(currentDT > 0)
             {
-                if(startT < endT)
+                if(startT <= endT)
                 {
-                    return std::clamp(dt_/currentDT, startT, endT);
+                    return std::clamp(dt_/currentDT*sign(endT-startT) + startT, startT, endT);
                 }
                 else
                 {
-                    return std::clamp(dt_/currentDT, endT, startT);
+                    return std::clamp(dt_/currentDT*sign(endT-startT) + startT, endT, startT);
                 }
             }
             else
