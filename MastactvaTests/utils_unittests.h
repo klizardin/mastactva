@@ -44,8 +44,9 @@ TEST(Utils,ScalledTime)
     for(int i = 0; i < 10; i++)
     {
         ASSERT_DOUBLE_EQ(dt, 3000.0);
-        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+1), dt), 1.0 - 0.1*i);
+        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+1), dt), 1.0 - 0.1*(i+1));
     }
+    ASSERT_DOUBLE_EQ(dt, 4000.0);
 }
 
 #endif // UTILS_UNITTESTS_H
