@@ -15,6 +15,7 @@ CONFIG += thread
 HEADERS += \
         ../MastactvaBase/utils.h \
         ../MastactvaBase/utils_json.h \
+        ../MastactvaBase/utils_enum.h \
         addon_unittests.h \
         define_lua_types.h \
         format_unittests.h \

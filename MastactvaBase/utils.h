@@ -33,6 +33,7 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLShader>
 #include "utils_json.h"
+#include "utils_enum.h"
 
 
 /*
@@ -173,23 +174,6 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int 
     extractValues(valuesVar, valuesArray_, arraySize_);
 }
 
-
-/*
- * enum conversions
- * {
-*/
-template <typename EnumType_> inline
-constexpr auto to_underlying(EnumType_ enumValue_) noexcept
-{
-    return static_cast<std::underlying_type_t<EnumType_>>(enumValue_);
-}
-
-template <typename EnumType_> inline
-constexpr auto to_enum(const std::underlying_type_t<EnumType_> &val_) noexcept
-{
-    return static_cast<EnumType_>(val_);
-}
-// }
 
 /*
  * primitives of imitation of the intialized/uninitialized value type
