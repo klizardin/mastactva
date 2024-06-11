@@ -34,6 +34,7 @@
 #include <QOpenGLShader>
 #include "utils_json.h"
 #include "utils_enum.h"
+#include "utils_optional.h"
 
 
 /*
@@ -175,107 +176,6 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int 
 }
 
 
-/*
- * primitives of imitation of the intialized/uninitialized value type
- * with std::pair or with std::tuple
- * {
-*/
-template <typename Type_> inline
-constexpr bool has_value(const std::pair<Type_, bool> &data_) noexcept
-{
-    return data_.second;
-}
-
-template <typename Type_> inline
-constexpr bool has_value(const std::tuple<Type_, bool> &data_) noexcept
-{
-    return std::get<1>(data_);
-}
-
-template <typename Type_>
-constexpr bool & has_value(std::pair<Type_, bool> &data_) noexcept
-{
-    return data_.second;
-}
-
-template <typename Type_> inline
-constexpr bool & has_value(std::tuple<Type_, bool> &data_) noexcept
-{
-    return std::get<1>(data_);
-}
-
-template <typename Type_> inline
-constexpr const Type_ & value(const std::pair<Type_, bool> &data_) noexcept
-{
-    return data_.first;
-}
-
-template <typename Type_>
-constexpr const Type_ & value(const std::tuple<Type_, bool> &data_) noexcept
-{
-    return std::get<0>(data_);
-}
-
-template <typename Type_> inline
-constexpr Type_ & value(std::pair<Type_, bool> &data_) noexcept
-{
-    return data_.first;
-}
-
-template <typename Type_> inline
-constexpr Type_ & value(std::tuple<Type_, bool> &data_) noexcept
-{
-    return std::get<0>(data_);
-}
-
-template <typename Type_>
-constexpr bool has_value(const std::pair<bool, Type_> &data_) noexcept
-{
-    return data_.first;
-}
-
-template <typename Type_> inline
-constexpr bool has_value(const std::tuple<bool, Type_> &data_) noexcept
-{
-    return std::get<0>(data_);
-}
-
-template <typename Type_> inline
-constexpr bool & has_value(std::pair<bool, Type_> &data_) noexcept
-{
-    return data_.first;
-}
-
-template <typename Type_> inline
-constexpr bool & has_value(std::tuple<bool, Type_> &data_) noexcept
-{
-    return std::get<0>(data_);
-}
-
-template <typename Type_> inline
-constexpr const Type_ & value(const std::pair<bool, Type_> &data_) noexcept
-{
-    return data_.second;
-}
-
-template <typename Type_> inline
-constexpr const Type_ & value(const std::tuple<bool, Type_> &data_) noexcept
-{
-    return std::get<1>(data_);
-}
-
-template <typename Type_> inline
-constexpr Type_ & value(std::pair<bool, Type_> &data_) noexcept
-{
-    return data_.second;
-}
-
-template <typename Type_> inline
-constexpr Type_ & value(std::tuple<bool, Type_> &data_) noexcept
-{
-    return std::get<1>(data_);
-}
-// }
 
 bool isDefaultImage(const QString &imageURLStr_);   // is it a default image
 bool isDefaultImage(const QUrl &imageUrl_);         // is it a default image
