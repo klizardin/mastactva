@@ -127,7 +127,7 @@ QString subpathJoin(const QString &relPath_, const QString &namespacePath_);
  * convert QVariantList to the list of values with the template type
  * with required array size
 */
-template<typename Type_>
+template<typename Type_> inline
 void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_, int arraySize_)
 {
     int pos = 0;
@@ -156,7 +156,7 @@ void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_, in
  * convert QString list of values to the array of value with the template type
  * with required array size
 */
-template<typename Type_>
+template<typename Type_> inline
 void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int arraySize_)
 {
     QString value = valuesStr_;
