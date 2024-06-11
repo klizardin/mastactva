@@ -176,10 +176,10 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int 
 }
 
 
-
 bool isDefaultImage(const QString &imageURLStr_);   // is it a default image
 bool isDefaultImage(const QUrl &imageUrl_);         // is it a default image
 QString setDefaultImageIfEmpty(const QString &imageURLStr_);    // setup default image if the URL is empty
+
 
 /*
  * return "fish" value
@@ -207,7 +207,6 @@ std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&
 {
     return std::unique_ptr<TargetType_>{static_cast<TargetType_*>(ptr_.release())};
 }
-
 
 
 /*
@@ -275,10 +274,12 @@ private:
     qreal m_lastTime = 0.0;
 };
 
+
 template<typename Type> inline
 Type sign(const Type& val)
 {
     return val > 0 ? 1: val < 0 ? -1 : 0;
 }
+
 
 #endif // UTILS_H
