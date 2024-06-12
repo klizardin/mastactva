@@ -114,6 +114,9 @@ unix: HEADERS +=    \
     addonmodulelist.h   \
     opengldrawing_utils.h   \
     utils.h \
+    utils_json.h \
+    utils_enum.h \
+    utils_optional.h \
 
 
 RESOURCES += qml.qrc    \
