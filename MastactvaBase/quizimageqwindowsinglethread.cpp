@@ -274,7 +274,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     }
 
     // set renderingTextureName property of the QuizImage quick item
-    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QString{"quizImage%1"}.arg(m_renderingWindowsId ? 0 : 0));
+    QObject * quizImageObject = m_rootItem->findChild<QObject *>(QString{"quizImage%1"}.arg(m_renderingWindowsId ? 1 : 0));
     QQuickItem *quizImageQuickItem = qobject_cast<QQuickItem*>(quizImageObject);
     if(!quizImageQuickItem)
     {
