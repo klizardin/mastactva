@@ -810,6 +810,7 @@ qreal ScalledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
             delayIndex_ += 2;
         }
     }
+    tIntermediate_ += dt_;
     return !m_tScalesVector.empty() ? m_tScalesVector.back() : 1.0;
 }
 

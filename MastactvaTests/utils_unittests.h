@@ -70,7 +70,7 @@ TEST(Utils,ScalledTime_border)
     ASSERT_DOUBLE_EQ(scalledTime.get(1000.0, dt), 0.0);
     ASSERT_DOUBLE_EQ(dt, 2000.0);
     ASSERT_DOUBLE_EQ(scalledTime.get(1000.0, dt), 0.0);
-    ASSERT_DOUBLE_EQ(dt, 2000.0);
+    ASSERT_DOUBLE_EQ(dt, 3000.0);
 }
 
 
