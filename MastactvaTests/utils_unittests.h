@@ -8,7 +8,7 @@
 #include "../MastactvaBase/utils.h"
 
 
-TEST(Utils,ScalledTime)
+TEST(Utils,ScalledTime_smoke)
 {
     ScalledTime scalledTime;
     QVariantList value;
@@ -48,5 +48,30 @@ TEST(Utils,ScalledTime)
     }
     ASSERT_DOUBLE_EQ(dt, 4000.0);
 }
+
+TEST(Utils,ScalledTime_border)
+{
+    ScalledTime scalledTime;
+    QVariantList value;
+
+    value << QVariant::fromValue(0.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(1.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(0.0);
+
+    scalledTime.setVectorValue(value);
+    EXPECT_EQ(value, scalledTime.getVectorValue());
+
+    qreal dt = 0.0;
+    ASSERT_DOUBLE_EQ(dt, 0.0);
+    ASSERT_DOUBLE_EQ(scalledTime.get(1000.0, dt), 1.0);
+    ASSERT_DOUBLE_EQ(dt, 1000.0);
+    ASSERT_DOUBLE_EQ(scalledTime.get(1000.0, dt), 0.0);
+    ASSERT_DOUBLE_EQ(dt, 2000.0);
+    ASSERT_DOUBLE_EQ(scalledTime.get(1000.0, dt), 0.0);
+    ASSERT_DOUBLE_EQ(dt, 2000.0);
+}
+
 
 #endif // UTILS_UNITTESTS_H
