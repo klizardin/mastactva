@@ -12,15 +12,15 @@ TEST(Utils,ScalledTime)
 {
     ScalledTime scalledTime;
     QVariantList value;
-    value << QVariant::fromValue(0.0);
-    value << QVariant::fromValue(1000.0);
-    value << QVariant::fromValue(1.0);
-    value << QVariant::fromValue(1000.0);
-    value << QVariant::fromValue(0.0);
-    value << QVariant::fromValue(1000.0);
-    value << QVariant::fromValue(1.0);
-    value << QVariant::fromValue(1000.0);
-    value << QVariant::fromValue(0.0);
+    value << QVariant::fromValue(0.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(1.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(0.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(1.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(0.0);
 
     scalledTime.setVectorValue(value);
     EXPECT_EQ(value, scalledTime.getVectorValue());
