@@ -14,9 +14,10 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 10
         t: 0.0
+        tScalesVector: [0.0, 5000.0, 0.0, 2000.0, 0.0, 5000.0, 1.0, 2000.0, 1.0, 5000.0, 0.0]
     }
 
-    SequentialAnimation {
+    /*SequentialAnimation {
         objectName: "animationCycle0"
         id: animationCycle0
         NumberAnimation { target: quizImage0; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
@@ -64,5 +65,5 @@ Rectangle {
                 animationCycle0.loops = Animation.Infinite
             }
         }
-    }
+    }*/
 }

@@ -37,6 +37,8 @@
 QuizImage::QuizImage()
 {
     //initDefaultDrawingData();
+    m_timerForT = std::make_unique<QTimer>(this);
+    connect(m_timerForT.get(), &QTimer::timeout, this, &QuizImage::onTimer);
 }
 
 QQuickFramebufferObject::Renderer *QuizImage::createRenderer() const
@@ -147,6 +149,7 @@ void QuizImage::setTScalesVector(const QVariantList& delaysVector)
 {
     m_scalledTime.setVectorValue(delaysVector);
     m_millisecondsSinceEpoche = QDateTime::currentMSecsSinceEpoch();
+    m_timerForT->start(10);
 
     emit tScalesVectorChanged();
 }
@@ -199,6 +202,11 @@ void QuizImage::setProjectToImage()
     // do not remove prev image
     //QUrl url(toImage());
     //m_drawingData->addRenderImage(url.toLocalFile(), false);
+}
+
+void QuizImage::onTimer()
+{
+    updateT();
 }
 
 bool QuizImage::isImageDataUpdated() const
