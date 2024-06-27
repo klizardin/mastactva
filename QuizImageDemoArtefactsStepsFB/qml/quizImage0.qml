@@ -14,7 +14,7 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 10
         t: 0.0
-        tScalesVector: [0.0, 5000.0, 0.0, 2000.0, 0.0, 5000.0, 1.0, 2000.0, 1.0, 5000.0, 0.0]
+        tScalesVector: [0.0, 5000.0, 1.0, 2000.0, 1.0, 5000.0, 0.0, 2000.0, 0.0, 5000.0, 1.0]
     }
 
     /*SequentialAnimation {
