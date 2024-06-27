@@ -770,6 +770,7 @@ void ScalledTime::setVectorValue(const QVariantList& delaysVector)
         m_tScalesVector[i] = val.toReal();
         ++i;
     }
+    m_currentTScalesVectorIndex = 0;
 }
 
 qreal ScalledTime::get(qreal dt_, qreal& tIntermediate_)
