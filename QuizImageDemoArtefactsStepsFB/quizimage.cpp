@@ -148,7 +148,7 @@ QVariantList QuizImage::tScalesVector() const
 
 void QuizImage::setTScalesVector(const QVariantList& delaysVector)
 {
-    qDebug() << "setTScalesVector()";
+    qDebug() << "setTScalesVector()" << delaysVector;
     m_scalledTime.setVectorValue(delaysVector);
     m_millisecondsSinceEpoche = QDateTime::currentMSecsSinceEpoch();
     m_timerForT->start(10);
