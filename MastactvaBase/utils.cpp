@@ -762,7 +762,6 @@ QVariantList ScalledTime::getVectorValue() const
 
 void ScalledTime::setVectorValue(const QVariantList& delaysVector)
 {
-    m_tScalesVector.clear();
     m_tScalesVector.resize(delaysVector.length());
     int i = 0;
     for(const QVariant& val: delaysVector)
