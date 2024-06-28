@@ -773,6 +773,17 @@ void ScalledTime::setVectorValue(const QVariantList& delaysVector)
     qDebug() << "ScalledTime::setVectorValue()" << m_tScalesVector << m_currentTScalesVectorIndex;
 }
 
+int ScalledTime::getCycles() const
+{
+    return m_cycles;
+}
+
+void ScalledTime::setCycles(int cycles)
+{
+    m_cycles = cycles;
+    m_cycle = 0;
+}
+
 qreal ScalledTime::get(qreal dt_, qreal& tIntermediate_)
 {
     return get(dt_, m_currentTScalesVectorIndex, tIntermediate_);
