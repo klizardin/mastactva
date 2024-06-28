@@ -64,7 +64,6 @@ qreal QuizImage::t() const
 void QuizImage::setT(const qreal &t_)
 {
     m_t = t_;
-    qDebug() << "setT()" << m_t;
 
     updateState();
     emit tChanged();
@@ -148,7 +147,6 @@ QVariantList QuizImage::tScalesVector() const
 
 void QuizImage::setTScalesVector(const QVariantList& delaysVector)
 {
-    qDebug() << "setTScalesVector()" << delaysVector;
     m_scalledTime.setVectorValue(delaysVector);
     m_millisecondsSinceEpoche = QDateTime::currentMSecsSinceEpoch();
     m_timerForT->start(10);
@@ -333,7 +331,6 @@ void QuizImage::updateT()
     qreal dt = (ctms - m_millisecondsSinceEpoche)/1000.0;
     qreal ct = 0.0;
     qreal t = m_scalledTime.get(dt, ct);
-    qDebug() << "updateT()" << dt << ct << t;
     m_millisecondsSinceEpoche += (qint64)(ct*1000.0);
     setT(t);
 }

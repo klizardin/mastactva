@@ -770,7 +770,6 @@ void ScalledTime::setVectorValue(const QVariantList& delaysVector)
         ++i;
     }
     m_currentTScalesVectorIndex = 0;
-    qDebug() << "ScalledTime::setVectorValue()" << m_tScalesVector << m_currentTScalesVectorIndex;
 }
 
 int ScalledTime::getCycles() const
