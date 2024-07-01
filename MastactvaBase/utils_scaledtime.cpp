@@ -2,7 +2,7 @@
 #include "utils.h"
 
 
-QVariantList ScalledTime::getVectorValue() const
+QVariantList ScaledTime::getVectorValue() const
 {
     QVariantList result;
     result.reserve(m_tScalesVector.size());
@@ -13,7 +13,7 @@ QVariantList ScalledTime::getVectorValue() const
     return result;
 }
 
-void ScalledTime::setVectorValue(const QVariantList& delaysVector)
+void ScaledTime::setVectorValue(const QVariantList& delaysVector)
 {
     m_tScalesVector.resize(delaysVector.length());
     int i = 0;
@@ -25,23 +25,23 @@ void ScalledTime::setVectorValue(const QVariantList& delaysVector)
     m_currentTScalesVectorIndex = 0;
 }
 
-int ScalledTime::getCycles() const
+int ScaledTime::getCycles() const
 {
     return m_cycles;
 }
 
-void ScalledTime::setCycles(int cycles)
+void ScaledTime::setCycles(int cycles)
 {
     m_cycles = cycles;
     m_cycle = 0;
 }
 
-qreal ScalledTime::get(qreal dt_, qreal& tIntermediate_)
+qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_)
 {
     return get(dt_, m_currentTScalesVectorIndex, tIntermediate_);
 }
 
-qreal ScalledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
+qreal ScaledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
 {
     delayIndex_ = std::max(0, delayIndex_);
     while(dt_ >= 0.0 && delayIndex_ + 2 < (int)m_tScalesVector.size())

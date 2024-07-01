@@ -11,7 +11,7 @@
 
 TEST(Utils,ScalledTime_smoke)
 {
-    ScalledTime scalledTime;
+    ScaledTime scalledTime;
     QVariantList value;
     value << QVariant::fromValue(0.0)
         << QVariant::fromValue(1000.0)
@@ -52,7 +52,7 @@ TEST(Utils,ScalledTime_smoke)
 
 TEST(Utils,ScalledTime_border)
 {
-    ScalledTime scalledTime;
+    ScaledTime scalledTime;
     QVariantList value;
 
     value << QVariant::fromValue(0.0)

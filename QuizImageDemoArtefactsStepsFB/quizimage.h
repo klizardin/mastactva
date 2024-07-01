@@ -161,7 +161,7 @@ private:
     int m_renderingWindowsId = -1;
     bool m_doRunTestsStepByStep = false;
     qint64 m_millisecondsSinceEpoche = -1;
-    ScalledTime m_scalledTime;
+    ScaledTime m_scalledTime;
     std::unique_ptr<QTimer> m_timerForT;
 };
 

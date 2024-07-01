@@ -6,10 +6,10 @@
 #include <qvector.h>
 
 
-class ScalledTime
+class ScaledTime
 {
 public:
-    ScalledTime() = default;
+    ScaledTime() = default;
 
     QVariantList getVectorValue() const;
     void setVectorValue(const QVariantList& delaysVector);
