@@ -25,6 +25,7 @@
 //#include "../MastactvaBase/quickframebufferobjects.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/utils_scaledtime.h"
 #include "drawing_tests.h"
 #include "object_tests.h"
 #include <vector>
