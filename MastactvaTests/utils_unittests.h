@@ -6,6 +6,7 @@
 #include <gmock/gmock.h>
 #include <gmock/gmock-matchers.h>
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/utils_scaledtime.h"
 
 
 TEST(Utils,ScalledTime_smoke)

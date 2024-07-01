@@ -17,6 +17,7 @@ HEADERS += \
         ../MastactvaBase/utils_json.h \
         ../MastactvaBase/utils_enum.h \
         ../MastactvaBase/utils_optional.h \
+        ../MastactvaBase/utils_scaledtime.h \
         addon_unittests.h \
         define_lua_types.h \
         format_unittests.h \
@@ -44,6 +45,7 @@ unix: HEADERS += \
 
 SOURCES += \
         ../MastactvaBase/utils.cpp \
+        ../MastactvaBase/utils_scaledtime.cpp \
         main.cpp
 
 unix: SOURCES += \
