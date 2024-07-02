@@ -65,6 +65,7 @@ unix: SOURCES +=    \
     opengldrawing_utils.cpp \
     utils.cpp   \
     utils_scaledtime.cpp   \
+    utils_comment.cpp   \
 
 
 HEADERS += \
@@ -119,6 +120,7 @@ unix: HEADERS +=    \
     utils_enum.h \
     utils_optional.h \
     utils_scaledtime.h   \
+    utils_comment.h   \
 
 
 RESOURCES += qml.qrc    \
