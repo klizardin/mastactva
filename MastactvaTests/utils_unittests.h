@@ -94,11 +94,11 @@ TEST(Utils, ScaledTime_Cycles_default)
     qreal dt = 0.0;
     for(int i = 0; i < cycles; ++i)
     {
-        ASSERT_DOUBLE_EQ(dt, 0.0 * i);
+        ASSERT_DOUBLE_EQ(dt, 0.0 + 2000.0*i);
         ASSERT_DOUBLE_EQ(scalledTime.get(1000.0, dt), 1.0);
-        ASSERT_DOUBLE_EQ(dt, 1000.0 * i);
+        ASSERT_DOUBLE_EQ(dt, 1000.0 + 2000.0*i);
         ASSERT_DOUBLE_EQ(scalledTime.get(1000.0, dt), 0.0);
-        ASSERT_DOUBLE_EQ(dt, 2000.0 * i);
+        ASSERT_DOUBLE_EQ(dt, 2000.0 + 2000.0*i);
     }
 }
 
