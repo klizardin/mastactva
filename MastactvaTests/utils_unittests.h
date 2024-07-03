@@ -10,7 +10,7 @@
 #include "../MastactvaBase/utils_scaledtime.h"
 
 
-TEST(Utils,ScalledTime_smoke)
+TEST(Utils,ScaledTime_smoke)
 {
     ScaledTime scalledTime;
     QVariantList value;
@@ -51,7 +51,7 @@ TEST(Utils,ScalledTime_smoke)
     ASSERT_DOUBLE_EQ(dt, 4000.0);
 }
 
-TEST(Utils,ScalledTime_border)
+TEST(Utils,ScaledTime_border)
 {
     ScaledTime scalledTime;
     QVariantList value;
