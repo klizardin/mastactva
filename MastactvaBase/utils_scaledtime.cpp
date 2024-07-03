@@ -33,12 +33,6 @@ int ScaledTime::getCycles() const
 void ScaledTime::setCycles(int cycles)
 {
     m_cycles = cycles;
-    m_cycle = 0;
-}
-
-int ScaledTime::getCycle() const
-{
-    return m_cycle;
 }
 
 qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_)
