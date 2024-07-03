@@ -20,6 +20,7 @@ public:
 
 private:
     qreal get(qreal dt_, int& delayIndex_, qreal& tIntermediate_);
+    void decCycles(int& delayIndex_);
 
 private:
     QVector<qreal> m_tScalesVector;

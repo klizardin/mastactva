@@ -46,9 +46,26 @@ qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_)
     return get(dt_, m_currentTScalesVectorIndex, tIntermediate_);
 }
 
+void ScaledTime::decCycles(int& delayIndex_)
+{
+    if(m_cycles > 0)
+    {
+        --m_cycles;
+        delayIndex_ = 0;
+    }
+    else if(m_cycles < 0)
+    {
+        delayIndex_ = 0;
+    }
+}
+
 qreal ScaledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
 {
     delayIndex_ = std::max(0, delayIndex_);
+    if(delayIndex_ + 2 >= (int)m_tScalesVector.size())
+    {
+        decCycles(delayIndex_);
+    }
     while(dt_ >= 0.0 && delayIndex_ + 2 < (int)m_tScalesVector.size())
     {
         const int oldDelayIndex = delayIndex_;
@@ -80,6 +97,7 @@ qreal ScaledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_)
             delayIndex_ += 2;
         }
     }
+    decCycles(delayIndex_);
     tIntermediate_ += dt_;
     return !m_tScalesVector.empty() ? m_tScalesVector.back() : 1.0;
 }
