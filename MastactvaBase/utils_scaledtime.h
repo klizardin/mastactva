@@ -26,7 +26,7 @@ private:
     int m_currentTScalesVectorIndex = 0;
     qreal m_lastTime = 0.0;
     int m_cycle = 0;
-    int m_cycles = -1;
+    int m_cycles = 0;
 };
 
 
