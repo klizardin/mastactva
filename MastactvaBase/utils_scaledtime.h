@@ -15,6 +15,7 @@ public:
     void setVectorValue(const QVariantList& delaysVector);
     int getCycles() const;
     void setCycles(int cycles);
+    int getCycle() const;
     qreal get(qreal dt_, qreal& tIntermediate_);
 
 private:
