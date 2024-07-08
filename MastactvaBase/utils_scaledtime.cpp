@@ -33,6 +33,12 @@ int ScaledTime::getCycles() const
 void ScaledTime::setCycles(int cycles)
 {
     m_cycles = cycles;
+    m_cyclesCount = cycles;
+}
+
+void ScaledTime::set(IScaledTimeEvents* events)
+{
+    m_events = events;
 }
 
 qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_)
@@ -44,12 +50,24 @@ void ScaledTime::decCycles(int& delayIndex_)
 {
     if(m_cycles > 0)
     {
+        if(m_events)
+        {
+            m_events->onScaledTimeCycle(m_cyclesCount - m_cycles);
+        }
         --m_cycles;
         delayIndex_ = 0;
     }
     else if(m_cycles < 0)
     {
         delayIndex_ = 0;
+    }
+
+    if(0 == m_cycles)
+    {
+        if(m_events)
+        {
+            m_events->onScaledTimeLastCycle();
+        }
     }
 }
 
