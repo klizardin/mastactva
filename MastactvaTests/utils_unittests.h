@@ -107,5 +107,40 @@ TEST(Utils, ScaledTime_Cycles_default)
     ASSERT_DOUBLE_EQ(dt, 2000.0 + 2000.0*cycles);
 }
 
+class ScaledTimeEventsMock: public IScaledTimeEvents
+{
+public:
+    MOCK_METHOD(void, onScaledTimeCycle, (int cycle), (const, override));
+    MOCK_METHOD(void, onScaledTimeLastCycle, (), (const, override));
+};
+
+
+TEST(Utils, ScaledTime_Cycles_mock)
+{
+    ScaledTimeEventsMock events_mock;
+    ScaledTime scalledTime;
+    scalledTime.set(&events_mock);
+    QVariantList value;
+
+    value << QVariant::fromValue(0.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(1.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(0.0);
+
+    scalledTime.setVectorValue(value);
+    const int cycles = rand() % 10 + 2;
+    scalledTime.setCycles(cycles);
+    qreal dt = 0.0;
+    for(int i = 0; i < cycles; ++i)
+    {
+        (void)scalledTime.get(1000.0, dt);
+        (void)scalledTime.get(1000.0, dt);
+        EXPECT_CALL(events_mock, onScaledTimeCycle(i));
+    }
+    (void)scalledTime.get(1000.0, dt);
+    (void)scalledTime.get(1000.0, dt);
+    EXPECT_CALL(events_mock, onScaledTimeLastCycle());
+}
 
 #endif // UTILS_UNITTESTS_H
