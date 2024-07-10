@@ -136,11 +136,11 @@ TEST(Utils, ScaledTime_Cycles_mock)
     {
         (void)scalledTime.get(1000.0, dt);
         (void)scalledTime.get(1000.0, dt);
-        EXPECT_CALL(events_mock, onScaledTimeCycle(i));
+        EXPECT_CALL(events_mock, onScaledTimeCycle(i)).Times(testing::AtLeast(1));
     }
     (void)scalledTime.get(1000.0, dt);
     (void)scalledTime.get(1000.0, dt);
-    EXPECT_CALL(events_mock, onScaledTimeLastCycle());
+    EXPECT_CALL(events_mock, onScaledTimeLastCycle()).Times(testing::AtLeast(1));
 }
 
 #endif // UTILS_UNITTESTS_H
