@@ -60,6 +60,7 @@ void ScaledTime::decCycles(int& delayIndex_)
     else if(m_cycles < 0)
     {
         delayIndex_ = 0;
+        m_events->onScaledTimeCycle(-1);
     }
 
     if(0 == m_cycles)
