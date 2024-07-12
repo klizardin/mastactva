@@ -171,7 +171,9 @@ TEST(Utils, ScaledTime_Cycles_mock2)
         EXPECT_EQ(-1, scalledTime.getCycles());
     }
     (void)scalledTime.get(1000.0, dt);
+    EXPECT_CALL(events_mock, onScaledTimeCycle(-1)).Times(testing::AtLeast(1));
     (void)scalledTime.get(1000.0, dt);
+    EXPECT_EQ(-1, scalledTime.getCycles());
 }
 
 #endif // UTILS_UNITTESTS_H
