@@ -146,4 +146,32 @@ TEST(Utils, ScaledTime_Cycles_mock)
     (void)scalledTime.get(1000.0, dt);
 }
 
+TEST(Utils, ScaledTime_Cycles_mock2)
+{
+    ScaledTimeEventsMock events_mock;
+    ScaledTime scalledTime;
+    scalledTime.set(&events_mock);
+    QVariantList value;
+
+    value << QVariant::fromValue(0.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(1.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(0.0);
+
+    scalledTime.setVectorValue(value);
+    const int cycles = rand() % 10 + 2;
+    scalledTime.setCycles(-1);
+    qreal dt = 0.0;
+    for(int i = 0; i < cycles; ++i)
+    {
+        (void)scalledTime.get(1000.0, dt);
+        EXPECT_CALL(events_mock, onScaledTimeCycle(-1)).Times(testing::AtLeast(1));
+        (void)scalledTime.get(1000.0, dt);
+        EXPECT_EQ(-1, scalledTime.getCycles());
+    }
+    (void)scalledTime.get(1000.0, dt);
+    (void)scalledTime.get(1000.0, dt);
+}
+
 #endif // UTILS_UNITTESTS_H
