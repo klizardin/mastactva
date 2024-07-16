@@ -20,7 +20,7 @@
 #include "format_unittests.h"
 #include "lua_unittests.h"
 #include "addon_unittests.h"
-#include "utils_unittests.h"
+#include "utils_scaledtime_unittests.h"
 
 #include <gtest/gtest.h>
 

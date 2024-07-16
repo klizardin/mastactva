@@ -25,7 +25,7 @@ HEADERS += \
         lua_unittests.h \
         test_utils.h \
         tst_testcanasserttrue.h \
-        utils_unittests.h
+        utils_scaledtime_unittests.h
 
 unix: HEADERS += \
         dbutils.h   \

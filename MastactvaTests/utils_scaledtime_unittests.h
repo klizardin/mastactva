@@ -1,5 +1,5 @@
-#ifndef UTILS_UNITTESTS_H
-#define UTILS_UNITTESTS_H
+#ifndef UTILS_SCALEDTIME_UNITTESTS_H
+#define UTILS_SCALEDTIME_UNITTESTS_H
 
 
 #include <stdlib.h>
@@ -176,4 +176,4 @@ TEST(Utils, ScaledTime_Cycles_mock2)
     EXPECT_EQ(-1, scalledTime.getCycles());
 }
 
-#endif // UTILS_UNITTESTS_H
+#endif // UTILS_SCALEDTIME_UNITTESTS_H
