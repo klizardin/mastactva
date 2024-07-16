@@ -37,6 +37,7 @@
 QuizImage::QuizImage()
 {
     //initDefaultDrawingData();
+    m_scalledTime.set(this);
     m_timerForT = std::make_unique<QTimer>(this);
     connect(m_timerForT.get(), &QTimer::timeout, this, &QuizImage::onTimer);
 }
@@ -159,6 +160,14 @@ void QuizImage::setRenderingTextureName(const QString &renderingTextureName_)
     m_renderingTextureName = renderingTextureName_;
 
     emit renderingTextureNameChanged();
+}
+
+void QuizImage::onScaledTimeCycle(int cycle) const
+{
+}
+
+void QuizImage::onScaledTimeLastCycle() const
+{
 }
 
 void QuizImage::freeProject()

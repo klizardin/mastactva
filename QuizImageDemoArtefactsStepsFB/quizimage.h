@@ -69,7 +69,7 @@ using Tests = std::tuple<
 /*
  * control that wraps the opengl effect drawing
 */
-class QuizImage : public QQuickFramebufferObject
+class QuizImage : public QQuickFramebufferObject, protected IScaledTimeEvents
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(QuizImageDemo)
@@ -129,6 +129,12 @@ protected:
     QString log() const;
     void setLog(const QString &log_);
     void setRenderingTextureName(const QString &renderingTextureName_);
+
+    //struct IScaledTimeEvents
+    //{
+    virtual void onScaledTimeCycle(int cycle) const override;
+    virtual void onScaledTimeLastCycle() const override;
+    //};
 
     void freeProject();
     void loadProject();
