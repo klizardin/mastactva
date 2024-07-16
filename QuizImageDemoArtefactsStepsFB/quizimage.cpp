@@ -162,12 +162,13 @@ void QuizImage::setRenderingTextureName(const QString &renderingTextureName_)
     emit renderingTextureNameChanged();
 }
 
-void QuizImage::onScaledTimeCycle(int cycle) const
+void QuizImage::onScaledTimeCycle(int cycle)
 {
 }
 
-void QuizImage::onScaledTimeLastCycle() const
+void QuizImage::onScaledTimeLastCycle()
 {
+    emit animationCycleFinished();
 }
 
 void QuizImage::freeProject()

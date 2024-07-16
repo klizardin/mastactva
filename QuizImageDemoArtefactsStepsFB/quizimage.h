@@ -132,8 +132,8 @@ protected:
 
     //struct IScaledTimeEvents
     //{
-    virtual void onScaledTimeCycle(int cycle) const override;
-    virtual void onScaledTimeLastCycle() const override;
+    virtual void onScaledTimeCycle(int cycle) override;
+    virtual void onScaledTimeLastCycle() override;
     //};
 
     void freeProject();
@@ -153,6 +153,8 @@ signals:
     void renderingWindowsIdChanged();
     void doRunTestsStepByStepChanged();
     void tScalesVectorChanged();
+    void animationCycleStarted();
+    void animationCycleFinished();
 
 private:
     qreal m_t = 0.0;

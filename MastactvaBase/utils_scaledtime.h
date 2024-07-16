@@ -8,8 +8,8 @@
 
 struct IScaledTimeEvents
 {
-    virtual void onScaledTimeCycle(int cycle) const = 0;
-    virtual void onScaledTimeLastCycle() const = 0;
+    virtual void onScaledTimeCycle(int cycle) = 0;
+    virtual void onScaledTimeLastCycle() = 0;
 };
 
 
