@@ -171,6 +171,11 @@ void QuizImage::onScaledTimeLastCycle()
     emit animationCycleFinished();
 }
 
+void QuizImage::onScaledTimeStarted()
+{
+    emit animationCycleStarted();
+}
+
 void QuizImage::freeProject()
 {
     m_drawingData.reset();

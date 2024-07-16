@@ -134,6 +134,7 @@ protected:
     //{
     virtual void onScaledTimeCycle(int cycle) override;
     virtual void onScaledTimeLastCycle() override;
+    virtual void onScaledTimeStarted() override;
     //};
 
     void freeProject();

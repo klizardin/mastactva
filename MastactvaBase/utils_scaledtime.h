@@ -10,6 +10,7 @@ struct IScaledTimeEvents
 {
     virtual void onScaledTimeCycle(int cycle) = 0;
     virtual void onScaledTimeLastCycle() = 0;
+    virtual void onScaledTimeStarted() = 0;
 };
 
 
