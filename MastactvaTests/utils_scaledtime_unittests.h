@@ -110,8 +110,8 @@ TEST(Utils, ScaledTime_Cycles_default)
 class ScaledTimeEventsMock: public IScaledTimeEvents
 {
 public:
-    MOCK_METHOD(void, onScaledTimeCycle, (int cycle), (const, override));
-    MOCK_METHOD(void, onScaledTimeLastCycle, (), (const, override));
+    MOCK_METHOD(void, onScaledTimeCycle, (int cycle), (override));
+    MOCK_METHOD(void, onScaledTimeLastCycle, (), (override));
 };
 
 
