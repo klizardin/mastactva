@@ -34,6 +34,13 @@ void ScaledTime::setCycles(int cycles)
 {
     m_cycles = cycles;
     m_cyclesCount = cycles;
+    if(m_cycles > 0)
+    {
+        if(m_events)
+        {
+            m_events->onScaledTimeFirstCycle();
+        }
+    }
 }
 
 void ScaledTime::set(IScaledTimeEvents* events)
@@ -68,6 +75,7 @@ void ScaledTime::decCycles(int& delayIndex_)
         if(m_events)
         {
             m_events->onScaledTimeLastCycle();
+            m_events->onScaledTimeFirstCycle();
         }
     }
 }
