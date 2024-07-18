@@ -171,7 +171,7 @@ void QuizImage::onScaledTimeLastCycle()
     emit animationCycleFinished();
 }
 
-void QuizImage::onScaledTimeStarted()
+void QuizImage::onScaledTimeFirstCycle()
 {
     emit animationCycleStarted();
 }
