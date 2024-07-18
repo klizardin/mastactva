@@ -131,6 +131,7 @@ TEST(Utils, ScaledTime_Cycles_mock)
 
     scalledTime.setVectorValue(value);
     const int cycles = rand() % 10 + 2;
+    EXPECT_CALL(events_mock, onScaledTimeFirstCycle()).Times(testing::AtLeast(1));
     scalledTime.setCycles(cycles);
     qreal dt = 0.0;
     for(int i = 0; i < cycles; ++i)
@@ -140,6 +141,7 @@ TEST(Utils, ScaledTime_Cycles_mock)
         if(cycles - 1 == i)
         {
             EXPECT_CALL(events_mock, onScaledTimeLastCycle()).Times(testing::AtLeast(1));
+            EXPECT_CALL(events_mock, onScaledTimeFirstCycle()).Times(testing::AtLeast(1));
         }
         (void)scalledTime.get(1000.0, dt);
     }
