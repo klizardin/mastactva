@@ -175,6 +175,7 @@ void QuizImage::setRenderingTextureName(const QString &renderingTextureName_)
 
 void QuizImage::onScaledTimeCycle(int cycle)
 {
+    Q_UNUSED(cycle);
 }
 
 void QuizImage::onScaledTimeLastCycle()
