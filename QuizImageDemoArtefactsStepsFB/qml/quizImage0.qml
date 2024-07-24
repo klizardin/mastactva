@@ -49,21 +49,36 @@ Rectangle {
             console.log("animationCycle.onStarted()")
             console.log("renderer.testIndex =", quizImage0.testIndex)
         }
-    }
+    }*/
 
     Connections {
         target: quizImage0
+
+        function onAnimationCycleStarted()
+        {
+            console.log("animationCycle.onStarted()")
+            console.log("renderer.testIndex =", quizImage0.testIndex)
+        }
+
+        function onAnimationCycleFinished()
+        {
+            console.log("animationCycle.onFinished()")
+            if(quizImage0.loops !== -1)
+            {
+                quizImage0.testIndex = quizImage0.testIndex + 1
+            }
+        }
 
         function onDoRunTestsStepByStepChanged()
         {
             if(quizImage0.doRunTestsStepByStep)
             {
-                animationCycle0.loops = 1
+                quizImage0.loops = 1
             }
             else
             {
-                animationCycle0.loops = Animation.Infinite
+                quizImage0.loops = -1
             }
         }
-    }*/
+    }
 }
