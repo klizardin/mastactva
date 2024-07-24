@@ -155,6 +155,17 @@ void QuizImage::setTScalesVector(const QVariantList& delaysVector)
     emit tScalesVectorChanged();
 }
 
+int QuizImage::loops() const
+{
+    return m_scalledTime.getCycles();
+}
+
+void QuizImage::setLoops(int loops)
+{
+    m_scalledTime.setCycles(loops);
+    emit loopsChanged();
+}
+
 void QuizImage::setRenderingTextureName(const QString &renderingTextureName_)
 {
     m_renderingTextureName = renderingTextureName_;

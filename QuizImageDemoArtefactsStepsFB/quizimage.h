@@ -86,6 +86,7 @@ public:
     Q_PROPERTY(int renderingWindowsId READ renderingWindowsId WRITE setRenderingWindowsId NOTIFY renderingWindowsIdChanged)
     Q_PROPERTY(bool doRunTestsStepByStep READ doRunTestsStepByStep WRITE setDoRunTestsStepByStep NOTIFY doRunTestsStepByStepChanged)
     Q_PROPERTY(QVariantList tScalesVector READ tScalesVector WRITE setTScalesVector NOTIFY tScalesVectorChanged)
+    Q_PROPERTY(int loops READ loops WRITE setLoops NOTIFY loopsChanged)
 
     Q_INVOKABLE void updateState();
     Q_INVOKABLE void updateProject();
@@ -115,6 +116,8 @@ public:
     void setDoRunTestsStepByStep(const bool &stepByStep_);
     QVariantList tScalesVector() const;
     void setTScalesVector(const QVariantList& delaysVector);
+    int loops() const;
+    void setLoops(int loops);
 
     std::shared_ptr<uint> getScreenTextureId() const;
 
@@ -156,6 +159,7 @@ signals:
     void tScalesVectorChanged();
     void animationCycleStarted();
     void animationCycleFinished();
+    void loopsChanged();
 
 private:
     qreal m_t = 0.0;
