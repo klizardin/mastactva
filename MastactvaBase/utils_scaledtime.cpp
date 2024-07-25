@@ -51,7 +51,7 @@ void ScaledTime::set(IScaledTimeEvents* events)
 qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_)
 {
     qreal result = get(dt_, m_currentTScalesVectorIndex, tIntermediate_);
-    qDebug() << result << m_currentTScalesVectorIndex << "\n";
+    //qDebug() << result << m_currentTScalesVectorIndex << "\n";
     return result;
 }
 
