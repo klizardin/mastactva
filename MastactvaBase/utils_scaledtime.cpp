@@ -50,7 +50,9 @@ void ScaledTime::set(IScaledTimeEvents* events)
 
 qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_)
 {
-    return get(dt_, m_currentTScalesVectorIndex, tIntermediate_);
+    qreal result = get(dt_, m_currentTScalesVectorIndex, tIntermediate_);
+    qDebug() << result << m_currentTScalesVectorIndex << "\n";
+    return result;
 }
 
 void ScaledTime::decCycles(int& delayIndex_)
