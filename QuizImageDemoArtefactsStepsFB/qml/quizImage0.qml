@@ -17,40 +17,6 @@ Rectangle {
         tScalesVector: [0.0, 5.0, 1.0, 5.0, 0.0, 2.0, 0.0, 5.0, 1.0, 2.0, 1.0, 5.0, 0.0]
     }
 
-    /*SequentialAnimation {
-        objectName: "animationCycle0"
-        id: animationCycle0
-        NumberAnimation { target: quizImage0; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
-        NumberAnimation { target: quizImage0; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
-        PauseAnimation { duration: 2000 }
-        NumberAnimation { target: quizImage0; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
-        PauseAnimation { duration: 2000 }
-        NumberAnimation { target: quizImage0; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
-        PauseAnimation { duration: 2000 }
-        running: true
-        //loops: Animation.Infinite
-    }
-
-    Connections {
-        target: animationCycle0
-
-        function onFinished()
-        {
-            console.log("animationCycle.onFinished()")
-            if(animationCycle0.loops !== -1)
-            {
-                quizImage0.testIndex = quizImage0.testIndex + 1
-            }
-            animationCycle0.start()
-        }
-
-        function onStarted()
-        {
-            console.log("animationCycle.onStarted()")
-            console.log("renderer.testIndex =", quizImage0.testIndex)
-        }
-    }*/
-
     Connections {
         target: quizImage0
 
