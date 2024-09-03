@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     // create
     QuizImageQWindowSingleThread window(QStringLiteral("qrc:/qml/quizImage0.qml"), commandLineParser.isSet(commandLineRunTestByTestOption));
     // set default size
-    window.resize(800, 600);
+    window.resize(600, 800);
     // show
     window.show();
 
