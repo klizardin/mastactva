@@ -33,6 +33,7 @@ Rectangle {
             {
                 quizImage0.testIndex = quizImage0.testIndex + 1
             }
+            console.log("renderer.testIndex =", quizImage0.testIndex)
         }
 
         function onDoRunTestsStepByStepChanged()
