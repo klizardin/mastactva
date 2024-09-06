@@ -162,6 +162,7 @@ int QuizImage::loops() const
 
 void QuizImage::setLoops(int loops)
 {
+    m_cycles = loops;
     m_scalledTime.setCycles(loops);
     emit loopsChanged();
 }
@@ -393,6 +394,7 @@ void QuizImage::setTestIndex(const int &testIndex_)
     m_testIndex %= std::tuple_size<Tests>::value;
 
     initDefaultDrawingData();
+    m_scalledTime.setCycles(m_cycles);
 
     emit testIndexChanged();
 }

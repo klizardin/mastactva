@@ -175,6 +175,7 @@ private:
     bool m_doRunTestsStepByStep = false;
     qint64 m_millisecondsSinceEpoche = -1;
     ScaledTime m_scalledTime;
+    int m_cycles = -1;
     std::unique_ptr<QTimer> m_timerForT;
 };
 
