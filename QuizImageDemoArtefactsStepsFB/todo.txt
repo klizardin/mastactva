@@ -208,3 +208,5 @@ opencv addon test
 - new add-on
     - learn how to build ...
 
+tests that fail to run: 3, 15
+
