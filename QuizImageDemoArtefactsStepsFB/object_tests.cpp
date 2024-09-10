@@ -3526,9 +3526,14 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     auto modules = std::make_shared<AddonModules>();
     modules->create(addonsDir);
 
+    //QString inputJson = QString(g_inputJson).arg(
+    //            absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+    //            absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+    //            absoluteHomePath("~/tmp/")
+    //            );
     QString inputJson = QString(g_inputJson).arg(
-                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 absoluteHomePath("~/tmp/")
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
@@ -3558,8 +3563,10 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep1,
                 g_walkEffectFromVertexShaderFilename,
                 g_walkEffectFromFragmentShaderFilename,
-                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
                 imageSegmentsStr,
@@ -3573,8 +3580,10 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep2,
                 g_walkEffectToVertexShaderFilename,
                 g_walkEffectToConstFragmentShaderFilename,
-                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
                 imageSegmentsStr,
