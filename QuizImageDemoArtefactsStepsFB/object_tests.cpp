@@ -3520,8 +3520,8 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     static const int effectObjectStep1 = 1;
     static const int effectObjectStep2 = 2;
     static const int effectObjectStep3 = 3;
-    static const QSize imageSegments{10,10};
-    static const QString imageSegmentsStr = QString("%1 %2").arg(imageSegments.width()).arg(imageSegments.height());
+    static const QPoint imageSegments{10,10};
+    static const QString imageSegmentsStr = QString("%1 %2").arg(imageSegments.x()).arg(imageSegments.y());
 
     QDir addonsDir;
     findDynamicLibrariesDir(QDir("./"), addonsDir);
@@ -3548,8 +3548,8 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     //qDebug() << "toValues" << toValues;
 
     std::vector<GLfloat> fromCoords, toCoords;
-    createGeometry(imageSegments.width(), imageSegments.width(), fromValues, fromCoords);
-    createGeometry(imageSegments.width(), imageSegments.width(), toValues, toCoords);
+    createGeometry(imageSegments.x(), imageSegments.y(), fromValues, fromCoords);
+    createGeometry(imageSegments.x(), imageSegments.y(), toValues, toCoords);
 
     //qDebug() << "fromCoords" << fromCoords;
     //qDebug() << "toCoords" << toCoords;
