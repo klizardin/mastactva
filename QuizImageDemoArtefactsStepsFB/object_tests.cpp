@@ -2672,7 +2672,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
         const QString &toImage_,
         const std::vector<GLfloat> &fromCoords_,
         const std::vector<GLfloat> &toCoords_,
-        const QString &geomertySize_,
+        const QPoint &geometrySize_,
         const QString &textureName_
         )
 {
@@ -2687,7 +2687,9 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
 
-    opengl_drawing::makeGeometry(2, 2, 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
+    const QString geomertySizeStr = QString("%1 %2").arg(geometrySize_.x()).arg(geometrySize_.y());
+
+    opengl_drawing::makeGeometry(geometrySize_.x(), geometrySize_.y(), 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
 
     // vertex shader artefact
     const ArgumentsTuple vertexArgs1[] =
@@ -2739,7 +2741,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
             ArtefactArgTypeEn::vec2Type,
             ArtefactArgStorageEn::uniformStorage,
             g_renderGeomertySizeName,
-            geomertySize_
+            geomertySizeStr
         },
         {
             8,
@@ -3569,7 +3571,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
-                imageSegmentsStr,
+                imageSegments,
                 firstTextureName
                 );
     auto effectObject1 = createWalkEffectMultiTextureStepsTestObject(
@@ -3586,7 +3588,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
-                imageSegmentsStr,
+                imageSegments,
                 secondTextureName
                 );
     auto effectObject2 = createTestObject2(
