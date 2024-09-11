@@ -2684,9 +2684,6 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
                 effectObjectStep
                 );
 
-    std::vector<GLfloat> vertexData;
-    std::vector<GLfloat> textureData;
-
     const QString geomertySizeStr = QString("%1 %2").arg(geometrySize_.x()).arg(geometrySize_.y());
 
     // vertex shader artefact
