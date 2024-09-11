@@ -3532,8 +3532,8 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     //            absoluteHomePath("~/tmp/")
     //            );
     QString inputJson = QString(g_inputJson).arg(
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 absoluteHomePath("~/tmp/")
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
@@ -3564,9 +3564,9 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 g_walkEffectFromVertexShaderFilename,
                 g_walkEffectFromFragmentShaderFilename,
                 //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
-                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                 absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
                 imageSegmentsStr,
@@ -3581,9 +3581,9 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 g_walkEffectToVertexShaderFilename,
                 g_walkEffectToConstFragmentShaderFilename,
                 //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
-                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                 absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
                 imageSegmentsStr,
