@@ -404,6 +404,7 @@ bool drawing_data::QuizImageObject::allowedForTargetTexture(const QString& tartg
     }
     bool ret = textureTargets.find(tartgetTextureName_) != std::end(textureTargets);
     qDebug() << this << ( ret ? " true" : "false") << " found " << tartgetTextureName_ << textureTargetsToLog;
+    return ret;
 }
 
 int drawing_data::QuizImageObject::getAttributeTupleSize(const QString &name_) const
