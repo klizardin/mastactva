@@ -385,20 +385,25 @@ void drawing_data::QuizImageObject::addTargetTexture(const QString &targetTextur
 
 bool drawing_data::QuizImageObject::allowedForTargetTexture(const QString& tartgetTextureName_) const
 {
+    QString textureTargetsToLog;
+    for(const QString& s : textureTargets) textureTargetsToLog += s + " ";
     if(TextureNames::isDefaultTexcture(tartgetTextureName_))
     {
         if(textureTargets.empty())
         {
+            qDebug() << this << " true targes empty, target = " << tartgetTextureName_ << textureTargetsToLog;
             return true;
         }
         if(textureTargets.find(g_renderTextureDefault) != std::end(textureTargets)
                 || textureTargets.find(g_renderTextureDefaultSynonim) != std::end(textureTargets)
                 )
         {
+            qDebug() << this << " true found default, target = " << tartgetTextureName_ << textureTargetsToLog;
             return true;
         }
     }
-    return textureTargets.find(tartgetTextureName_) != std::end(textureTargets);
+    bool ret = textureTargets.find(tartgetTextureName_) != std::end(textureTargets);
+    qDebug() << this << ( ret ? " true" : "false") << " found " << tartgetTextureName_ << textureTargetsToLog;
 }
 
 int drawing_data::QuizImageObject::getAttributeTupleSize(const QString &name_) const
