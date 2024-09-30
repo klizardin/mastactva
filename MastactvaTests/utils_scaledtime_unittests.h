@@ -179,4 +179,57 @@ TEST(Utils, ScaledTime_Cycles_mock2)
     EXPECT_EQ(-1, scalledTime.getCycles());
 }
 
+TEST(Utils,ScaledTime_pause)
+{
+    ScaledTime scalledTime;
+    QVariantList value;
+    value << QVariant::fromValue(0.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(1.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(0.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(1.0)
+        << QVariant::fromValue(1000.0)
+        << QVariant::fromValue(0.0);
+
+    scalledTime.setVectorValue(value);
+    EXPECT_EQ(value, scalledTime.getVectorValue());
+
+    qreal dt = 0.0;
+    for(int i = 0; i < 5; i++)
+    {
+        ASSERT_DOUBLE_EQ(dt, 0.0);
+        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+1), dt), 0.1*(i+1));
+    }
+    for(int j = 0; j < 10; j++)
+    {
+        int i = 4;
+        ASSERT_DOUBLE_EQ(dt, 0.0);
+        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+j+1), dt, true), 0.1*(i+1));
+    }
+    int j = 9;
+    for(int i = 5; i < 10; i++)
+    {
+        ASSERT_DOUBLE_EQ(dt, 0.0);
+        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+j+1), dt), 0.1*(i+1));
+    }
+    ASSERT_DOUBLE_EQ(dt, 1000.0);
+
+    // to debug, new tests
+    ASSERT_DOUBLE_EQ(scalledTime.get(1000.0, dt), 0.0);
+    ASSERT_DOUBLE_EQ(dt, 2000.0);
+    for(int i = 0; i < 10; i++)
+    {
+        ASSERT_DOUBLE_EQ(dt, 2000.0);
+        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+1), dt), 0.1*(i+1));
+    }
+    for(int i = 0; i < 10; i++)
+    {
+        ASSERT_DOUBLE_EQ(dt, 3000.0);
+        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+1), dt), 1.0 - 0.1*(i+1));
+    }
+    ASSERT_DOUBLE_EQ(dt, 4000.0);
+}
+
 #endif // UTILS_SCALEDTIME_UNITTESTS_H
