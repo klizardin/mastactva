@@ -23,11 +23,11 @@ public:
     void setVectorValue(const QVariantList& delaysVector);
     int getCycles() const;
     void setCycles(int cycles);
-    qreal get(qreal dt_, qreal& tIntermediate_, bool sleep_ = false);
+    qreal get(qreal dt_, qreal& tIntermediate_, bool pause_ = false);
     void set(IScaledTimeEvents* events);
 
 private:
-    qreal get(qreal dt_, int& delayIndex_, qreal& tIntermediate_, bool sleep_);
+    qreal get(qreal dt_, int& delayIndex_, qreal& tIntermediate_, bool pause_);
     void decCycles(int& delayIndex_);
 
 private:

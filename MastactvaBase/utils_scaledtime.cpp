@@ -48,9 +48,9 @@ void ScaledTime::set(IScaledTimeEvents* events)
     m_events = events;
 }
 
-qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_, bool sleep_ /*= false*/)
+qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_, bool pause_ /*= false*/)
 {
-    qreal result = get(dt_, m_currentTScalesVectorIndex, tIntermediate_, sleep_);
+    qreal result = get(dt_, m_currentTScalesVectorIndex, tIntermediate_, pause_);
     //qDebug() << result << m_currentTScalesVectorIndex << "\n";
     return result;
 }
@@ -82,7 +82,7 @@ void ScaledTime::decCycles(int& delayIndex_)
     }
 }
 
-qreal ScaledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_, bool sleep_)
+qreal ScaledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_, bool pause_)
 {
     delayIndex_ = std::max(0, delayIndex_);
     if(delayIndex_ + 2 >= (int)m_tScalesVector.size())
