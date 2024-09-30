@@ -34,6 +34,7 @@ private:
     QVector<qreal> m_tScalesVector;
     int m_currentTScalesVectorIndex = 0;
     qreal m_lastTime = 0.0;
+    qreal m_pauseTime = 0.0;
     int m_cycles = 0;
     int m_cyclesCount = 0;
     IScaledTimeEvents* m_events = nullptr;

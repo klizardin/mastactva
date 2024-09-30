@@ -84,6 +84,15 @@ void ScaledTime::decCycles(int& delayIndex_)
 
 qreal ScaledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_, bool pause_)
 {
+    if(pause_)
+    {
+        m_pauseTime += std::max(0.0, dt_ - m_lastTime);
+        dt_ -= m_pauseTime;
+    }
+    else
+    {
+        m_lastTime = dt_;
+    }
     delayIndex_ = std::max(0, delayIndex_);
     if(delayIndex_ + 2 >= (int)m_tScalesVector.size())
     {
