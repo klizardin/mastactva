@@ -204,11 +204,11 @@ TEST(Utils,ScaledTime_pause)
     }
     for(int j = 0; j < 10; j++)
     {
-        int i = 4;
+        int i = 5;
         ASSERT_DOUBLE_EQ(dt, 0.0);
-        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(i+j+1), dt, true), 0.1*(i+1));
+        ASSERT_DOUBLE_EQ(scalledTime.get(100.0*(j+i+1), dt, true), 0.1*i);
     }
-    int j = 9;
+    int j = 10;
     for(int i = 5; i < 10; i++)
     {
         ASSERT_DOUBLE_EQ(dt, 0.0);
