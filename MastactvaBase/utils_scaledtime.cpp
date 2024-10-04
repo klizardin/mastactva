@@ -110,11 +110,11 @@ qreal ScaledTime::get(qreal dt_, int& delayIndex_, qreal& tIntermediate_, bool p
             {
                 if(startT <= endT)
                 {
-                    return std::clamp(dt_/currentDT*sign(endT-startT) + startT, startT, endT);
+                    return std::clamp(dt_/currentDT*(endT-startT) + startT, startT, endT);
                 }
                 else
                 {
-                    return std::clamp(dt_/currentDT*sign(endT-startT) + startT, endT, startT);
+                    return std::clamp(dt_/currentDT*(endT-startT) + startT, endT, startT);
                 }
             }
             else
