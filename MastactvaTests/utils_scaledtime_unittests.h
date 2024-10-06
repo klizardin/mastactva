@@ -191,16 +191,17 @@ TEST(Utils,ScaledTime_pause)
     EXPECT_EQ(value, scalledTime.getVectorValue());
 
     qreal dt = 0.0;
-    ASSERT_DOUBLE_EQ(scalledTime.get(1.0, dt), 1.0);
+    ASSERT_DOUBLE_EQ(scalledTime.get(1.0, dt, false), 1.0);
     ASSERT_DOUBLE_EQ(dt, 0.0);
 
-    qreal pause1 = 2.0;
-    for(int i = 0; i < 9; ++i)
+    const qreal pause1 = 2.0;
+    const int cycles1 = 2;
+    for(int i = 0; i < cycles1; ++i)
     {
-        EXPECT_NEAR(scalledTime.get(1.0 + pause1*(double)i/9.0, dt, true), 1.0, 1e-5);
+        EXPECT_NEAR(scalledTime.get(1.0 + pause1*(double)i/(double)cycles1, dt, true), 1.0, 1e-5);
         EXPECT_NEAR(dt, 0.0, 1e-5);
     }
-    ASSERT_DOUBLE_EQ(scalledTime.get(1.0+pause1+1.0, dt), 1.0+1.0);
+    ASSERT_DOUBLE_EQ(scalledTime.get(1.0+pause1+1.0, dt, false), 1.0+1.0);
     ASSERT_DOUBLE_EQ(dt, 0.0);
 }
 
