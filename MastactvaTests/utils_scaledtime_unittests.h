@@ -203,6 +203,10 @@ TEST(Utils,ScaledTime_pause)
     }
     EXPECT_NEAR(scalledTime.get(1.0+pause1+1.0, dt, false), 1.0+1.0, 1e-7);
     ASSERT_DOUBLE_EQ(dt, 0.0);
+
+    scalledTime.clearPause();
+    EXPECT_NEAR(scalledTime.get(1.0+pause1+1.0, dt, false), 1.0+1.0+pause1, 1e-7);
+    ASSERT_DOUBLE_EQ(dt, 0.0);
 }
 
 #endif // UTILS_SCALEDTIME_UNITTESTS_H
