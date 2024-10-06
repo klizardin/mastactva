@@ -25,6 +25,7 @@ public:
     void setCycles(int cycles);
     qreal get(qreal dt_, qreal& tIntermediate_, bool pause_ = false);
     void set(IScaledTimeEvents* events);
+    void clearPause();
 
 private:
     qreal get(qreal dt_, int& delayIndex_, qreal& tIntermediate_, bool pause_);

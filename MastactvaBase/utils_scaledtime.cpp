@@ -23,6 +23,7 @@ void ScaledTime::setVectorValue(const QVariantList& delaysVector)
         ++i;
     }
     m_currentTScalesVectorIndex = 0;
+    clearPause();
 }
 
 int ScaledTime::getCycles() const
@@ -41,11 +42,16 @@ void ScaledTime::setCycles(int cycles)
             m_events->onScaledTimeFirstCycle();
         }
     }
+    clearPause();
 }
 
 void ScaledTime::set(IScaledTimeEvents* events)
 {
     m_events = events;
+}
+
+void ScaledTime::clearPause()
+{
 }
 
 qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_, bool pause_ /*= false*/)
