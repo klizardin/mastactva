@@ -52,6 +52,7 @@ void ScaledTime::set(IScaledTimeEvents* events)
 
 void ScaledTime::clearPause()
 {
+    m_pauseTime = 0.0;
 }
 
 qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_, bool pause_ /*= false*/)
