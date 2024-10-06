@@ -195,7 +195,7 @@ TEST(Utils,ScaledTime_pause)
     ASSERT_DOUBLE_EQ(dt, 0.0);
 
     const qreal pause1 = 2.0;
-    const int cycles1 = 2;
+    const int cycles1 = 99;
     for(int i = 0; i < cycles1; ++i)
     {
         EXPECT_NEAR(scalledTime.get(1.0 + pause1*(double)(i+1)/(double)cycles1, dt, true), 1.0, 1e-5);
