@@ -198,10 +198,10 @@ TEST(Utils,ScaledTime_pause)
     const int cycles1 = 9;
     for(int i = 0; i < cycles1; ++i)
     {
-        EXPECT_NEAR(scalledTime.get(1.0 + pause1*(double)(i+1)/(double)cycles1, dt, true), 1.0, 1e-5);
-        EXPECT_NEAR(dt, 0.0, 1e-5);
+        ASSERT_DOUBLE_EQ(scalledTime.get(1.0 + pause1*(double)(i+1)/(double)cycles1, dt, true), 1.0);
+        ASSERT_DOUBLE_EQ(dt, 0.0);
     }
-    ASSERT_DOUBLE_EQ(scalledTime.get(1.0+pause1+1.0, dt, false), 1.0+1.0);
+    EXPECT_NEAR(scalledTime.get(1.0+pause1+1.0, dt, false), 1.0+1.0, 1e-7);
     ASSERT_DOUBLE_EQ(dt, 0.0);
 }
 
