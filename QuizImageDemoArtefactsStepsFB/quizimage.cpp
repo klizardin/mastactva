@@ -329,6 +329,8 @@ void QuizImage::initDefaultDrawingData()
         return;
     }
 
+    RAIIVar<bool> raiiVar(m_pauseScalledTime, true, false);
+
     if(m_testIndex < 0)
     {
         std::shared_ptr<drawing_data::QuizImageObjects> data = std::make_shared< drawing_data::QuizImageObjects>();
@@ -358,7 +360,7 @@ void QuizImage::updateT()
     qint64 ctms = QDateTime::currentMSecsSinceEpoch();
     qreal dt = (ctms - m_millisecondsSinceEpoche)/1000.0;
     qreal ct = 0.0;
-    qreal t = m_scalledTime.get(dt, ct);
+    qreal t = m_scalledTime.get(dt, ct, m_pauseScalledTime);
     m_millisecondsSinceEpoche += (qint64)(ct*1000.0);
     setT(t);
 }
