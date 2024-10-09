@@ -237,5 +237,22 @@ Type sign(const Type& val)
     return val > 0 ? 1: val < 0 ? -1 : 0;
 }
 
+template<typename Type>
+struct RAIIVar
+{
+    RAIIVar(Type& var_, const Type& valueToSet_, const Type& valueToReset_)
+        :var(var_),valueToReset(valueToReset_)
+    {
+        var = valueToSet_;
+    }
+    ~RAIIVar()
+    {
+        var = valueToReset;
+    }
+private:
+    Type& var;
+    Type valueToReset;
+};
+
 
 #endif // UTILS_H
