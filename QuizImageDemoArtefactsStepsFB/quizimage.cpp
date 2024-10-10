@@ -329,7 +329,7 @@ void QuizImage::initDefaultDrawingData()
         return;
     }
 
-    RAIIVar<bool> raiiVar(m_pauseScalledTime, true, false);
+    VarSetReset<bool> raiiVar(m_pauseScalledTime, true, false);
 
     if(m_testIndex < 0)
     {

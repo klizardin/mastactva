@@ -238,14 +238,14 @@ Type sign(const Type& val)
 }
 
 template<typename Type>
-struct RAIIVar
+struct VarSetReset
 {
-    RAIIVar(Type& var_, const Type& valueToSet_, const Type& valueToReset_)
+    VarSetReset(Type& var_, const Type& valueToSet_, const Type& valueToReset_)
         :var(var_),valueToReset(valueToReset_)
     {
         var = valueToSet_;
     }
-    ~RAIIVar()
+    ~VarSetReset()
     {
         var = valueToReset;
     }
