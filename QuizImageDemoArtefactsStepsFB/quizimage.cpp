@@ -329,7 +329,8 @@ void QuizImage::initDefaultDrawingData()
         return;
     }
 
-    VarSetReset<bool> raiiVar(m_pauseScalledTime, true, false);
+    m_pauseScalledTime = true;
+    VarSetReset<bool> raiiVar(m_pauseScalledTimeStick, true, false);
 
     if(m_testIndex < 0)
     {
@@ -361,6 +362,10 @@ void QuizImage::updateT()
     qreal dt = (ctms - m_millisecondsSinceEpoche)/1000.0;
     qreal ct = 0.0;
     qreal t = m_scalledTime.get(dt, ct, m_pauseScalledTime);
+    if(!m_pauseScalledTimeStick && m_pauseScalledTime)
+    {
+        m_pauseScalledTime = false;
+    }
     m_millisecondsSinceEpoche += (qint64)(ct*1000.0);
     setT(t);
 }

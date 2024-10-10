@@ -176,6 +176,7 @@ private:
     qint64 m_millisecondsSinceEpoche = -1;
     ScaledTime m_scalledTime;
     bool m_pauseScalledTime = false;
+    bool m_pauseScalledTimeStick = false;
     int m_cycles = -1;
     std::unique_ptr<QTimer> m_timerForT;
 };
