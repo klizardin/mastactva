@@ -1459,7 +1459,7 @@ void opengl_drawing::Objects::calculate()
 
 void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
 {
-    const IQuizImageQWindowOperations* windowsOperations = IQuizImageQWindow::findQuizImageWindows(m_renderWindowsId);
+    IQuizImageQWindowOperations* windowsOperations = IQuizImageQWindow::findQuizImageWindows(m_renderWindowsId);
     for(std::unique_ptr<opengl_drawing::Object> &object_ : m_objects)
     {
         if(!object_.operator bool())
@@ -1471,6 +1471,10 @@ void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
                 )
         {
             continue;
+        }
+        if(windowsOperations)
+        {
+            windowsOperations->setDrawing();
         }
 
         object_->initStates();

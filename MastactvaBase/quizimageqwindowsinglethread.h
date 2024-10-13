@@ -115,6 +115,8 @@ public:
     bool isDefaultTexture(int index) const override;
     QString getCurrentTextureName() const override;
     std::shared_ptr<uint> getCurrentTextureId() const override;
+    void setDrawing() override;
+    bool didDrwaing() const override;
 
 protected:
     void exposeEvent(QExposeEvent *e) override;
@@ -158,6 +160,7 @@ private:
     QString m_qmlFileName;
     bool m_runTestByTest = false;
     QString m_currentTextureName;
+    bool m_didDrawing = false;
 };
 
 

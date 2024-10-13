@@ -502,6 +502,7 @@ QuizImageQWindowSingleThread::~QuizImageQWindowSingleThread()
 
 bool QuizImageQWindowSingleThread::setTextures(const TextureNames & textures_)
 {
+    m_didDrawing = false;
     m_activeOffscreenSurafaces = std::min((int)textures_.size(), (int)m_drawingSurfaces.size());
     auto it = m_drawingSurfaces.begin();
     for(int i = 0; i < m_activeOffscreenSurafaces && it != m_drawingSurfaces.end(); i++, ++it)
@@ -547,6 +548,16 @@ std::shared_ptr<uint> QuizImageQWindowSingleThread::getCurrentTextureId() const
         return 0;
     }
     return fit->getTextureSharedPtr();
+}
+
+void QuizImageQWindowSingleThread::setDrawing()
+{
+    m_didDrawing = true;
+}
+
+bool QuizImageQWindowSingleThread::didDrwaing() const
+{
+    return m_didDrawing;
 }
 
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)

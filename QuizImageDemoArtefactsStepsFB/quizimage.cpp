@@ -361,7 +361,11 @@ void QuizImage::updateT()
     qint64 ctms = QDateTime::currentMSecsSinceEpoch();
     qreal dt = (ctms - m_millisecondsSinceEpoche)/1000.0;
     qreal ct = 0.0;
-    qreal t = m_scalledTime.get(dt, ct, m_pauseScalledTime);
+    const IQuizImageQWindowOperations *quizImageOperations = IQuizImageQWindow::findQuizImageWindows(renderingWindowsId());
+    qreal t = m_scalledTime.get(dt, ct,
+        m_pauseScalledTime
+        || (quizImageOperations && !quizImageOperations->didDrwaing())
+        );
     if(!m_pauseScalledTimeStick && m_pauseScalledTime)
     {
         m_pauseScalledTime = false;
