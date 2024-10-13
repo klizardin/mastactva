@@ -150,7 +150,7 @@ void QuizImage::setTScalesVector(const QVariantList& delaysVector)
 {
     m_scalledTime.setVectorValue(delaysVector);
     m_millisecondsSinceEpoche = QDateTime::currentMSecsSinceEpoch();
-    m_timerForT->start(10);
+    m_timerForT->start(1000);
 
     emit tScalesVectorChanged();
 }
