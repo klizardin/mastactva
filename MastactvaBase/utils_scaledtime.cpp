@@ -58,7 +58,7 @@ void ScaledTime::clearPause()
 qreal ScaledTime::get(qreal dt_, qreal& tIntermediate_, bool pause_ /*= false*/)
 {
     qreal result = get(dt_, m_currentTScalesVectorIndex, tIntermediate_, pause_);
-    //qDebug() << result << m_currentTScalesVectorIndex << "\n";
+    qDebug() << result << m_currentTScalesVectorIndex << "\n";
     return result;
 }
 
