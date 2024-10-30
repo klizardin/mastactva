@@ -84,6 +84,14 @@ public:
             ) const = 0;
 
     /*
+     * the function returns true if the argument is a special value
+     * of the object arguments. Now it are g_renderFillColor,
+     * g_renderGlobalStatesName, and g_renderGlobalCalculationsName.
+    */
+    virtual bool isObjectArgument(
+            ) const = 0;
+
+    /*
      * the function setups the global objects arguments if the argument
      * is a special value - a global argument.
      * global values are hold as a special values inside the effect objects data.
@@ -91,6 +99,15 @@ public:
     virtual void addGlobalArgument(
             drawing_data::QuizImageObjects &data_,
             const drawingdata::Details &details_
+            ) const = 0;
+
+    /*
+     * the function setups the object arguments if the argument
+     * is a special value - a object argument.
+    */
+    virtual void addObjectArgument(
+            const drawingdata::Details &details_,
+            drawing_data::QuizImageObject &object_
             ) const = 0;
 };
 
@@ -128,6 +145,7 @@ public:
      *      * g_renderFillColor -  object backgroud color that is holded at the image objects level variable
      *      * g_renderGlobalStatesName - global states names
      *      * g_renderGlobalCalculationsName - global calculations names (possibly with calculation arguments)
+     *      * g_renderTexturesListName - global target textures names
      * )
     */
     bool isGlobalArgument(
@@ -147,6 +165,29 @@ public:
         {
             return m_name == name_;
         }) != std::end(s_globalArgumnentNames);
+    }
+
+    /*
+     * implementation of the isObjectArgument() function: return true
+     * if the argument name is one of the special argument names
+     * (see
+     *      * g_renderTexturesListName - object target textures names
+     * )
+    */
+    bool isObjectArgument(
+            ) const override
+    {
+        static const char * s_objectArgumnentNames[] =
+        {
+            g_renderTexturesListName,
+        };
+        return std::find_if(
+                    std::begin(s_objectArgumnentNames),
+                    std::end(s_objectArgumnentNames),
+                    [this](const char * name_) -> bool
+        {
+            return m_name == name_;
+        }) != std::end(s_objectArgumnentNames);
     }
 
     /*
@@ -207,6 +248,29 @@ public:
                 {
                     *(details_.textureTargets) << textureTargetName;
                 }
+            }
+        }
+    }
+
+    /*
+     * function to set up the global arguments to the image objects data
+    */
+    void addObjectArgument(
+            const drawingdata::Details &details_,
+            drawing_data::QuizImageObject &object_
+            ) const override
+    {
+        if(!isObjectArgument())
+        {
+            return;
+        }
+        if(g_renderTexturesListName == m_name)
+        {
+            std::vector<QString> tmp;
+            const QStringList textures = setStringListValue(details_, tmp);
+            for(const QString &textureTargetName : textures)
+            {
+                object_.addTargetTexture(textureTargetName);
             }
         }
     }
