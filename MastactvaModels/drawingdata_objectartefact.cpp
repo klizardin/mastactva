@@ -107,6 +107,14 @@ bool DrawingDataObjectArtefact::hasGlobalArguments() const
     });
 }
 
+bool DrawingDataObjectArtefact::hasObjectArguments() const
+{
+    return forArtefacts([](const DrawingDataArtefact *artefact_)->bool
+    {
+        return artefact_->hasObjectArguments(); // just the first is ok
+    });
+}
+
 bool DrawingDataObjectArtefact::hasVariables() const
 {
     return forArtefacts([](const DrawingDataArtefact *artefact_)->bool
@@ -156,6 +164,18 @@ void DrawingDataObjectArtefact::addTexture(
     (void)forArtefacts([&object_](const DrawingDataArtefact *artefact_)->bool
     {
         artefact_->addTexture(object_);
+        return false;   // set up all textures for all artefacts
+    });
+}
+
+void DrawingDataObjectArtefact::addObjectArgument(
+        drawing_data::QuizImageObject &object_,
+        const drawingdata::Details &details_
+        ) const
+{
+    (void)forArtefacts([&object_, &details_](const DrawingDataArtefact *artefact_)->bool
+    {
+        artefact_->addObjectArgument(object_, details_);
         return false;   // set up all textures for all artefacts
     });
 }

@@ -79,6 +79,11 @@ public:
     bool hasGlobalArguments() const override;
 
     /*
+     * return true if any arterfact has object arguments
+    */
+    bool hasObjectArguments() const override;
+
+    /*
      * return true if any arterfact has variables
     */
     bool hasVariables() const override;
@@ -104,6 +109,15 @@ public:
     */
     void addTexture(
             drawing_data::QuizImageObject &object_
+            ) const override;
+
+    /*
+     * add a target texture to the QuizImageObject if artefact contains the arguments
+     * with target texture names
+    */
+    void addObjectArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
             ) const override;
 
     /*

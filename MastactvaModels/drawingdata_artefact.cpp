@@ -118,6 +118,29 @@ bool DrawingDataArtefact::hasGlobalArguments() const
     return false;
 }
 
+bool DrawingDataArtefact::hasObjectArguments() const
+{
+    if(!(m_effectArgData.operator bool()
+            && m_effectArgData->size() > 0
+            && (to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLua)))
+    {
+        return false;
+    }
+    for(const EffectArgumentData *arg_ : qAsConst(*m_effectArgData))
+    {
+        auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+        if(!arg)
+        {
+            continue;
+        }
+        if(arg->isObjectArgument())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool DrawingDataArtefact::hasVariables() const
 {
     return m_effectArgData.operator bool()
@@ -189,6 +212,27 @@ void DrawingDataArtefact::addTexture(
         return;
     }
     object_.textures.push_back({m_name, static_cast<const QString &>(m_filename), QString{}});
+}
+
+void DrawingDataArtefact::addObjectArgument(
+        drawing_data::QuizImageObject &object_,
+        const drawingdata::Details &details_
+        ) const
+{
+    if(!hasObjectArguments())
+    {
+        return;
+    }
+
+    for(const EffectArgumentData *arg_ : qAsConst(*m_effectArgData))
+    {
+        auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+        if(!arg)
+        {
+            continue;
+        }
+        arg->addObjectArgument(details_, object_);
+    }
 }
 
 void DrawingDataArtefact::addData(

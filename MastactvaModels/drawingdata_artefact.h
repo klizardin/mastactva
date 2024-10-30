@@ -71,6 +71,12 @@ public:
     virtual bool hasGlobalArguments() const = 0;
 
     /*
+     * return true if the artefact has object arguments
+     * arguments that is used for global drawing object states
+    */
+    virtual bool hasObjectArguments() const = 0;
+
+    /*
      * return true if the artefact has variables
      * variables are the values that sets not to the object but to the
      * variables. variables can be used by scripts by arguments
@@ -102,6 +108,15 @@ public:
     */
     virtual void addTexture(
             drawing_data::QuizImageObject &object_
+            ) const = 0;
+
+    /*
+     * add a target texture to the QuizImageObject if artefact contains the arguments
+     * with target texture names
+    */
+    virtual void addObjectArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
             ) const = 0;
 
     /*
@@ -173,6 +188,7 @@ public:
             ) const override;
     bool hasArguments() const override;
     bool hasGlobalArguments() const override;
+    bool hasObjectArguments() const override;
     bool hasVariables() const override;
     void addVariables(
             const drawingdata::Details &details_,
@@ -184,6 +200,10 @@ public:
             ) const override;
     void addTexture(
             drawing_data::QuizImageObject &object_
+            ) const override;
+    void addObjectArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
             ) const override;
     void addData(
             const drawingdata::Details &details_
