@@ -101,7 +101,8 @@ public:
     */
     void addGlobalArguments(
             drawing_data::QuizImageObjects &data_,      // image object
-            const drawingdata::Details &details_        // details from parent class
+            const drawingdata::Details &details_,
+            bool mainObject_        // details from parent class
             ) const override;
 
     /*
@@ -117,7 +118,8 @@ public:
     */
     void addObjectArgument(
             drawing_data::QuizImageObject &object_,
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            bool mainObject_
             ) const override;
 
     /*

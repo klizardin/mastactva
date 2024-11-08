@@ -147,12 +147,13 @@ void DrawingDataObjectArtefact::addVariables(
 
 void DrawingDataObjectArtefact::addGlobalArguments(
         drawing_data::QuizImageObjects &data_,
-        const drawingdata::Details &details_
+        const drawingdata::Details &details_,
+        bool mainObject_
         ) const
 {
-    (void) forArtefacts([&data_, &details_](const DrawingDataArtefact *artefact_)->bool
+    (void) forArtefacts([&data_, &details_, mainObject_](const DrawingDataArtefact *artefact_)->bool
     {
-        artefact_->addGlobalArguments(data_, details_);
+        artefact_->addGlobalArguments(data_, details_, mainObject_);
         return false;   // set up all global arguments for all artefacts
     });
 }
@@ -170,12 +171,13 @@ void DrawingDataObjectArtefact::addTexture(
 
 void DrawingDataObjectArtefact::addObjectArgument(
         drawing_data::QuizImageObject &object_,
-        const drawingdata::Details &details_
+        const drawingdata::Details &details_,
+        bool mainObject_
         ) const
 {
-    (void)forArtefacts([&object_, &details_](const DrawingDataArtefact *artefact_)->bool
+    (void)forArtefacts([&object_, &details_, mainObject_](const DrawingDataArtefact *artefact_)->bool
     {
-        artefact_->addObjectArgument(object_, details_);
+        artefact_->addObjectArgument(object_, details_, mainObject_);
         return false;   // set up all textures for all artefacts
     });
 }

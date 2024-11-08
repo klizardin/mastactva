@@ -275,25 +275,22 @@ bool ObjectArtefacts::build(
         }
     }
     // add global arguments if these are the main object's artefacts
-    if(mainObjects_)
+    for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+        checkArtefactStepIndex(details_, *it);
+        if((*it)->hasGlobalArguments())
         {
-            checkArtefactStepIndex(details_, *it);
-            if((*it)->hasGlobalArguments())
-            {
-                (*it)->addGlobalArguments(data_, details_);
-                break;
-            }
+            (*it)->addGlobalArguments(data_, details_, mainObjects_);
+            break;
         }
-        for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+    }
+    for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+    {
+        checkArtefactStepIndex(details_, *it);
+        if((*it)->hasObjectArguments())
         {
-            checkArtefactStepIndex(details_, *it);
-            if((*it)->hasObjectArguments())
-            {
-                (*it)->addObjectArgument(object_, details_);
-                break;
-            }
+            (*it)->addObjectArgument(object_, details_, mainObjects_);
+            break;
         }
     }
     // add textures for all artefacts of the current step index

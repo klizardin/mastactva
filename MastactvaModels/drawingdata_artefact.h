@@ -100,7 +100,8 @@ public:
     */
     virtual void addGlobalArguments(
             drawing_data::QuizImageObjects &data_,
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            bool mainObject_
             ) const = 0;
 
     /*
@@ -116,7 +117,8 @@ public:
     */
     virtual void addObjectArgument(
             drawing_data::QuizImageObject &object_,
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            bool mainObject_
             ) const = 0;
 
     /*
@@ -196,14 +198,16 @@ public:
             ) const override;
     void addGlobalArguments(
             drawing_data::QuizImageObjects &data_,
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            bool mainObject_
             ) const override;
     void addTexture(
             drawing_data::QuizImageObject &object_
             ) const override;
     void addObjectArgument(
             drawing_data::QuizImageObject &object_,
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            bool mainObject_
             ) const override;
     void addData(
             const drawingdata::Details &details_

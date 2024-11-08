@@ -98,7 +98,8 @@ public:
     */
     virtual void addGlobalArgument(
             drawing_data::QuizImageObjects &data_,
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            bool mainObject_
             ) const = 0;
 
     /*
@@ -107,7 +108,8 @@ public:
     */
     virtual void addObjectArgument(
             const drawingdata::Details &details_,
-            drawing_data::QuizImageObject &object_
+            drawing_data::QuizImageObject &object_,
+            bool mainObject_
             ) const = 0;
 };
 
@@ -195,47 +197,51 @@ public:
     */
     void addGlobalArgument(
             drawing_data::QuizImageObjects &data_,
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            bool mainObject_
             ) const override
     {
         if(!isGlobalArgument())
         {
             return;
         }
-        if(g_renderFillColor == m_name)
+        if(mainObject_)
         {
-            auto val = std::make_shared<QVector3D>();
-            QVector<float> vec;
-            if(details_.variables.operator bool() &&
-                    details_.variables->get(m_name, details_.position.get(), vec))
+            if(g_renderFillColor == m_name)
             {
-                drawingdata::utils::vecToUniform(vec, *val);
-            }
-            else
-            {
-                drawingdata::utils::toUniform(m_defaultValue, *val);
-            }
-            const float minv = std::min(val->x(), std::min(val->y(), val->z()));
-            const float maxv = std::min(val->x(), std::min(val->y(), val->z()));
-            if(minv < 0.0 || maxv > 1.0)
-            {
-                val->setX(val->x() - minv);
-                val->setY(val->y() - minv);
-                val->setZ(val->z() - minv);
+                auto val = std::make_shared<QVector3D>();
+                QVector<float> vec;
+                if(details_.variables.operator bool() &&
+                        details_.variables->get(m_name, details_.position.get(), vec))
+                {
+                    drawingdata::utils::vecToUniform(vec, *val);
+                }
+                else
+                {
+                    drawingdata::utils::toUniform(m_defaultValue, *val);
+                }
+                const float minv = std::min(val->x(), std::min(val->y(), val->z()));
                 const float maxv = std::min(val->x(), std::min(val->y(), val->z()));
-                val->setX(val->x() / maxv);
-                val->setY(val->y() / maxv);
-                val->setZ(val->z() / maxv);
+                if(minv < 0.0 || maxv > 1.0)
+                {
+                    val->setX(val->x() - minv);
+                    val->setY(val->y() - minv);
+                    val->setZ(val->z() - minv);
+                    const float maxv = std::min(val->x(), std::min(val->y(), val->z()));
+                    val->setX(val->x() / maxv);
+                    val->setY(val->y() / maxv);
+                    val->setZ(val->z() / maxv);
+                }
+                data_.clearColor = QColor(val->x() * 255, val->y() * 255, val->z() * 255);
             }
-            data_.clearColor = QColor(val->x() * 255, val->y() * 255, val->z() * 255);
-        }
-        else if(g_renderGlobalStatesName == m_name)
-        {
-            setStringListValue(details_, data_.globalStates);
-        }
-        else if(g_renderGlobalCalculationsName == m_name)
-        {
-            setStringListValue(details_, data_.globalCalculations);
+            else if(g_renderGlobalStatesName == m_name)
+            {
+                setStringListValue(details_, data_.globalStates);
+            }
+            else if(g_renderGlobalCalculationsName == m_name)
+            {
+                setStringListValue(details_, data_.globalCalculations);
+            }
         }
         else if(g_renderTexturesListName == m_name)
         {
@@ -257,9 +263,11 @@ public:
     */
     void addObjectArgument(
             const drawingdata::Details &details_,
-            drawing_data::QuizImageObject &object_
+            drawing_data::QuizImageObject &object_,
+            bool mainObject_
             ) const override
     {
+        Q_UNUSED(mainObject_);
         if(!isObjectArgument())
         {
             return;

@@ -182,7 +182,8 @@ void DrawingDataArtefact::addVariables(
 
 void DrawingDataArtefact::addGlobalArguments(
         drawing_data::QuizImageObjects &data_,
-        const drawingdata::Details &details_
+        const drawingdata::Details &details_,
+        bool mainObject_
         ) const
 {
     if(!hasGlobalArguments())
@@ -197,7 +198,7 @@ void DrawingDataArtefact::addGlobalArguments(
         {
             continue;
         }
-        arg->addGlobalArgument(data_, details_);
+        arg->addGlobalArgument(data_, details_, mainObject_);
     }
 }
 
@@ -216,7 +217,8 @@ void DrawingDataArtefact::addTexture(
 
 void DrawingDataArtefact::addObjectArgument(
         drawing_data::QuizImageObject &object_,
-        const drawingdata::Details &details_
+        const drawingdata::Details &details_,
+        bool mainObject_
         ) const
 {
     if(!hasObjectArguments())
@@ -231,7 +233,7 @@ void DrawingDataArtefact::addObjectArgument(
         {
             continue;
         }
-        arg->addObjectArgument(details_, object_);
+        arg->addObjectArgument(details_, object_, mainObject_);
     }
 }
 
