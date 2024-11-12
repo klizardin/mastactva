@@ -122,7 +122,8 @@ bool DrawingDataArtefact::hasObjectArguments() const
 {
     if(!(m_effectArgData.operator bool()
             && m_effectArgData->size() > 0
-            && (to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLua)))
+            && (to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLua
+                || to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::shaderFragmet)))
     {
         return false;
     }
