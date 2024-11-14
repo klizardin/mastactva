@@ -243,7 +243,8 @@ public:
                 setStringListValue(details_, data_.globalCalculations);
             }
         }
-        else if(g_renderTexturesListName == m_name)
+
+        if(g_renderTexturesListName == m_name)
         {
             const QStringList textures = setStringListValue(details_, data_.targetTextures);
             for(const QString &textureTargetName : textures)
