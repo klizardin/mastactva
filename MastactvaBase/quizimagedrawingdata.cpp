@@ -383,27 +383,27 @@ void drawing_data::QuizImageObject::addTargetTexture(const QString &targetTextur
     textureTargets.insert(targetTextureName_);
 }
 
-bool drawing_data::QuizImageObject::allowedForTargetTexture(const QString& tartgetTextureName_) const
+bool drawing_data::QuizImageObject::allowedForTargetTexture(const QString& targetTextureName_) const
 {
     QString textureTargetsToLog;
     for(const QString& s : textureTargets) textureTargetsToLog += s + " ";
-    if(TextureNames::isDefaultTexcture(tartgetTextureName_))
+    if(TextureNames::isDefaultTexcture(targetTextureName_))
     {
         if(textureTargets.empty())
         {
-            qDebug() << this << " true targes empty, target = " << tartgetTextureName_ << textureTargetsToLog;
+            qDebug() << this << " true targes empty, target = " << targetTextureName_ << textureTargetsToLog;
             return true;
         }
         if(textureTargets.find(g_renderTextureDefault) != std::end(textureTargets)
                 || textureTargets.find(g_renderTextureDefaultSynonim) != std::end(textureTargets)
                 )
         {
-            qDebug() << this << " true found default, target = " << tartgetTextureName_ << textureTargetsToLog;
+            qDebug() << this << " true found default, target = " << targetTextureName_ << textureTargetsToLog;
             return true;
         }
     }
-    bool ret = textureTargets.find(tartgetTextureName_) != std::end(textureTargets);
-    qDebug() << this << ( ret ? " true" : "false") << " found " << tartgetTextureName_ << textureTargetsToLog;
+    bool ret = textureTargets.find(targetTextureName_) != std::end(textureTargets);
+    qDebug() << this << ( ret ? " true" : "false") << " found " << targetTextureName_ << textureTargetsToLog;
     return ret;
 }
 
