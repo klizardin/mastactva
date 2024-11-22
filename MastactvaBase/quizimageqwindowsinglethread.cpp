@@ -507,7 +507,7 @@ bool QuizImageQWindowSingleThread::setTextures(const TextureNames & textures_)
     auto it = m_drawingSurfaces.begin();
     for(int i = 0; i < m_activeOffscreenSurafaces && it != m_drawingSurfaces.end(); i++, ++it)
     {
-        it->setTextureName(textures_[std::max(0, std::min(m_activeOffscreenSurafaces - 1 - i, m_activeOffscreenSurafaces - 1))]);
+        it->setTextureName(textures_[std::max(0, std::min(i, m_activeOffscreenSurafaces - 1))]);
     }
     return textures_.size() <= m_drawingSurfaces.size();
 }
@@ -694,6 +694,7 @@ void QuizImageQWindowSingleThread::render()
     for(int i = 0; i < m_activeOffscreenSurafaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
         m_currentTextureName = it->getTextureName();
+        qDebug() << m_currentTextureName;
         m_quickReady &= it->render(m_context.get());
     }
     m_defaultRenderer->render(this, m_context.get(), getTextures());
