@@ -302,6 +302,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     // setup graphic device into the QQuickWindow
     m_quickWindow->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(context));
 
+    qDebug() << "invoke initDefaultDrawingData from run()";
     QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 
     m_renderControl->initialize();
@@ -415,6 +416,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(co
         quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
         quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     }
+    qDebug() << "invoke initDefaultDrawingData from setTexture()";
     QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 }
 
