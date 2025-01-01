@@ -55,7 +55,7 @@ protected:
     class QuizImageQMLDrawingSurface
     {
     public:
-        QuizImageQMLDrawingSurface(int renderingWindowsId_);
+        QuizImageQMLDrawingSurface(int renderingWindowsId_, int renderingSurfaceId_);
         QuizImageQMLDrawingSurface(QuizImageQMLDrawingSurface &&surface_) = default;
         ~QuizImageQMLDrawingSurface() = default;
 
@@ -101,6 +101,7 @@ protected:
         std::shared_ptr<uint> m_textureSharedPtrId;
         QString m_textureName;
         int m_renderingWindowsId = 0;
+        int m_renderingSurfaceId = 0;
         bool m_quickInitialized = false;
         //bool m_textureCreated = false;
     };
@@ -116,7 +117,7 @@ public:
     QString getCurrentTextureName() const override;
     std::shared_ptr<uint> getCurrentTextureId() const override;
     void setDrawing() override;
-    bool didDrwaing() const override;
+    bool didDrawing() const override;
 
 protected:
     void exposeEvent(QExposeEvent *e) override;
@@ -148,7 +149,7 @@ private:
 
     // https://doc.qt.io/qt-6/qoffscreensurface.html
     std::unique_ptr<QOffscreenSurface> m_offscreenSurface;
-    int m_activeOffscreenSurafaces = 0;
+    int m_activeOffscreenSurfaces = 0;
 
     std::list<QuizImageQMLDrawingSurface> m_drawingSurfaces;
 
@@ -161,6 +162,7 @@ private:
     bool m_runTestByTest = false;
     QString m_currentTextureName;
     bool m_didDrawing = false;
+    int m_renderingWindowsId = -1;
 };
 
 

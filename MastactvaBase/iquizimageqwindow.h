@@ -34,7 +34,7 @@ public:
     virtual QString getCurrentTextureName() const = 0;
     virtual std::shared_ptr<uint> getCurrentTextureId() const = 0;
     virtual void setDrawing() = 0;
-    virtual bool didDrwaing() const = 0;
+    virtual bool didDrawing() const = 0;
 
     virtual void setDrawingData(std::shared_ptr<drawing_data::QuizImageObjects> data)
     {
@@ -68,15 +68,16 @@ public:
     }
 
 
-    static void addQuizImageWindows(IQuizImageQWindowOperations* windowsOperation_)
+    static int addQuizImageWindows(IQuizImageQWindowOperations* windowsOperation_)
     {
         IQuizImageQWindow* inst = getInstance();
         if(!inst)
         {
-            return;
+            return -1;
         }
         const int id = inst->createRenderingWindowsId();
         inst->m_quizImageWindows.insert(std::map<int, IQuizImageQWindowOperations*>::value_type{id, windowsOperation_});
+        return id;
     }
 
     static void removeQuizImageWindows(IQuizImageQWindowOperations* windowsOperation_)
