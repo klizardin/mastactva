@@ -367,7 +367,7 @@ void QuizImage::updateT()
     const IQuizImageQWindowOperations *quizImageOperations = IQuizImageQWindow::findQuizImageWindows(renderingWindowsId());
     qreal t = m_scalledTime.get(dt, ct,
         m_pauseScalledTime
-        || (quizImageOperations && !quizImageOperations->didDrwaing())
+        || (quizImageOperations && !quizImageOperations->didDrawing())
         );
     if(!m_pauseScalledTimeStick && m_pauseScalledTime)
     {
@@ -425,11 +425,22 @@ void QuizImage::setRenderingWindowsId(int id_)
     emit renderingWindowsIdChanged();
 }
 
+int QuizImage::renderingSurfaceId() const
+{
+    return m_renderingSurfaceId;
+}
+
+void QuizImage::setRenderingSurfaceId(int id_)
+{
+    m_renderingSurfaceId = id_;
+
+    emit renderingSurfaceIdChanged();
+}
+
 bool QuizImage::isDefaultTexture() const
 {
     return TextureNames::isDefaultTexcture(m_renderingTextureName);
 }
-
 
 QuizImages &QuizImages::getInstance()
 {

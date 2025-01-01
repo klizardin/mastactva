@@ -84,6 +84,7 @@ public:
     Q_PROPERTY(int testIndex READ testIndex WRITE setTestIndex NOTIFY testIndexChanged)
     Q_PROPERTY(QString renderingTextureName READ renderingTextureName WRITE setRenderingTextureName NOTIFY renderingTextureNameChanged)
     Q_PROPERTY(int renderingWindowsId READ renderingWindowsId WRITE setRenderingWindowsId NOTIFY renderingWindowsIdChanged)
+    Q_PROPERTY(int renderingSurfaceId READ renderingSurfaceId WRITE setRenderingSurfaceId NOTIFY renderingSurfaceIdChanged)
     Q_PROPERTY(bool doRunTestsStepByStep READ doRunTestsStepByStep WRITE setDoRunTestsStepByStep NOTIFY doRunTestsStepByStepChanged)
     Q_PROPERTY(QVariantList tScalesVector READ tScalesVector WRITE setTScalesVector NOTIFY tScalesVectorChanged)
     Q_PROPERTY(int loops READ loops WRITE setLoops NOTIFY loopsChanged)
@@ -110,6 +111,8 @@ public:
     void setTestIndex(const int &testIndex_);
     int renderingWindowsId() const;
     void setRenderingWindowsId(int id_);
+    int renderingSurfaceId() const;
+    void setRenderingSurfaceId(int id_);
     bool isDefaultTexture() const;
     QString renderingTextureName() const;
     bool doRunTestsStepByStep() const;
@@ -155,6 +158,7 @@ signals:
     void testIndexChanged();
     void renderingTextureNameChanged();
     void renderingWindowsIdChanged();
+    void renderingSurfaceIdChanged();
     void doRunTestsStepByStepChanged();
     void tScalesVectorChanged();
     void animationCycleStarted();
@@ -172,6 +176,7 @@ private:
     int m_testIndex = -1;
     QString m_renderingTextureName;
     int m_renderingWindowsId = -1;
+    int m_renderingSurfaceId = -1;
     bool m_doRunTestsStepByStep = false;
     qint64 m_millisecondsSinceEpoche = -1;
     ScaledTime m_scalledTime;
