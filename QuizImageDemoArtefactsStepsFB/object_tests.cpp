@@ -2806,8 +2806,6 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
     //qDebug() << "toString(fromCoords_)" << toString(fromCoords_);
     //qDebug() << "toString(toCoords_)" << toString(toCoords_);
 
-    QStringList textureNamesList = { textureName_, };
-
     static const int objectArtefactStep0 = 0;
     processArtefact(
         effectObject,
@@ -2821,6 +2819,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectMultiTextureStepsTestObject(
         now,
         vertexArgs1
     );
+
+    QStringList textureNamesList = { textureName_, };
 
     // fragment shader artefact
     const ArgumentsTuple fragmentArgs1[] =
@@ -3523,16 +3523,16 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     auto modules = std::make_shared<AddonModules>();
     modules->create(addonsDir);
 
-    //QString inputJson = QString(g_inputJson).arg(
-    //            absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-    //            absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
-    //            absoluteHomePath("~/tmp/")
-    //            );
     QString inputJson = QString(g_inputJson).arg(
-                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                 absoluteHomePath("~/tmp/")
                 );
+    //QString inputJson = QString(g_inputJson).arg(
+    //            absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+    //            absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+    //            absoluteHomePath("~/tmp/")
+    //            );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
     std::vector<QVector4D> fromValues, toValues;
@@ -3552,7 +3552,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     const char * firstTextureName = "firstTexture";
     const char * secondTextureName = "secondTexture";
 
-    auto effectObject0 = createWalkEffectMultiTextureStepsTestObject(
+    /*auto effectObject0 = createWalkEffectMultiTextureStepsTestObject(
                 effectId,
                 effectName,
                 effectProgrammerName,
@@ -3560,15 +3560,15 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep1,
                 g_walkEffectFromVertexShaderFilename,
                 g_walkEffectFromFragmentShaderFilename,
-                //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
                 imageSegments,
                 firstTextureName
-                );
+                );*/
     auto effectObject1 = createWalkEffectMultiTextureStepsTestObject(
                 effectId,
                 effectName,
@@ -3577,10 +3577,10 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 effectObjectStep2,
                 g_walkEffectToVertexShaderFilename,
                 g_walkEffectToConstFragmentShaderFilename,
-                //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
                 toCoords,
                 imageSegments,
@@ -3629,7 +3629,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 now,
                 MergeId()
                 );
-    effect->m_effectObjectsData->push_back(effectObject0.release());
+    //effect->m_effectObjectsData->push_back(effectObject0.release());
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
     effect->m_effectObjectsData->push_back(effectObject3.release());
