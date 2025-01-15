@@ -185,6 +185,13 @@ namespace drawing_objects
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
         std::pair<const char *, const char *> getDescription() const override;
     };
+
+    class WalkEffectOnePathTest : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
+    };
 }
 
 // using TestCaseInitializer = drawing_objects::BaseTest;
@@ -203,9 +210,10 @@ namespace drawing_objects
 // using TestCaseInitializer = drawing_objects::LuaScriptArgTest1;
 // using TestCaseInitializer = drawing_objects::ArgSetBaseTest;
 // using TestCaseInitializer = drawing_objects::AlphaBlendingMultipleObjectsTest;
-//using TestCaseInitializer = drawing_objects::WalkEffectTest;
+// using TestCaseInitializer = drawing_objects::WalkEffectTest;
 //using TestCaseInitializer = drawing_objects::WalkEffectDrawingBufferTest;
- using TestCaseInitializer = drawing_objects::WalkEffectMultiTextureStepsTest;
+// using TestCaseInitializer = drawing_objects::WalkEffectMultiTextureStepsTest;
+using TestCaseInitializer = drawing_objects::WalkEffectOnePathTest;
 
 
 #endif // OBJECT_TESTS_H
