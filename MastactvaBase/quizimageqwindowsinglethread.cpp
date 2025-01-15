@@ -305,7 +305,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
     // setup graphic device into the QQuickWindow
     m_quickWindow->setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(context));
 
-    qDebug() << "invoke initDefaultDrawingData from run()";
+    //qDebug() << "invoke initDefaultDrawingData from run()";
     QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 
     m_renderControl->initialize();
@@ -419,7 +419,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::setTextureName(co
         quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
         quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     }
-    qDebug() << "invoke initDefaultDrawingData from setTexture()";
+    //qDebug() << "invoke initDefaultDrawingData from setTexture()";
     QMetaObject::invokeMethod(quizImageQuickItem, "initDefaultDrawingData");
 }
 
@@ -700,7 +700,7 @@ void QuizImageQWindowSingleThread::render()
     for(int i = 0; i < m_activeOffscreenSurfaces && it != std::end(m_drawingSurfaces); ++i, ++it)
     {
         m_currentTextureName = it->getTextureName();
-        qDebug() << m_currentTextureName;
+        //qDebug() << m_currentTextureName;
         m_quickReady &= it->render(m_context.get());
     }
     m_defaultRenderer->render(this, m_context.get(), getTextures());
