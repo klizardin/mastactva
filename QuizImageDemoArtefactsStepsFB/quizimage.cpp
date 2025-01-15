@@ -314,7 +314,7 @@ void QuizImage::initDefaultDrawingData()
      * Who knows about neighborhuds? (interface)
      * So here we add all, but interface will filter calls
     */
-    qDebug() << "initDefaultDrawingData() this = " << this << "m_drawingData" << m_drawingData.get();
+    //qDebug() << "initDefaultDrawingData() this = " << this << "m_drawingData" << m_drawingData.get();
     if(m_drawingData)
     {
         return;
@@ -326,7 +326,7 @@ void QuizImage::initDefaultDrawingData()
             && quizImageOperations->getDrawingData()
             )
     {
-        qDebug() << "this = " << this;
+        //qDebug() << "this = " << this;
         m_drawingData = quizImageOperations->getDrawingData();
         return;
     }
@@ -353,7 +353,7 @@ void QuizImage::initDefaultDrawingData()
     if(quizImageOperations
             && isDefaultTexture())
     {
-        qDebug() << "init this = " << this;
+        //qDebug() << "init this = " << this;
         quizImageOperations->setDrawingData(m_drawingData);
         quizImageOperations->setTextures(m_drawingData->getTargetTextures());
     }
