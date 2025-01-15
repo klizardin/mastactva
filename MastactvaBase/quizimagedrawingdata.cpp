@@ -391,19 +391,19 @@ bool drawing_data::QuizImageObject::allowedForTargetTexture(const QString& targe
     {
         if(textureTargets.empty())
         {
-            qDebug() << this << " true targes empty, target = " << targetTextureName_ << textureTargetsToLog;
+            //qDebug() << this << " true targes empty, target = " << targetTextureName_ << textureTargetsToLog;
             return true;
         }
         if(textureTargets.find(g_renderTextureDefault) != std::end(textureTargets)
                 || textureTargets.find(g_renderTextureDefaultSynonim) != std::end(textureTargets)
                 )
         {
-            qDebug() << this << " true found default, target = " << targetTextureName_ << textureTargetsToLog;
+            //qDebug() << this << " true found default, target = " << targetTextureName_ << textureTargetsToLog;
             return true;
         }
     }
     bool ret = textureTargets.find(targetTextureName_) != std::end(textureTargets);
-    qDebug() << this << ( ret ? " true" : "false") << " found " << targetTextureName_ << textureTargetsToLog;
+    //qDebug() << this << ( ret ? " true" : "false") << " found " << targetTextureName_ << textureTargetsToLog;
     return ret;
 }
 
