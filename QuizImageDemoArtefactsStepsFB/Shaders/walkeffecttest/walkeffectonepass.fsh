@@ -22,13 +22,13 @@ uniform lowp float renderOpacity;
 
 uniform mediump float renderT;
 
-varying mediump vec4 texCoord1Var;
-varying mediump vec4 texCoord2Var;
+varying mediump vec4 texCoordFromVar;
+varying mediump vec4 texCoordToVar;
 
 void main(void)
 {
-    mediump vec4 sfrom = texture2D( renderFromImage, texCoord1Var.st );
-    mediump vec4 sto = texture2D( renderToImage, texCoord2Var.st );
+    mediump vec4 sfrom = texture2D( renderFromImage, texCoordFromVar.st );
+    mediump vec4 sto = texture2D( renderToImage, texCoordToVar.st );
     gl_FragColor = vec4(
             mix(sfrom.rgb, sto.rgb, renderT) * renderOpacity,
             1.0);

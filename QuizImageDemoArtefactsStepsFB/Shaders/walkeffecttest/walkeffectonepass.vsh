@@ -19,8 +19,8 @@
 attribute highp vec4 renderVertexAttribute;
 attribute mediump vec4 renderTextureAttribute;
 
-attribute highp vec4 textureAttributeTo;
 attribute highp vec4 textureAttributeFrom;
+attribute highp vec4 textureAttributeTo;
 
 uniform mediump mat4 renderMatrix;
 uniform mediump mat4 vaFromMatrix;
@@ -30,12 +30,12 @@ uniform mediump mat4 renderToImageMatrix;
 
 uniform mediump float renderT;
 
-varying mediump vec4 texCoord1Var;
-varying mediump vec4 texCoord2Var;
+varying mediump vec4 texCoordFromVar;
+varying mediump vec4 texCoordToVar;
 
 void main(void)
 {
     gl_Position = renderMatrix * renderVertexAttribute;
-    texCoord1Var =  mix(vaFromMatrix * textureAttributeFrom, renderFromImageMatrix * renderTextureAttribute, renderT);
-    texCoord2Var =  mix(vaToMatrix * textureAttributeTo, renderToImageMatrix * renderTextureAttribute, renderT);
+    texCoordFromVar =  mix(vaFromMatrix * textureAttributeFrom, renderFromImageMatrix * renderTextureAttribute, renderT);
+    texCoordToVar =  mix(vaToMatrix * textureAttributeTo, renderToImageMatrix * renderTextureAttribute, renderT);
 }
