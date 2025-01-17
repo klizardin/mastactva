@@ -222,8 +222,8 @@ static const char *g_walkEffectFromVertexShaderFilename = "walkeffectfrom.vsh";
 static const char *g_walkEffectFromFragmentShaderFilename = "walkeffectfrom.fsh";
 static const char *g_walkEffectToVertexShaderFilename = "walkeffectto.vsh";
 static const char *g_walkEffectToFragmentShaderFilename = "walkeffectto.fsh";
-static const char *g_walkEffectOnePathVertexShaderFilename = "walkeffectonepath.vsh";
-static const char *g_walkEffectOnePathFragmentShaderFilename = "walkeffectonepath.fsh";
+static const char *g_walkEffectOnePassVertexShaderFilename = "walkeffectonepass.vsh";
+static const char *g_walkEffectOnePassFragmentShaderFilename = "walkeffectonepass.fsh";
 static const char *g_walkEffectToConstFragmentShaderFilename = "walkeffecttoconst.fsh";
 static const char *g_emptyFilename = "empty.lua";
 static const char *g_walkEffectFromVertexShaderV1Filename = "walkeffectfromv1.vsh";
@@ -2662,7 +2662,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     return effectObject;
 }
 
-std::unique_ptr<EffectObjectsData> createWalkEffectOnePathTestObject(
+std::unique_ptr<EffectObjectsData> createWalkEffectOnePassTestObject(
         int effectId,
         const char *effectName,
         const char *effectProgrammerName,
@@ -3734,7 +3734,7 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     return effect;
 }
 
-std::unique_ptr<EffectData> createWalkEffectOnePathTestData()
+std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
@@ -3772,14 +3772,14 @@ std::unique_ptr<EffectData> createWalkEffectOnePathTestData()
     //qDebug() << "fromCoords" << fromCoords;
     //qDebug() << "toCoords" << toCoords;
 
-    auto effectObject0 = createWalkEffectOnePathTestObject(
+    auto effectObject0 = createWalkEffectOnePassTestObject(
                 effectId,
                 effectName,
                 effectProgrammerName,
                 now,
                 effectObjectStep0,
-                g_walkEffectOnePathVertexShaderFilename,
-                g_walkEffectOnePathFragmentShaderFilename,
+                g_walkEffectOnePassVertexShaderFilename,
+                g_walkEffectOnePassFragmentShaderFilename,
                 absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
                 absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
@@ -4495,7 +4495,7 @@ std::pair<const char *, const char *> WalkEffectTest::getDescription() const
     return {"WalkEffectTest", "walk effect base version"};
 }
 
-void WalkEffectOnePathTest::initialize(
+void WalkEffectOnePassTest::initialize(
         drawing_data::QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
         ) const
@@ -4504,13 +4504,13 @@ void WalkEffectOnePathTest::initialize(
     Q_UNUSED(data_);
 
     auto filesource = createMapFileSource();
-    auto effectObjectsData = createWalkEffectOnePathTestData();
+    auto effectObjectsData = createWalkEffectOnePassTestData();
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
 }
 
-std::pair<const char *, const char *> WalkEffectOnePathTest::getDescription() const
+std::pair<const char *, const char *> WalkEffectOnePassTest::getDescription() const
 {
     return {"WalkEffectOnPathTest", "walk effect on path version"};
 }

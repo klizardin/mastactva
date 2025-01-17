@@ -32,8 +32,8 @@
         <file>Shaders/walkeffecttest/walkeffecttov1.vsh</file>
         <file>Shaders/walkeffecttest/walkeffects2.fsh</file>
         <file>Shaders/walkeffecttest/walkeffecttoconst.fsh</file>
-        <file>Shaders/walkeffecttest/walkeffectonepath.vsh</file>
-        <file>Shaders/walkeffecttest/walkeffectonepath.fsh</file>
+        <file>Shaders/walkeffecttest/walkeffectonepass.vsh</file>
+        <file>Shaders/walkeffecttest/walkeffectonepass.fsh</file>
     </qresource>
     <qresource prefix="/Images">
         <file>Images/no-image.png</file>
