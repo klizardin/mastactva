@@ -36,6 +36,8 @@ varying mediump vec4 texCoordToVar;
 void main(void)
 {
     gl_Position = renderMatrix * renderVertexAttribute;
-    texCoordFromVar =  mix(renderFromImageMatrix * renderTextureAttribute, vaFromMatrix * textureAttributeFrom, renderT);
-    texCoordToVar =  mix(vaToMatrix * textureAttributeTo, renderToImageMatrix * renderTextureAttribute, renderT);
+    //texCoordFromVar =  mix(renderFromImageMatrix * renderTextureAttribute, vaFromMatrix * textureAttributeFrom, renderT);
+    texCoordFromVar =  renderFromImageMatrix * renderTextureAttribute;
+    //texCoordToVar =  mix(vaToMatrix * textureAttributeTo, renderToImageMatrix * renderTextureAttribute, renderT);
+    texCoordToVar =  renderToImageMatrix * renderTextureAttribute;
 }
