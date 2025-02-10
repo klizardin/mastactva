@@ -326,6 +326,12 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_walkEffectFromFragmentShaderFilename,
                     loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectfrom.fsh")
                     );
+    filesource->add(g_walkEffectOnePassVertexShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectonepass.vsh")
+                    );
+    filesource->add(g_walkEffectOnePassFragmentShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectonepass.fsh")
+                    );
     filesource->add(g_walkEffectToVertexShaderFilename,
                     loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectto.vsh")
                     );
@@ -3778,10 +3784,8 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
                 effectProgrammerName,
                 now,
                 effectObjectStep0,
-                //g_walkEffectOnePassVertexShaderFilename,
-                //g_walkEffectOnePassFragmentShaderFilename,
-                g_walkEffectFromVertexShaderFilename,
-                g_walkEffectFromFragmentShaderFilename,
+                g_walkEffectOnePassVertexShaderFilename,
+                g_walkEffectOnePassFragmentShaderFilename,
                 absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
                 absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
