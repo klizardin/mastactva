@@ -44,7 +44,7 @@ class QQuickItem;
 QT_END_NAMESPACE
 
 
-const int g_maxDrawingSurfaceCount = 4;
+const int g_maxDrawingSurfaceCount = 1;
 
 // TODO: add interface for new drawing surface
 class QuizImageQWindowSingleThread : public QWindow, public IQuizImageQWindowOperations
