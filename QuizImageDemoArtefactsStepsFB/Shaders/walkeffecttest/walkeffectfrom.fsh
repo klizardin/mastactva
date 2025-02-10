@@ -31,9 +31,7 @@ void main(void)
         discard;
     }
     gl_FragColor = vec4(
-                s1.r * renderOpacity,
-                s1.g * renderOpacity,
-                s1.b * renderOpacity,
+                s1.rgb * renderOpacity,
                 1.0 // 1.0 - renderT //1.0
                 );
 }
