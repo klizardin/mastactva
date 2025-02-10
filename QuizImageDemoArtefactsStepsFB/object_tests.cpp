@@ -2817,14 +2817,14 @@ std::unique_ptr<EffectObjectsData> createWalkEffectOnePassTestObject(
             17,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
-            QString(g_renderFromImageName) + QString(g_renderWrapToEdgeStateName),
+            QString(g_renderFromImageName) + QString(g_renderClearBackgroundStateName),
             "0.0"
         },
         {
             18,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
-            QString(g_renderToImageName) + QString(g_renderWrapToEdgeStateName),
+            QString(g_renderToImageName) + QString(g_renderClearBackgroundStateName),
             "0.0"
         }
     };
