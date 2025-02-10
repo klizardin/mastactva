@@ -3778,8 +3778,10 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
                 effectProgrammerName,
                 now,
                 effectObjectStep0,
-                g_walkEffectOnePassVertexShaderFilename,
-                g_walkEffectOnePassFragmentShaderFilename,
+                //g_walkEffectOnePassVertexShaderFilename,
+                //g_walkEffectOnePassFragmentShaderFilename,
+                g_walkEffectFromVertexShaderFilename,
+                g_walkEffectFromFragmentShaderFilename,
                 absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
                 absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 fromCoords,
@@ -3872,7 +3874,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
     const char * firstTextureName = "firstTexture";
     const char * secondTextureName = "secondTexture";
 
-    /*auto effectObject0 = createWalkEffectMultiTextureStepsTestObject(
+    auto effectObject0 = createWalkEffectMultiTextureStepsTestObject(
                 effectId,
                 effectName,
                 effectProgrammerName,
@@ -3888,7 +3890,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 toCoords,
                 imageSegments,
                 firstTextureName
-                );*/
+                );
     auto effectObject1 = createWalkEffectMultiTextureStepsTestObject(
                 effectId,
                 effectName,
@@ -3949,7 +3951,7 @@ std::unique_ptr<EffectData> createWalkEffectMultiTextureStepsTestData()
                 now,
                 MergeId()
                 );
-    //effect->m_effectObjectsData->push_back(effectObject0.release());
+    effect->m_effectObjectsData->push_back(effectObject0.release());
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
     effect->m_effectObjectsData->push_back(effectObject3.release());

@@ -211,8 +211,8 @@ namespace drawing_objects
 // using TestCaseInitializer = drawing_objects::ArgSetBaseTest;
 // using TestCaseInitializer = drawing_objects::AlphaBlendingMultipleObjectsTest;
 // using TestCaseInitializer = drawing_objects::WalkEffectTest;
-//using TestCaseInitializer = drawing_objects::WalkEffectDrawingBufferTest;
-// using TestCaseInitializer = drawing_objects::WalkEffectMultiTextureStepsTest;
+// using TestCaseInitializer = drawing_objects::WalkEffectDrawingBufferTest;
+//using TestCaseInitializer = drawing_objects::WalkEffectMultiTextureStepsTest;
 using TestCaseInitializer = drawing_objects::WalkEffectOnePassTest;
 
 
