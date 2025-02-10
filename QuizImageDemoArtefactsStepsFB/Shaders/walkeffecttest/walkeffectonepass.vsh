@@ -20,24 +20,22 @@ attribute highp vec4 renderVertexAttribute;
 attribute mediump vec4 renderTextureAttribute;
 
 attribute highp vec4 textureAttributeFrom;
-//attribute highp vec4 textureAttributeTo;
+attribute highp vec4 textureAttributeTo;
 
 uniform mediump mat4 renderMatrix;
 uniform mediump mat4 vaFromMatrix;
 uniform mediump mat4 renderFromImageMatrix;
-//uniform mediump mat4 vaToMatrix;
-//uniform mediump mat4 renderToImageMatrix;
+uniform mediump mat4 vaToMatrix;
+uniform mediump mat4 renderToImageMatrix;
 
 uniform mediump float renderT;
 
-varying mediump vec4 texCoordVar;
-//varying mediump vec4 texCoordToVar;
+varying mediump vec4 texCoordFromVar;
+varying mediump vec4 texCoordToVar;
 
 void main(void)
 {
-    texCoordVar =  mix(renderFromImageMatrix * renderTextureAttribute, vaFromMatrix * textureAttributeFrom, renderT);
-    //texCoordFromVar =  renderFromImageMatrix * renderTextureAttribute;
-    //texCoordToVar =  mix(vaToMatrix * textureAttributeTo, renderToImageMatrix * renderTextureAttribute, renderT);
-    //texCoordToVar =  renderToImageMatrix * renderTextureAttribute;
+    texCoordFromVar =  mix(renderFromImageMatrix * renderTextureAttribute, vaFromMatrix * textureAttributeFrom, renderT);
+    texCoordToVar =  mix(vaToMatrix * textureAttributeTo, renderToImageMatrix * renderTextureAttribute, renderT);
     gl_Position = renderMatrix * renderVertexAttribute;
 }
