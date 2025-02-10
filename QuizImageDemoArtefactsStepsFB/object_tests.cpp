@@ -2817,14 +2817,14 @@ std::unique_ptr<EffectObjectsData> createWalkEffectOnePassTestObject(
             17,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
-            QString(g_renderFromImageName) + QString(g_renderClearBackgroundStateName),
+            QString(g_renderFromImageName) + QString(g_renderWrapToEdgeStateName),
             "0.0"
         },
         {
             18,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
-            QString(g_renderToImageName) + QString(g_renderClearBackgroundStateName),
+            QString(g_renderToImageName) + QString(g_renderWrapToEdgeStateName),
             "0.0"
         }
     };
@@ -3755,9 +3755,14 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
     auto modules = std::make_shared<AddonModules>();
     modules->create(addonsDir);
 
+    //QString inputJson = QString(g_inputJson).arg(
+    //            absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+    //            absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+    //            absoluteHomePath("~/tmp/")
+    //            );
     QString inputJson = QString(g_inputJson).arg(
-                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                 absoluteHomePath("~/tmp/")
                 );
     //20220116_145321.jpg",
@@ -3786,8 +3791,10 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
                 effectObjectStep0,
                 g_walkEffectOnePassVertexShaderFilename,
                 g_walkEffectOnePassFragmentShaderFilename,
-                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                 fromCoords,
                 toCoords,
                 QPoint(10, 10)
