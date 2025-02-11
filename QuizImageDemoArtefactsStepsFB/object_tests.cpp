@@ -2789,14 +2789,14 @@ std::unique_ptr<EffectObjectsData> createWalkEffectOnePassTestObject(
             13,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
-            QString(g_renderFromImageName) + QString(g_renderWrapToEdgeStateName),
+            QString(g_renderFromImageName) + QString(g_renderBorderColorStateName),
             "0.0 0.0 0.0 0.0"
         },
         {
             14,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
-            QString(g_renderToImageName) + QString(g_renderWrapToEdgeStateName),
+            QString(g_renderToImageName) + QString(g_renderBorderColorStateName),
             "0.0 0.0 0.0 0.0"
         },
         {
@@ -2812,20 +2812,6 @@ std::unique_ptr<EffectObjectsData> createWalkEffectOnePassTestObject(
             ArtefactArgStorageEn::uniformStorage,
             "vaToMatrix",
             toString(QMatrix4x4{})
-        },
-        {
-            17,
-            ArtefactArgTypeEn::vec4Type,
-            ArtefactArgStorageEn::uniformStorage,
-            QString(g_renderFromImageName) + QString(g_renderWrapToEdgeStateName),
-            "0.0"
-        },
-        {
-            18,
-            ArtefactArgTypeEn::vec4Type,
-            ArtefactArgStorageEn::uniformStorage,
-            QString(g_renderToImageName) + QString(g_renderWrapToEdgeStateName),
-            "0.0"
         }
     };
 
