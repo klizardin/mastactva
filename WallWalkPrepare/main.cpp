@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     }
 
     QCommandLineParser cmdsParser;
-    cmdsParser.setApplicationDescription("Preparing data for the folader of images");
+    cmdsParser.setApplicationDescription("Preparing data for the folder of images");
     cmdsParser.addHelpOption();
     cmdsParser.addVersionOption();
 
