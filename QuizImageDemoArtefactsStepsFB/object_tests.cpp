@@ -3741,16 +3741,16 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
     auto modules = std::make_shared<AddonModules>();
     modules->create(addonsDir);
 
-    //QString inputJson = QString(g_inputJson).arg(
-    //            absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-    //            absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
-    //            absoluteHomePath("~/tmp/")
-    //            );
     QString inputJson = QString(g_inputJson).arg(
-                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
                 absoluteHomePath("~/tmp/")
                 );
+    //QString inputJson = QString(g_inputJson).arg(
+    //            absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+    //            absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+    //            absoluteHomePath("~/tmp/")
+    //            );
     //20220116_145321.jpg",
     //20220116_145325.jpg",
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
@@ -3777,10 +3777,10 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
                 effectObjectStep0,
                 g_walkEffectOnePassVertexShaderFilename,
                 g_walkEffectOnePassFragmentShaderFilename,
-                //absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-                //absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
-                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
+                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                //SabsoluteHomePath("~/Pictures/test_images/to_image.jpg"),
                 fromCoords,
                 toCoords,
                 QPoint(10, 10)
