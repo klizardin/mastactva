@@ -26,12 +26,6 @@
 #include <QHash>
 #include <QDateTime>
 #include <QByteArray>
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
-#include <QOpenGLTexture>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLBuffer>
-#include <QOpenGLShader>
 #include "utils_json.h"
 #include "utils_enum.h"
 #include "utils_optional.h"
@@ -76,20 +70,6 @@ QStringList getUniqueValues(const QStringList &values_);    // return just uniqu
 QStringList replace(const QStringList &stringList_, const QString from_, const QString & to_);  // replace string in the string list
 QStringList removeEmpty(const QStringList &values_);    // remove empty strings from the string list
 QStringList trimmed(const QStringList &values_);    // trim string list's strings
-
-/*
- * open gl help functions
-*/
-#if QT_CONFIG(opengl)
-
-bool set_value(const QString &valStr_, GLint& val_);    // set value to GLint from the string
-bool set_value(const QString &valStr_, GLfloat& val_);  // set value to GLfloat from the string
-bool set_value(const QString &valStr_, QString& val_);  // set value to QString from the string
-void generateUniformRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_);   // generate random values
-void generateUniformRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_);       // generate random values
-QStringList getOpenGLErrors();  // return open gl error as list of strings
-
-#endif  // #if QT_CONFIG(opengl)
 
 
 /*

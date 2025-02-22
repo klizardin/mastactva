@@ -4,11 +4,13 @@ QT += quick \
     quickcontrols2  \
     widgets \
     core    \
-    qml
+    qml \
+    opengl
+
 
 CONFIG += c++14
-
 CONFIG += qmltypes
+
 QML_IMPORT_NAME = QuizImageDemoArtefactStepsFB
 QML_IMPORT_MAJOR_VERSION = 1
 
@@ -66,6 +68,7 @@ unix: SOURCES +=    \
     utils.cpp   \
     utils_scaledtime.cpp   \
     utils_comment.cpp   \
+    utils_opengl.cpp    \
 
 
 HEADERS += \
@@ -121,6 +124,7 @@ unix: HEADERS +=    \
     utils_optional.h \
     utils_scaledtime.h   \
     utils_comment.h   \
+    utils_opengl.h  \
 
 
 RESOURCES += qml.qrc    \
