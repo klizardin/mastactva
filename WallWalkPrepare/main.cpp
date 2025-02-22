@@ -61,19 +61,19 @@ int main(int argc, char *argv[])
         }
         bunchOfImages.back().push_back(imageName);
     }
-    qDebug() << "Bunch of images: " << bunchOfImages;
+    //qDebug() << "Bunch of images: " << bunchOfImages;
     for(i = 0; i < bunchSize; i++)
     {
         for(int j = 1; j < bunchOfImages.size(); ++j)
         {
-            qDebug() << "pair (" << (j-1)*bunchSize + i << "," << j*bunchSize + i << "):" << bunchOfImages[j-1].at(i) << "-" << bunchOfImages[j].at(i);
+            //qDebug() << "pair (" << (j-1)*bunchSize + i << "," << j*bunchSize + i << "):" << bunchOfImages[j-1].at(i) << "-" << bunchOfImages[j].at(i);
         }
     }
     for(int j = 0; j < bunchOfImages.size(); ++j)
     {
         for(i = 1; i < bunchSize; i++)
         {
-            qDebug() << "pair (" << j*bunchSize + i - 1 << "," << j*bunchSize + i << "):" << bunchOfImages[j].at(i - 1) << "-" << bunchOfImages[j].at(i);
+            //qDebug() << "pair (" << j*bunchSize + i - 1 << "," << j*bunchSize + i << "):" << bunchOfImages[j].at(i - 1) << "-" << bunchOfImages[j].at(i);
         }
     }
 
