@@ -27,7 +27,9 @@
 #include <QTextStream>
 #include <QDebug>
 #include "../MastactvaBase/qmlobjects.h"
+#if defined(QMLOBJECTS_CPP) && defined(SERVERFILES_CPP)
 #include "../MastactvaBase/serverfiles.h"
+#endif
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
 
