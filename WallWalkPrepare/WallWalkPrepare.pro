@@ -8,7 +8,18 @@ CONFIG -= app_bundle
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        main.cpp
+        main.cpp    \
+        addonmodulelist.cpp \
+        utils.cpp   \
+
+
+HEADERS += \
+        addonmodulelist.h   \
+        utils.h \
+        utils_json.h    \
+        utils_enum.h    \
+        utils_optional.h    \
+
 
 TRANSLATIONS += \
     WallWalkPrepare_be_BY.ts

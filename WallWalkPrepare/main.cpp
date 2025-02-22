@@ -6,7 +6,55 @@
 #include <QStringList>
 #include <QSet>
 #include <QPair>
+#include "../MastactvaBase/addonmodulelist.h"
+#include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/names.h"
 
+
+bool findDynamicLibrariesDir(const QDir &dir_, QDir &result_)
+{
+    QFileInfoList files = dir_.entryInfoList(QStringList{} << "*.so", QDir::Files);
+    if(!files.isEmpty())
+    {
+        result_ = dir_;
+        return true;
+    }
+    const QFileInfoList dirs = dir_.entryInfoList(QDir::NoDot | QDir::NoDotDot | QDir::Dirs);
+    for(const QFileInfo &fi_ : qAsConst(dirs))
+    {
+        if(!fi_.isDir())
+        {
+            continue;
+        }
+        if(findDynamicLibrariesDir(QDir(fi_.absoluteFilePath()), result_))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+static const char * g_inputJson =
+        "{\"from_image\":\"%1\","
+            "\"to_image\":\"%2\","
+            "\"log_path\":\"%3\","
+            "\"line_extract_min_area\":2E-2,"
+            "\"line_extract_scale_coef\":2E-1,"
+            "\"find_rects_min_rect_area\":4E-2,"
+            "\"find_rects_max_rect_area\":5E-1,"
+            "\"find_rects_rect_size_coef\":9E-1,"
+            "\"find_rects_max_rect_count\":10,"
+            "\"find_transform_size_coef\":5E-1,"
+            "\"trace_operations_with_images\":false,"
+            "\"trace_operations_with_messages\":false,"
+            "\"mode\":\"generated_rects\","
+            "\"test_is_convex\":true,"
+            "\"generate_rects_rows\":4,"
+            "\"generate_rects_cols\":4,"
+            "\"rects\":[],"
+            "\"output_rows\":10,"
+            "\"output_cols\":10"
+            "}";
 
 int main(int argc, char *argv[])
 {
@@ -82,6 +130,22 @@ int main(int argc, char *argv[])
         }
     }
     qInfo() << "All pairs : " << pairs.size();
+    for(const auto& pair : pairs)
+    {
+        QDir addonsDir;
+        findDynamicLibrariesDir(QDir("./"), addonsDir);
+        auto modules = std::make_shared<AddonModules>();
+        modules->create(addonsDir);
+
+        const QString inputJson = QString(g_inputJson).arg(
+                    sourceImageDir.filePath(pair.first),
+                    sourceImageDir.filePath(pair.second),
+                    absoluteHomePath("~/tmp/")
+                    );
+
+        QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
+        qInfo() << result.isObject();
+    }
 
     //return a.exec();
     return 0;
