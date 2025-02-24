@@ -118,7 +118,10 @@ int main(int argc, char *argv[])
         for(int j = 1; j < bunchOfImages.size(); ++j)
         {
             //qDebug() << "pair (" << (j-1)*bunchSize + i << "," << j*bunchSize + i << "):" << bunchOfImages[j-1].at(i) << "-" << bunchOfImages[j].at(i);
-            pairs.insert(qMakePair(bunchOfImages[j-1].at(i),bunchOfImages[j].at(i)));
+            if(i >= 0 && i < bunchOfImages[j-1].size() && i < bunchOfImages[j].size())
+            {
+                pairs.insert(qMakePair(bunchOfImages[j-1].at(i),bunchOfImages[j].at(i)));
+            }
         }
     }
     for(int j = 0; j < bunchOfImages.size(); ++j)
@@ -126,7 +129,10 @@ int main(int argc, char *argv[])
         for(i = 1; i < bunchSize; i++)
         {
             //qDebug() << "pair (" << j*bunchSize + i - 1 << "," << j*bunchSize + i << "):" << bunchOfImages[j].at(i - 1) << "-" << bunchOfImages[j].at(i);
-            pairs.insert(qMakePair(bunchOfImages[j].at(i-1),bunchOfImages[j].at(i)));
+            if(i>=1 && i < bunchOfImages[j].size())
+            {
+                pairs.insert(qMakePair(bunchOfImages[j].at(i-1),bunchOfImages[j].at(i)));
+            }
         }
     }
     qInfo() << "All pairs : " << pairs.size();
