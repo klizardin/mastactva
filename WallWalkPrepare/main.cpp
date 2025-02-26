@@ -135,19 +135,21 @@ int main(int argc, char *argv[])
             }
         }
     }
+
+    QDir addonsDir;
+    findDynamicLibrariesDir(QDir("./"), addonsDir);
+    auto modules = std::make_shared<AddonModules>();
+    modules->create(addonsDir);
+
     qInfo() << "All pairs : " << pairs.size();
     for(const auto& pair : pairs)
     {
-        QDir addonsDir;
-        findDynamicLibrariesDir(QDir("./"), addonsDir);
-        auto modules = std::make_shared<AddonModules>();
-        modules->create(addonsDir);
-
         const QString inputJson = QString(g_inputJson).arg(
                     sourceImageDir.filePath(pair.first),
                     sourceImageDir.filePath(pair.second),
                     absoluteHomePath("~/tmp/")
                     );
+        qInfo() << pair.first << "," << pair.second;
 
         QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
         qInfo() << result.isObject();
