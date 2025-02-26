@@ -13,7 +13,15 @@ static const char * g_echo = "echo";
 QJsonDocument IAddonModule::process(const QJsonDocument &arguments_) const
 {
     const QByteArray ba = arguments_.toJson();
-    const QString result = process(QString::fromUtf8(ba));
+    QString result;
+    try
+    {
+        result = process(QString::fromUtf8(ba));
+    }
+    catch(...)
+    {
+        qWarning() << "IAddonModule::process exception";
+    }
     return QJsonDocument::fromJson(result.toUtf8());
 }
 
