@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
         bunchOfImages.back().push_back(imageName);
     }
     //qDebug() << "Bunch of images: " << bunchOfImages;
-    QSet<QPair<QString, QString>> pairs;
+    QVector<QPair<QString, QString>> pairs;
     for(i = 0; i < bunchSize; i++)
     {
         for(int j = 1; j < bunchOfImages.size(); ++j)
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
             //qDebug() << "pair (" << (j-1)*bunchSize + i << "," << j*bunchSize + i << "):" << bunchOfImages[j-1].at(i) << "-" << bunchOfImages[j].at(i);
             if(i >= 0 && i < bunchOfImages[j-1].size() && i < bunchOfImages[j].size())
             {
-                pairs.insert(qMakePair(bunchOfImages[j-1].at(i),bunchOfImages[j].at(i)));
+                pairs.push_back(qMakePair(bunchOfImages[j-1].at(i),bunchOfImages[j].at(i)));
             }
         }
     }
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
             //qDebug() << "pair (" << j*bunchSize + i - 1 << "," << j*bunchSize + i << "):" << bunchOfImages[j].at(i - 1) << "-" << bunchOfImages[j].at(i);
             if(i>=1 && i < bunchOfImages[j].size())
             {
-                pairs.insert(qMakePair(bunchOfImages[j].at(i-1),bunchOfImages[j].at(i)));
+                pairs.push_back(qMakePair(bunchOfImages[j].at(i-1),bunchOfImages[j].at(i)));
             }
         }
     }
