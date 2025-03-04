@@ -260,4 +260,12 @@ Q_DECL_UNUSED static const char * g_endArguments = ")";
 Q_DECL_UNUSED static const char * g_argumentsSplitter = ",";
 
 
+// demo
+Q_DECL_UNUSED static const char * g_demoConfigurationJsonFileName = "walkeffectdata.json";
+Q_DECL_UNUSED static const char * g_demoJsonFieldFromFile = "file_from";
+Q_DECL_UNUSED static const char * g_demoJsonFieldToFile = "file_to";
+Q_DECL_UNUSED static const char * g_demoJsonFieldFromValues = "from_values";
+Q_DECL_UNUSED static const char * g_demoJsonFieldToValues = "to_values";
+
+
 #endif // NAMES_H
