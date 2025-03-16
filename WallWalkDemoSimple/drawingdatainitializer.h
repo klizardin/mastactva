@@ -1,0 +1,24 @@
+#ifndef DRAWINGDATAINITIALIZER_H
+#define DRAWINGDATAINITIALIZER_H
+
+
+#include <memory>
+#include "../MastactvaBase/drawingdata_utilsdemo.h"
+#include "../MastactvaBase/quizimagedrawingdata.h"
+#include "../MastactvaBase/utils.h"
+
+
+namespace drawing_objects
+{
+    class WalkEffectOnePass : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+        std::pair<const char *, const char *> getDescription() const override;
+    };
+}
+
+using DrawingDataInitializer = drawing_objects::WalkEffectOnePass;
+
+
+#endif // DRAWINGDATAINITIALIZER_H

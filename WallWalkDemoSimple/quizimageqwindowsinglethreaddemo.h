@@ -1,0 +1,1 @@
+../MastactvaBase/quizimageqwindowsinglethreaddemo.h

@@ -1,0 +1,168 @@
+/*
+    Copyright 2021
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#ifndef QUIZIMAGE_H
+#define QUIZIMAGE_H
+
+
+#include <memory>
+#include <QtQuick/QQuickFramebufferObject>
+#include <QTimer>
+#include "../MastactvaBase/quizimagedrawingdatademo.h"
+#include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/utils_scaledtime.h"
+#include "drawingdatainitializer.h"
+#include <vector>
+
+
+/*
+ * control that wraps the opengl effect drawing
+*/
+class QuizImage : public QQuickFramebufferObject, protected IScaledTimeEvents
+{
+    Q_OBJECT
+    QML_NAMED_ELEMENT(QuizImageDemo)
+public:
+    QuizImage();
+
+    Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
+    Q_PROPERTY(QString fromImage READ fromImage WRITE setFromImage NOTIFY fromImageChanged)
+    Q_PROPERTY(QString toImage READ toImage WRITE setToImage NOTIFY toImageChanged)
+    Q_PROPERTY(QString projectFilename READ project WRITE setProject NOTIFY projectChanged)
+    Q_PROPERTY(QString compilerLog READ log WRITE setLog NOTIFY logChanged)
+    Q_PROPERTY(int testIndex READ testIndex WRITE setTestIndex NOTIFY testIndexChanged)
+    Q_PROPERTY(QString renderingTextureName READ renderingTextureName WRITE setRenderingTextureName NOTIFY renderingTextureNameChanged)
+    Q_PROPERTY(int renderingWindowsId READ renderingWindowsId WRITE setRenderingWindowsId NOTIFY renderingWindowsIdChanged)
+    Q_PROPERTY(int renderingSurfaceId READ renderingSurfaceId WRITE setRenderingSurfaceId NOTIFY renderingSurfaceIdChanged)
+    Q_PROPERTY(bool doRunTestsStepByStep READ doRunTestsStepByStep WRITE setDoRunTestsStepByStep NOTIFY doRunTestsStepByStepChanged)
+    Q_PROPERTY(QVariantList tScalesVector READ tScalesVector WRITE setTScalesVector NOTIFY tScalesVectorChanged)
+    Q_PROPERTY(int loops READ loops WRITE setLoops NOTIFY loopsChanged)
+
+    Q_INVOKABLE void updateState();
+    Q_INVOKABLE void updateProject();
+    Q_INVOKABLE void initDefaultDrawingData();
+    Q_INVOKABLE void updateT();
+
+public:
+    virtual QQuickFramebufferObject::Renderer *createRenderer() const override;
+
+public:
+    qreal t() const;
+    bool isImageDataUpdated() const;
+    std::shared_ptr<drawing_data::QuizImageObjects> getData();
+    void setDataToFree(std::shared_ptr<drawing_data::QuizImageObjects> &&old_);
+    void renderBuildError(const QString &compilerLog_);
+    bool isFromImageReady() const;
+    bool isToImageReady() const;
+    const QString &getFromImageUrl() const;
+    const QString &getToImageUrl() const;
+    int testIndex() const;
+    void setTestIndex(const int &testIndex_);
+    int renderingWindowsId() const;
+    void setRenderingWindowsId(int id_);
+    int renderingSurfaceId() const;
+    void setRenderingSurfaceId(int id_);
+    bool isDefaultTexture() const;
+    QString renderingTextureName() const;
+    bool doRunTestsStepByStep() const;
+    void setDoRunTestsStepByStep(const bool &stepByStep_);
+    QVariantList tScalesVector() const;
+    void setTScalesVector(const QVariantList& delaysVector);
+    int loops() const;
+    void setLoops(int loops);
+
+    std::shared_ptr<uint> getScreenTextureId() const;
+
+protected:
+    void setT(const qreal &t_);
+    QString fromImage() const;
+    void setFromImage(const QString &fromImage_);
+    QString toImage() const;
+    void setToImage(const QString &toImage_);
+    QString project() const;
+    void setProject(const QString &project_);
+    QString log() const;
+    void setLog(const QString &log_);
+    void setRenderingTextureName(const QString &renderingTextureName_);
+
+    //struct IScaledTimeEvents
+    //{
+    virtual void onScaledTimeCycle(int cycle) override;
+    virtual void onScaledTimeLastCycle() override;
+    virtual void onScaledTimeFirstCycle() override;
+    //};
+
+    void freeProject();
+    void loadProject();
+    void setProjectFromImage();
+    void setProjectToImage();
+    void onTimer();
+
+signals:
+    void tChanged();
+    void fromImageChanged();
+    void toImageChanged();
+    void projectChanged();
+    void logChanged();
+    void testIndexChanged();
+    void renderingTextureNameChanged();
+    void renderingWindowsIdChanged();
+    void renderingSurfaceIdChanged();
+    void doRunTestsStepByStepChanged();
+    void tScalesVectorChanged();
+    void animationCycleStarted();
+    void animationCycleFinished();
+    void loopsChanged();
+
+private:
+    qreal m_t = 0.0;
+    QString m_fromImage;
+    QString m_toImage;
+    QString m_project;
+    std::shared_ptr<drawing_data::QuizImageObjects> m_drawingData;
+    std::shared_ptr<drawing_data::QuizImageObjects> m_drawingOldData;
+    QString m_compilerLog;
+    int m_testIndex = -1;
+    QString m_renderingTextureName;
+    int m_renderingWindowsId = -1;
+    int m_renderingSurfaceId = -1;
+    bool m_doRunTestsStepByStep = false;
+    qint64 m_millisecondsSinceEpoche = -1;
+    ScaledTime m_scalledTime;
+    bool m_pauseScalledTime = true;
+    bool m_pauseScalledTimeStick = true;
+    int m_cycles = -1;
+    std::unique_ptr<QTimer> m_timerForT;
+};
+
+
+class QuizImages
+{
+private:
+    QuizImages() = default;
+
+public:
+    static QuizImages &getInstance();
+    void add(QuizImage *quizImage);
+    void remove(QuizImage *quizImage);
+
+protected:
+    std::vector<QuizImage *> m_quizImages;
+};
+
+
+#endif // QUIZIMAGE_H
