@@ -4,7 +4,7 @@
 
 #include <memory>
 #include "../MastactvaBase/drawingdata_utilsdemo.h"
-#include "../MastactvaBase/quizimagedrawingdata.h"
+#include "../MastactvaBase/quizimagedrawingdatademo.h"
 #include "../MastactvaBase/utils.h"
 
 

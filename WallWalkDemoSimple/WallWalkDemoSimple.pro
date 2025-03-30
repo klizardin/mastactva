@@ -34,6 +34,7 @@ unix:SOURCES += \
     defaulttexturerenderdemo.cpp    \
     quizimagedrawingdatademo.cpp    \
     drawingdata_utilsdemo.cpp   \
+    effect_data.cpp \
 
 
 unix:HEADERS += \
@@ -42,6 +43,7 @@ unix:HEADERS += \
     iquizimageqwindow.h \
     quizimagedrawingdatademo.h  \
     drawingdata_utilsdemo.h \
+    effect_data.h   \
 
 
 TRANSLATIONS += \

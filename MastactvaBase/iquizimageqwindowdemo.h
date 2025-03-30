@@ -6,7 +6,7 @@
 #include <vector>
 #include <set>
 #include <map>
-#include "../MastactvaBase/quizimagedrawingdata.h"
+#include "../MastactvaBase/quizimagedrawingdatademo.h"
 
 
 class TextureNames : public std::vector<QString>
