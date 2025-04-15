@@ -5,7 +5,8 @@ QT += quick \
     widgets \
     core    \
     qml \
-    opengl
+    opengl  \
+    sql
 
 CONFIG += c++14 qmltypes
 CONFIG -= app_bundle
@@ -20,13 +21,13 @@ QML_IMPORT_MAJOR_VERSION = 1
 
 SOURCES += \
     drawingdatainitializer.cpp \
-        main.cpp    \
-        quizimage.cpp   \
+    main.cpp    \
+    quizimage.cpp   \
 
 
 HEADERS += \
     drawingdatainitializer.h \
-        quizimage.h \
+    quizimage.h \
 
 
 unix:SOURCES += \
@@ -35,6 +36,31 @@ unix:SOURCES += \
     quizimagedrawingdatademo.cpp    \
     drawingdata_utilsdemo.cpp   \
     effect_data.cpp \
+    artefact_data.cpp   \
+    IModel.cpp  \
+    imagesource.cpp \
+    mergeid.cpp \
+    artefactarg_data.cpp    \
+    artefactargtype_data.cpp    \
+    artefactargstorage_data.cpp \
+    effectargument_data.cpp \
+    artefacttype_data.cpp   \
+    utils.cpp   \
+    qmlobjects.cpp  \
+    netapi.cpp  \
+    timeutils.cpp   \
+    requestdata.cpp \
+    localdata.cpp   \
+    localdataapinocache.cpp \
+    dbutils.cpp \
+    format.cpp  \
+    dbrequestinfo.cpp   \
+    localdataapinocache_default.cpp \
+    localdataapicache.cpp   \
+    containerutils.cpp  \
+    Model.cpp   \
+    modelconfig.cpp \
+    data_utils.cpp  \
 
 
 unix:HEADERS += \
@@ -44,6 +70,42 @@ unix:HEADERS += \
     quizimagedrawingdatademo.h  \
     drawingdata_utilsdemo.h \
     effect_data.h   \
+    artefact_data.h \
+    IModel.h    \
+    imagesource.h   \
+    mergeid.h   \
+    layout_enums.h  \
+    layout_variant.h    \
+    layout_type.h   \
+    layout_json.h   \
+    artefactarg_data.h  \
+    artefactargtype_data.h  \
+    artefactargstorage_data.h   \
+    effectargument_data.h   \
+    artefacttype_data.h \
+    utils.h \
+    utils_json.h    \
+    utils_enum.h    \
+    utils_optional.h    \
+    qmlobjects.h    \
+    netapi.h    \
+    Layout.h    \
+    timeutils.h \
+    requestdata.h   \
+    localdata.h \
+    localdataapinocache.h   \
+    dbutils.h   \
+    names.h \
+    format.h    \
+    format_type.h   \
+    dbrequestinfo.h \
+    localdataapinocache_default.h   \
+    defines.h   \
+    localdataapicache.h \
+    containerutils.h    \
+    Model.h \
+    modelconfig.h   \
+    data_utils.h    \
 
 
 TRANSLATIONS += \
