@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qml/quizImage.qml</file>
+    </qresource>
+    <qresource prefix="/Shaders">
+        <file>Shaders/walkeffecttest/walkeffectonepass.vsh</file>
+        <file>Shaders/walkeffecttest/walkeffectonepass.fsh</file>
+    </qresource>
+</RCC>
+

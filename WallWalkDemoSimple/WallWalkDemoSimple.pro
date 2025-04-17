@@ -21,12 +21,14 @@ QML_IMPORT_MAJOR_VERSION = 1
 
 SOURCES += \
     drawingdatainitializer.cpp \
+    drawingdatainitializer_utils.cpp \
     main.cpp    \
     quizimage.cpp   \
 
 
 HEADERS += \
     drawingdatainitializer.h \
+    drawingdatainitializer_utils.h \
     quizimage.h \
 
 
@@ -61,6 +63,9 @@ unix:SOURCES += \
     Model.cpp   \
     modelconfig.cpp \
     data_utils.cpp  \
+    objectinfo_data.cpp \
+    objectartefact_data.cpp \
+    drawingdata_effectdemo.cpp  \
 
 
 unix:HEADERS += \
@@ -106,6 +111,12 @@ unix:HEADERS += \
     Model.h \
     modelconfig.h   \
     data_utils.h    \
+    objectinfo_data.h   \
+    objectartefact_data.h   \
+    drawingdata_effectdemo.h    \
+
+
+RESOURCES += qml.qrc    \
 
 
 TRANSLATIONS += \

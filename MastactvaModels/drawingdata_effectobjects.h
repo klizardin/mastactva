@@ -22,6 +22,8 @@
 #include <memory>
 #include "../MastactvaModels/effectobjects_data.h"
 #include "../MastactvaModels/drawingdata_argsetsandargs.h"
+#include "../MastactvaBase/drawingdata_utils.h"
+#include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/utils.h"
 
 
