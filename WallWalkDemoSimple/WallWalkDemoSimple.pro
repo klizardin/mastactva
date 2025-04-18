@@ -66,6 +66,16 @@ unix:SOURCES += \
     objectinfo_data.cpp \
     objectartefact_data.cpp \
     drawingdata_effectdemo.cpp  \
+    drawingdata_argsetsandargsdemo.cpp  \
+    drawingdata_effectobjectsdemo.cpp   \
+    drawingdata_effectargsetdemo.cpp    \
+    drawingdata_effectargdemo.cpp   \
+    drawingdata_effectargvaluedemo.cpp  \
+    drawingdata_artefactargdemo.cpp \
+    addon.cpp   \
+    drawingdata_objectinfodemo.cpp  \
+    drawingdata_objectartefactdemo.cpp  \
+    drawingdata_artefactdemo.cpp    \
 
 
 unix:HEADERS += \
@@ -114,6 +124,16 @@ unix:HEADERS += \
     objectinfo_data.h   \
     objectartefact_data.h   \
     drawingdata_effectdemo.h    \
+    drawingdata_argsetsandargsdemo.h    \
+    drawingdata_effectobjectsdemo.h \
+    drawingdata_effectargsetdemo.h  \
+    drawingdata_effectargdemo.h \
+    drawingdata_effectargvaluedemo.h    \
+    drawingdata_artefactargdemo.h   \
+    addon.h \
+    drawingdata_objectinfodemo.h    \
+    drawingdata_objectartefactdemo.h    \
+    drawingdata_artefactdemo.h  \
 
 
 RESOURCES += qml.qrc    \
