@@ -28,8 +28,7 @@
 #include <QTime>
 #include <QVector>
 #include "../MastactvaBase/quizimageopengldrawingdata.h"
-#include "drawing_tests.h"
-#include "object_tests.h"
+#include "drawingdatainitializer.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/iquizimageqwindow.h"
 
