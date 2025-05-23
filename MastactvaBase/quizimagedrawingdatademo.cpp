@@ -15,8 +15,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "quizimagedrawingdata.h"
-#include "../MastactvaBase/iquizimageqwindow.h"
+#include "quizimagedrawingdatademo.h"
+#include "../MastactvaBase/iquizimageqwindowdemo.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/opengldrawing_calculations.h"
 #include "../MastactvaBase/utils.h"

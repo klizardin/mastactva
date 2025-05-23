@@ -1,5 +1,5 @@
 #include "drawingdata_effectargsetdemo.h"
-#include "../MastactvaModels/drawingdata_effectargvaluedemo.h".h"
+#include "../MastactvaModels/drawingdata_effectargvaluedemo.h"
 
 
 DrawingDataEffectArgSet::DrawingDataEffectArgSet(EffectArgSetData &&data_)
