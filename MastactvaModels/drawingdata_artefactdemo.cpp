@@ -22,7 +22,7 @@
 #include "../MastactvaBase/wavefrontobj.h"
 #include "../MastactvaBase/luaapi.h"
 #include "../MastactvaBase/opengldrawing_utils.h"
-#include "../MastactvaBase/quizimageopengldrawingdata.h"
+#include "../MastactvaBase/quizimageopengldrawingdatademo.h"
 #include "../MastactvaBase/utils.h"
 
 

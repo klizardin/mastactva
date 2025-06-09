@@ -76,6 +76,9 @@ unix:SOURCES += \
     drawingdata_objectinfodemo.cpp  \
     drawingdata_objectartefactdemo.cpp  \
     drawingdata_artefactdemo.cpp    \
+    utils_scaledtime.cpp    \
+    effectobjects_data.cpp  \
+    quizimageopengldrawingdatademo.cpp  \
 
 
 unix:HEADERS += \
@@ -134,6 +137,9 @@ unix:HEADERS += \
     drawingdata_objectinfodemo.h    \
     drawingdata_objectartefactdemo.h    \
     drawingdata_artefactdemo.h  \
+    utils_scaledtime.h  \
+    effectobjects_data.h    \
+    quizimageopengldrawingdatademo.h    \
 
 
 RESOURCES += qml.qrc    \

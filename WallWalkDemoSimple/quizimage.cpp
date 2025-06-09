@@ -27,7 +27,7 @@
 #include <QRandomGenerator>
 #include <QTime>
 #include <QVector>
-#include "../MastactvaBase/quizimageopengldrawingdata.h"
+#include "../MastactvaBase/quizimageopengldrawingdatademo.h"
 #include "drawingdatainitializer.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/iquizimageqwindow.h"
