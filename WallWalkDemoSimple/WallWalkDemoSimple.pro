@@ -79,6 +79,8 @@ unix:SOURCES += \
     utils_scaledtime.cpp    \
     effectobjects_data.cpp  \
     quizimageopengldrawingdatademo.cpp  \
+    opengldrawing_utils.cpp \
+    opengldrawing_calculations.cpp  \
 
 
 unix:HEADERS += \
@@ -140,6 +142,8 @@ unix:HEADERS += \
     utils_scaledtime.h  \
     effectobjects_data.h    \
     quizimageopengldrawingdatademo.h    \
+    opengldrawing_utils.h   \
+    opengldrawing_calculations.h    \
 
 
 RESOURCES += qml.qrc    \
