@@ -20,55 +20,56 @@ QML_IMPORT_MAJOR_VERSION = 1
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        drawing_tests.cpp \
-        main.cpp \
-        object_tests.cpp \
-        quizimage.cpp \
-        tests/logoGeometry.cpp
+    drawing_tests.cpp \
+    main.cpp    \
+    object_tests.cpp    \
+    quizimage.cpp   \
+    tests/logoGeometry.cpp
+
 
 unix: SOURCES +=    \
-    quizimagedrawingdata.cpp    \
-    quizimageopengldrawingdata.cpp \
-    opengldrawing_calculations.cpp  \
-    quizimageqwindowsinglethread.cpp    \
-    defaulttexturerender.cpp    \
-    effectargument_data.cpp \
-    effectarg_data.cpp  \
-    effectargvalue_data.cpp \
-    effectargset_data.cpp   \
-    effect_data.cpp \
-    effectobjects_data.cpp  \
-    objectinfo_data.cpp \
-    objectartefact_data.cpp \
-    artefactargtype_data.cpp    \
-    artefactargstorage_data.cpp \
-    artefacttype_data.cpp   \
-    artefact_data.cpp    \
-    artefactarg_data.cpp    \
-    drawingdata_utils.cpp   \
-    drawingdata_artefact.cpp    \
-    drawingdata_artefactarg.cpp \
-    drawingdata_effectobjects.cpp   \
-    drawingdata_objectartefact.cpp  \
-    drawingdata_objectinfo.cpp  \
-    drawingdata_effect.cpp  \
-    drawingdata_effectarg.cpp   \
-    drawingdata_effectargvalue.cpp  \
-    drawingdata_effectargset.cpp    \
-    drawingdata_argsetsandargs.cpp  \
-    data_utils.cpp  \
-    mergeid.cpp \
-    wavefrontobj.cpp    \
-    luaapi.cpp  \
     addon.cpp   \
     addonmodule.cpp \
-    addonmodules.cpp    \
     addonmodulelist.cpp \
+    addonmodules.cpp    \
+    artefact_data.cpp   \
+    artefactarg_data.cpp    \
+    artefactargstorage_data.cpp \
+    artefactargtype_data.cpp    \
+    artefacttype_data.cpp       \
+    data_utils.cpp  \
+    defaulttexturerender.cpp    \
+    drawingdata_argsetsandargs.cpp  \
+    drawingdata_artefact.cpp    \
+    drawingdata_artefactarg.cpp \
+    drawingdata_effect.cpp      \
+    drawingdata_effectarg.cpp   \
+    drawingdata_effectargset.cpp    \
+    drawingdata_effectargvalue.cpp  \
+    drawingdata_effectobjects.cpp   \
+    drawingdata_objectartefact.cpp  \
+    drawingdata_objectinfo.cpp      \
+    drawingdata_utils.cpp   \
+    effect_data.cpp \
+    effectarg_data.cpp  \
+    effectargset_data.cpp   \
+    effectargument_data.cpp \
+    effectargvalue_data.cpp \
+    effectobjects_data.cpp  \
+    luaapi.cpp  \
+    mergeid.cpp \
+    objectartefact_data.cpp \
+    objectinfo_data.cpp \
+    opengldrawing_calculations.cpp  \
     opengldrawing_utils.cpp \
-    utils.cpp   \
-    utils_scaledtime.cpp   \
+    quizimagedrawingdata.cpp    \
+    quizimageopengldrawingdata.cpp  \
+    quizimageqwindowsinglethread.cpp    \
     utils_comment.cpp   \
     utils_opengl.cpp    \
+    utils_scaledtime.cpp    \
+    utils.cpp   \
+    wavefrontobj.cpp
 
 
 HEADERS += \
