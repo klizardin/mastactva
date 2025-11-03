@@ -74,59 +74,59 @@ unix: SOURCES +=    \
 
 HEADERS += \
     drawing_tests.h \
-    object_tests.h \
+    object_tests.h  \
     quizimage.h \
     tests/logoGeomerty.h
 
+
 unix: HEADERS +=    \
-    quizimagedrawingdata.h  \
-    quizimageopengldrawingdata.h \
-    opengldrawing_calculations.h    \
-    iquizimageqwindow.h \
-    quizimageqwindowsinglethread.h  \
-    defaulttexturerender.h  \
-    effectargument_data.h   \
-    effectarg_data.h    \
-    effectargvalue_data.h   \
-    effectargset_data.h \
-    effect_data.h   \
-    effectobjects_data.h    \
-    objectinfo_data.h   \
-    objectartefact_data.h   \
-    artefacttype_data.h \
-    artefactargtype_data.h  \
-    artefactargstorage_data.h   \
-    artefact_data.h  \
+    addon.h \
+    addonmodule.h   \
+    addonmodulelist.h   \
+    addonmodules.h  \
+    artefact_data.h \
     artefactarg_data.h  \
-    drawingdata_utils.h \
+    artefactargstorage_data.h   \
+    artefactargtype_data.h  \
+    artefacttype_data.h \
+    data_utils.h    \
+    defaulttexturerender.h  \
+    drawingdata_argsetsandargs.h    \
     drawingdata_artefact.h  \
     drawingdata_artefactarg.h   \
+    drawingdata_effect.h    \
+    drawingdata_effectarg.h \
+    drawingdata_effectargset.h  \
+    drawingdata_effectargvalue.h    \
     drawingdata_effectobjects.h \
     drawingdata_objectartefact.h    \
     drawingdata_objectinfo.h    \
-    drawingdata_effect.h    \
-    drawingdata_effectarg.h \
-    drawingdata_effectargvalue.h    \
-    drawingdata_effectargset.h  \
-    drawingdata_argsetsandargs.h    \
-    data_utils.h    \
-    mergeid.h   \
-    wavefrontobj.h  \
+    drawingdata_utils.h \
+    effect_data.h   \
+    effectarg_data.h    \
+    effectargset_data.h \
+    effectargument_data.h   \
+    effectargvalue_data.h   \
+    effectobjects_data.h    \
+    iquizimageqwindow.h \
     lua_utils.h \
     luaapi.h    \
-    addon.h \
-    addonmodule.h   \
-    addonmodules.h  \
-    addonmodulelist.h   \
+    mergeid.h   \
+    objectartefact_data.h   \
+    objectinfo_data.h   \
+    opengldrawing_calculations.h    \
     opengldrawing_utils.h   \
-    utils.h \
-    utils_json.h \
-    utils_enum.h \
-    utils_optional.h \
-    utils_scaledtime.h   \
-    utils_comment.h   \
+    quizimagedrawingdata.h  \
+    quizimageopengldrawingdata.h    \
+    quizimageqwindowsinglethread.h  \
+    utils_comment.h \
+    utils_enum.h    \
+    utils_json.h    \
     utils_opengl.h  \
-
+    utils_optional.h    \
+    utils_scaledtime.h  \
+    utils.h \
+    wavefrontobj.h
 
 RESOURCES += qml.qrc    \
     Mastactva/
