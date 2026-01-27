@@ -20,130 +20,130 @@ QML_IMPORT_MAJOR_VERSION = 1
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    drawingdatainitializer.cpp \
-    drawingdatainitializer_utils.cpp \
+    drawingdatainitializer_utils.cpp    \
+    drawingdatainitializer.cpp  \
     main.cpp    \
     quizimage.cpp   \
 
 
 HEADERS += \
-    drawingdatainitializer.h \
-    drawingdatainitializer_utils.h \
-    quizimage.h \
+    drawingdatainitializer_utils.h  \
+    drawingdatainitializer.h    \
+    quizimage.h
 
 
 unix:SOURCES += \
-    quizimageqwindowsinglethreaddemo.cpp    \
+    addon.cpp   \
+    artefact_data.cpp   \
+    artefactarg_data.cpp    \
+    artefactargstorage_data.cpp \
+    artefactargtype_data.cpp    \
+    artefacttype_data.cpp   \
+    containerutils.cpp  \
+    data_utils.cpp  \
+    dbrequestinfo.cpp   \
+    dbutils.cpp \
     defaulttexturerenderdemo.cpp    \
-    quizimagedrawingdatademo.cpp    \
+    drawingdata_argsetsandargsdemo.cpp  \
+    drawingdata_artefactargdemo.cpp \
+    drawingdata_artefactdemo.cpp    \
+    drawingdata_effectargdemo.cpp   \
+    drawingdata_effectargsetdemo.cpp    \
+    drawingdata_effectargvaluedemo.cpp  \
+    drawingdata_effectdemo.cpp  \
+    drawingdata_effectobjectsdemo.cpp   \
+    drawingdata_objectartefactdemo.cpp  \
+    drawingdata_objectinfodemo.cpp  \
     drawingdata_utilsdemo.cpp   \
     effect_data.cpp \
-    artefact_data.cpp   \
-    IModel.cpp  \
-    imagesource.cpp \
-    mergeid.cpp \
-    artefactarg_data.cpp    \
-    artefactargtype_data.cpp    \
-    artefactargstorage_data.cpp \
     effectargument_data.cpp \
-    artefacttype_data.cpp   \
-    utils.cpp   \
-    qmlobjects.cpp  \
-    netapi.cpp  \
-    timeutils.cpp   \
-    requestdata.cpp \
-    localdata.cpp   \
-    localdataapinocache.cpp \
-    dbutils.cpp \
+    effectobjects_data.cpp  \
     format.cpp  \
-    dbrequestinfo.cpp   \
-    localdataapinocache_default.cpp \
+    imagesource.cpp \
+    IModel.cpp  \
+    localdata.cpp   \
     localdataapicache.cpp   \
-    containerutils.cpp  \
+    localdataapinocache_default.cpp \
+    localdataapinocache.cpp \
+    mergeid.cpp \
     Model.cpp   \
     modelconfig.cpp \
-    data_utils.cpp  \
-    objectinfo_data.cpp \
+    netapi.cpp  \
     objectartefact_data.cpp \
-    drawingdata_effectdemo.cpp  \
-    drawingdata_argsetsandargsdemo.cpp  \
-    drawingdata_effectobjectsdemo.cpp   \
-    drawingdata_effectargsetdemo.cpp    \
-    drawingdata_effectargdemo.cpp   \
-    drawingdata_effectargvaluedemo.cpp  \
-    drawingdata_artefactargdemo.cpp \
-    addon.cpp   \
-    drawingdata_objectinfodemo.cpp  \
-    drawingdata_objectartefactdemo.cpp  \
-    drawingdata_artefactdemo.cpp    \
-    utils_scaledtime.cpp    \
-    effectobjects_data.cpp  \
-    quizimageopengldrawingdatademo.cpp  \
-    opengldrawing_utils.cpp \
+    objectinfo_data.cpp \
     opengldrawing_calculations.cpp  \
+    opengldrawing_utils.cpp \
+    qmlobjects.cpp  \
+    quizimagedrawingdatademo.cpp    \
+    quizimageopengldrawingdatademo.cpp  \
+    quizimageqwindowsinglethreaddemo.cpp    \
+    requestdata.cpp \
+    timeutils.cpp   \
+    utils_scaledtime.cpp    \
+    utils.cpp   \
 
 
 unix:HEADERS += \
-    quizimageqwindowsinglethreaddemo.h  \
+    addon.h \
+    artefact_data.h \
+    artefactarg_data.h  \
+    artefactargstorage_data.h   \
+    artefactargtype_data.h  \
+    artefacttype_data.h \
+    containerutils.h    \
+    data_utils.h    \
+    dbrequestinfo.h \
+    dbutils.h   \
     defaulttexturerenderdemo.h  \
-    iquizimageqwindow.h \
-    quizimagedrawingdatademo.h  \
+    defines.h   \
+    drawingdata_argsetsandargsdemo.h    \
+    drawingdata_artefactargdemo.h   \
+    drawingdata_artefactdemo.h  \
+    drawingdata_effectargdemo.h \
+    drawingdata_effectargsetdemo.h  \
+    drawingdata_effectargvaluedemo.h    \
+    drawingdata_effectdemo.h    \
+    drawingdata_effectobjectsdemo.h \
+    drawingdata_objectartefactdemo.h    \
+    drawingdata_objectinfodemo.h    \
     drawingdata_utilsdemo.h \
     effect_data.h   \
-    artefact_data.h \
-    IModel.h    \
-    imagesource.h   \
-    mergeid.h   \
-    layout_enums.h  \
-    layout_variant.h    \
-    layout_type.h   \
-    layout_json.h   \
-    artefactarg_data.h  \
-    artefactargtype_data.h  \
-    artefactargstorage_data.h   \
     effectargument_data.h   \
-    artefacttype_data.h \
-    utils.h \
-    utils_json.h    \
-    utils_enum.h    \
-    utils_optional.h    \
-    qmlobjects.h    \
-    netapi.h    \
-    Layout.h    \
-    timeutils.h \
-    requestdata.h   \
-    localdata.h \
-    localdataapinocache.h   \
-    dbutils.h   \
-    names.h \
-    format.h    \
+    effectobjects_data.h    \
     format_type.h   \
-    dbrequestinfo.h \
-    localdataapinocache_default.h   \
-    defines.h   \
+    format.h    \
+    imagesource.h   \
+    IModel.h    \
+    iquizimageqwindow.h \
+    layout_enums.h  \
+    layout_json.h   \
+    layout_type.h   \
+    layout_variant.h    \
+    Layout.h    \
+    localdata.h \
     localdataapicache.h \
-    containerutils.h    \
+    localdataapinocache_default.h   \
+    localdataapinocache.h   \
+    mergeid.h   \
     Model.h \
     modelconfig.h   \
-    data_utils.h    \
-    objectinfo_data.h   \
+    names.h \
+    netapi.h    \
     objectartefact_data.h   \
-    drawingdata_effectdemo.h    \
-    drawingdata_argsetsandargsdemo.h    \
-    drawingdata_effectobjectsdemo.h \
-    drawingdata_effectargsetdemo.h  \
-    drawingdata_effectargdemo.h \
-    drawingdata_effectargvaluedemo.h    \
-    drawingdata_artefactargdemo.h   \
-    addon.h \
-    drawingdata_objectinfodemo.h    \
-    drawingdata_objectartefactdemo.h    \
-    drawingdata_artefactdemo.h  \
-    utils_scaledtime.h  \
-    effectobjects_data.h    \
-    quizimageopengldrawingdatademo.h    \
-    opengldrawing_utils.h   \
+    objectinfo_data.h   \
     opengldrawing_calculations.h    \
+    opengldrawing_utils.h   \
+    qmlobjects.h    \
+    quizimagedrawingdatademo.h  \
+    quizimageopengldrawingdatademo.h    \
+    quizimageqwindowsinglethreaddemo.h  \
+    requestdata.h   \
+    timeutils.h \
+    utils_enum.h    \
+    utils_json.h    \
+    utils_optional.h    \
+    utils_scaledtime.h  \
+    utils.h
 
 
 RESOURCES += qml.qrc    \
