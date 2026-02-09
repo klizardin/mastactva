@@ -1,0 +1,1 @@
+../MastactvaBase/wavefrontobj.cpp

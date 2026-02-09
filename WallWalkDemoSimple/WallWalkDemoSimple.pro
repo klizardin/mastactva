@@ -81,6 +81,8 @@ unix:SOURCES += \
     timeutils.cpp   \
     utils_scaledtime.cpp    \
     utils.cpp   \
+    \
+    wavefrontobj.cpp    \
 
 
 unix:HEADERS += \
@@ -143,7 +145,9 @@ unix:HEADERS += \
     utils_json.h    \
     utils_optional.h    \
     utils_scaledtime.h  \
-    utils.h
+    utils.h \
+    \
+    wavefrontobj.h  \
 
 
 RESOURCES += qml.qrc    \
