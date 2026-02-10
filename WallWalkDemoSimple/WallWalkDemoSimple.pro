@@ -83,6 +83,7 @@ unix:SOURCES += \
     utils.cpp   \
     \
     wavefrontobj.cpp    \
+    luaapi.cpp  \
 
 
 unix:HEADERS += \
@@ -148,6 +149,7 @@ unix:HEADERS += \
     utils.h \
     \
     wavefrontobj.h  \
+    luaapi.h    \
 
 
 RESOURCES += qml.qrc    \
