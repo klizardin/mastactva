@@ -86,6 +86,7 @@ unix:SOURCES += \
     luaapi.cpp  \
     effectarg_data.cpp  \
     effectargset_data.cpp   \
+    effectargvalue_data.cpp \
 
 
 unix:HEADERS += \
@@ -154,6 +155,7 @@ unix:HEADERS += \
     luaapi.h    \
     effectarg_data.h    \
     effectargset_data.h \
+    effectargvalue_data.h   \
 
 
 RESOURCES += qml.qrc    \
