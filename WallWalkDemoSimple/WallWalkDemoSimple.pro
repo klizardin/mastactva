@@ -84,6 +84,7 @@ unix:SOURCES += \
     \
     wavefrontobj.cpp    \
     luaapi.cpp  \
+    effectarg_data.cpp  \
 
 
 unix:HEADERS += \
@@ -150,6 +151,7 @@ unix:HEADERS += \
     \
     wavefrontobj.h  \
     luaapi.h    \
+    effectarg_data.h    \
 
 
 RESOURCES += qml.qrc    \
