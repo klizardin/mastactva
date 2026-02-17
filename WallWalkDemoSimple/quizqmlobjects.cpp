@@ -1,0 +1,1 @@
+../MastactvaQuiz/quizqmlobjects.cpp
