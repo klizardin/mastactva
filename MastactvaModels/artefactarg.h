@@ -25,6 +25,7 @@
 #include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "../MastactvaBase/utils_comment.h"
 #include "../MastactvaModels/artefactarg_data.h"
 
 
