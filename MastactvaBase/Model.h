@@ -1306,11 +1306,11 @@ protected:
         }
         clearData();
 #if defined(TRACE_LIST_DATA_ITEMS_CRUD)
-        qDebug() << "modelListLoaded() beginInsertRows(" << m_data.size() << "," << std::max(0, m_data.size() + loaded.size() - 1) << ")";
+        qDebug() << "modelListLoaded() beginInsertRows(" << m_data.size() << "," << std::max<qsizetype>(0, m_data.size() + loaded.size() - 1) << ")";
 #endif
         beginInsertRows(QModelIndex(),
                         m_data.size(),
-                        std::max(0, m_data.size() + loaded.size() - 1));
+                        std::max<qsizetype>(0, m_data.size() + loaded.size() - 1));
         std::copy(std::begin(loaded), std::end(loaded),
                   std::inserter(m_data, std::end(m_data)));
         endInsertRows();
@@ -1467,9 +1467,9 @@ protected:
     void clearData()
     {
 #if defined(TRACE_LIST_DATA_ITEMS_CRUD)
-        qDebug() << "clearData() beginRemoveRows(" << 0 << "," << std::max(0, m_data.size() - 1) << ")";
+        qDebug() << "clearData() beginRemoveRows(" << 0 << "," << std::max<qsizetype>(0, m_data.size() - 1) << ")";
 #endif
-        beginRemoveRows(QModelIndex(), 0, std::max(0, m_data.size() - 1));
+        beginRemoveRows(QModelIndex(), 0, std::max<qsizetype>(0, m_data.size() - 1));
         for(auto *&p: m_data)
         {
             delete p;
@@ -1530,7 +1530,7 @@ protected:
 #if defined(TRACE_LIST_DATA_ITEMS_CRUD)
         qDebug() << "clearTempData() beginRemoveRows(" << 0 << "," << std::max(0, m_data.size() - 1) << ")";
 #endif
-        beginRemoveRows(QModelIndex(), 0, std::max(0, m_data.size() - 1));
+        beginRemoveRows(QModelIndex(), 0, std::max<qsizetype>(0, m_data.size() - 1));
         for(auto *&p: m_data)
         {
             const auto fit = std::find(
