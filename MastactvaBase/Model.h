@@ -1547,9 +1547,9 @@ protected:
         m_data.clear();
         endRemoveRows();
 #if defined(TRACE_LIST_DATA_ITEMS_CRUD)
-        qDebug() << "clearTempData() beginInsertRows(" << 0 << "," << std::max(0, waitingToUpdate.size() - 1) << ")";
+        qDebug() << "clearTempData() beginInsertRows(" << 0 << "," << std::max<qsizetype>(0, waitingToUpdate.size() - 1) << ")";
 #endif
-        beginInsertRows(QModelIndex(), 0, std::max(0, waitingToUpdate.size() - 1));
+        beginInsertRows(QModelIndex(), 0, std::max<qsizetype>(0, waitingToUpdate.size() - 1));
         std::copy(std::begin(waitingToUpdate), std::end(waitingToUpdate),
                   std::inserter(m_data, std::end(m_data)));
         endInsertRows();
