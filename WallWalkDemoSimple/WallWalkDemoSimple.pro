@@ -90,6 +90,7 @@ unix:SOURCES += \
     quizqmlobjects.cpp  \
     mastactvaapi.cpp    \
     netappconsts.cpp  \
+    serverfiles.cpp \
 
 
 unix:HEADERS += \
@@ -162,6 +163,7 @@ unix:HEADERS += \
     quizqmlobjects.h    \
     mastactvaapi.h  \
     netappconsts.h  \
+    serverfiles.h   \
 
 
 RESOURCES += qml.qrc    \
