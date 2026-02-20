@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QHash>
 #include <QList>
+#include <QFile>
 #include <QtQuick/QQuickItem>
 #include <QNetworkAccessManager>
 
