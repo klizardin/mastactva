@@ -89,6 +89,7 @@ unix:SOURCES += \
     effectargvalue_data.cpp \
     quizqmlobjects.cpp  \
     mastactvaapi.cpp    \
+    netappconsts.cpp  \
 
 
 unix:HEADERS += \
@@ -160,6 +161,7 @@ unix:HEADERS += \
     effectargvalue_data.h   \
     quizqmlobjects.h    \
     mastactvaapi.h  \
+    netappconsts.h  \
 
 
 RESOURCES += qml.qrc    \
