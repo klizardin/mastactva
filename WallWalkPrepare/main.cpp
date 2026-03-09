@@ -200,11 +200,6 @@ int main(int argc, char *argv[])
         QJsonObject jsonPair;
         if(fromValues.empty() || toValues.empty())
         {
-            //const QString inputJson2 = QString(g_inputJson).arg(
-            //            sourceImageDir.filePath(pair.second),
-            //            sourceImageDir.filePath(pair.first),
-            //            absoluteHomePath("~/tmp/")
-            //            );
             qInfo() << index << ":" << pair.second << "," << pair.first;
 
             QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
