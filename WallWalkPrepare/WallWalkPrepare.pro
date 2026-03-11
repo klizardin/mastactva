@@ -11,6 +11,7 @@ SOURCES += \
         main.cpp    \
         addonmodulelist.cpp \
         utils.cpp   \
+        utils_file.cpp  \
 
 
 HEADERS += \
@@ -19,6 +20,7 @@ HEADERS += \
         utils_json.h    \
         utils_enum.h    \
         utils_optional.h    \
+        utils_file.h    \
 
 
 TRANSLATIONS += \

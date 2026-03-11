@@ -91,6 +91,7 @@ unix:SOURCES += \
     mastactvaapi.cpp    \
     netappconsts.cpp  \
     serverfiles.cpp \
+    utils_file.cpp  \
 
 
 unix:HEADERS += \
@@ -164,6 +165,7 @@ unix:HEADERS += \
     mastactvaapi.h  \
     netappconsts.h  \
     serverfiles.h   \
+    utils_file.h    \
 
 
 RESOURCES += qml.qrc    \
