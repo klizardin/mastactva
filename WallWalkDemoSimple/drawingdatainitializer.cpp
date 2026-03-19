@@ -504,7 +504,7 @@ void WalkEffectOnePass::initialize(
 
 std::pair<const char *, const char *> WalkEffectOnePass::getDescription() const
 {
-    return {"WalkEffectOnPathTest", "walk effect on path version"};
+    return {"WalkEffectOnPathTest", "walk effect one path version"};
 }
 
 } //namespace drawing_objects
