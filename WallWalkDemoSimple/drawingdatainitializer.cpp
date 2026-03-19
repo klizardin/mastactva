@@ -408,7 +408,10 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
     return effectObject;
 }
 
-std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
+std::unique_ptr<EffectData> createWalkEffectOnePassTestData(
+        const QPair<QString,QString> &filenames_,
+        const QPair<std::vector<QVector4D>, std::vector<QVector4D>> &coordinates_
+        )
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
@@ -418,38 +421,9 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
     const QDateTime now = QDateTime::currentDateTime();
     static const int effectObjectStep0 = 0;
 
-    // TODO: use data from xml
-
-    //QDir addonsDir;
-    //findDynamicLibrariesDir(QDir("./"), addonsDir);
-    //auto modules = std::make_shared<AddonModules>();
-    //modules->create(addonsDir);
-
-    //QString inputJson = QString(g_inputJson).arg(
-    //            absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-    //            absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
-    //            absoluteHomePath("~/tmp/")
-    //            );
-
-    //QString inputJson = QString(g_inputJson).arg(
-    //            absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-    //            absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
-    //            absoluteHomePath("~/tmp/")
-    //            );
-    //20220116_145321.jpg",
-    //20220116_145325.jpg",
-    //QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
-
-    std::vector<QVector4D> fromValues, toValues;
-    //convertJsonResultToCoordinates(result.object().value("1").toObject(), fromValues);
-    //convertJsonResultToCoordinates(result.object().value("0").toObject(), toValues);
-
-    //qDebug() << "fromValues" << fromValues;
-    //qDebug() << "toValues" << toValues;
-
     std::vector<GLfloat> fromCoords, toCoords;
-    createGeometry(10, 10, fromValues, fromCoords);
-    createGeometry(10, 10, toValues, toCoords);
+    createGeometry(10, 10, coordinates_.first, fromCoords);
+    createGeometry(10, 10, coordinates_.second, toCoords);
 
     //qDebug() << "fromCoords" << fromCoords;
     //qDebug() << "toCoords" << toCoords;
@@ -462,10 +436,8 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
                 effectObjectStep0,
                 names::walkEffectOnePassVertexShaderFilename,
                 names::walkEffectOnePassFragmentShaderFilename,
-                absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
-                absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
-                //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath(filenames_.first),
+                absoluteHomePath(filenames_.second),
                 fromCoords,
                 toCoords,
                 QPoint(10, 10)
@@ -507,8 +479,14 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
     return effect;
 }
 
+
 namespace drawing_objects
 {
+
+WalkEffectOnePass::WalkEffectOnePass()
+{
+    m_filesource = createMapFileSource();
+}
 
 void WalkEffectOnePass::initialize(
         drawing_data::QuizImageObjects &data_,
@@ -518,10 +496,9 @@ void WalkEffectOnePass::initialize(
     Q_UNUSED(argsSetIndex_);
     Q_UNUSED(data_);
 
-    auto filesource = createMapFileSource();
-    auto effectObjectsData = createWalkEffectOnePassTestData();
+    auto effectObjectsData = createWalkEffectOnePassTestData(m_filenames, m_coordinates);
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
-    drawingDataEffect->init(filesource);
+    drawingDataEffect->init(m_filesource);
     drawingDataEffect->initialize(data_);
 }
 

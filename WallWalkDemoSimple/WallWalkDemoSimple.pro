@@ -22,7 +22,6 @@ QML_IMPORT_MAJOR_VERSION = 1
 SOURCES += \
     drawingdatainitializer_utils.cpp    \
     drawingdatainitializer.cpp  \
-    imagedatainitializer.cpp \
     main.cpp    \
     quizimage.cpp   \
 
@@ -30,7 +29,6 @@ SOURCES += \
 HEADERS += \
     drawingdatainitializer_utils.h  \
     drawingdatainitializer.h    \
-    imagedatainitializer.h \
     quizimage.h
 
 
