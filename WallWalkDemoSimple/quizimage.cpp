@@ -28,7 +28,6 @@
 #include <QTime>
 #include <QVector>
 #include "../MastactvaBase/quizimageopengldrawingdatademo.h"
-#include "drawingdatainitializer.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/iquizimageqwindow.h"
 
@@ -334,8 +333,7 @@ void QuizImage::initDefaultDrawingData()
     VarSetReset<bool> raiiVar(m_pauseScalledTimeStick, true, false);
 
     std::shared_ptr<drawing_data::QuizImageObjects> data = std::make_shared< drawing_data::QuizImageObjects>();
-    DrawingDataInitializer defaultData;
-    defaultData.initialize(*data.get());
+    m_defaultData.initialize(*data.get());
     m_drawingData = std::move(data);
 
     if(quizImageOperations

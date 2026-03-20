@@ -147,6 +147,7 @@ private:
     bool m_pauseScalledTimeStick = true;
     int m_cycles = -1;
     std::unique_ptr<QTimer> m_timerForT;
+    DrawingDataInitializer m_defaultData;
 };
 
 
