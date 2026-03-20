@@ -19,7 +19,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.14
 import QtQuick.Dialogs
 import QtQuick.Layouts 1.15
-import QuizImageDemoArtefactStepsFB 1.0
+import WallWalkDemoSimple 1.0
 import Mastactva 1.0
 
 
