@@ -7,5 +7,8 @@
         <file>Shaders/walkeffecttest/walkeffectonepass.vsh</file>
         <file>Shaders/walkeffecttest/walkeffectonepass.fsh</file>
     </qresource>
+    <qresource prefix="/Mastactva">
+        <file>Mastactva/Constants.qml</file>
+    </qresource>
 </RCC>
 

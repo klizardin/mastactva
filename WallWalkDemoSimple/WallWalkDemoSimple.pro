@@ -169,13 +169,16 @@ unix:HEADERS += \
 
 
 RESOURCES += qml.qrc    \
-
+    Mastactva/
 
 TRANSLATIONS += \
     WallWalkDemoSimple_be_BY.ts
 
 CONFIG += lrelease
 CONFIG += embed_translations
+
+QML_IMPORT_PATH += $$PWD    \
+    $${PWD}/Mastactva/
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
