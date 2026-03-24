@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import WallWalkDemoSimple 1.0
-import Mastactva 1.0
 
 
 Rectangle {
