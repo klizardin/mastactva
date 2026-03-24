@@ -1,4 +1,4 @@
-#include <QCoreApplication>
+#include <QGuiApplication>
 #include <QLocale>
 #include <QTranslator>
 #include <QCommandLineParser>
@@ -12,9 +12,9 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("wall-walk-prepare-data");
-    QCoreApplication::setApplicationVersion("0.1");
+    QGuiApplication app(argc, argv);
+    QGuiApplication::setApplicationName("wall-walk-prepare-data");
+    QGuiApplication::setApplicationVersion("0.1");
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
