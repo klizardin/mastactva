@@ -32,6 +32,7 @@
 #include <QCoreApplication>
 #include <QQuickRenderTarget>
 #include <QQuickGraphicsDevice>
+#include <QUrl>
 #include "../MastactvaBase/quizimage.h"
 #include "../MastactvaBase/names.h"
 
@@ -366,7 +367,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::startQuick(const 
     {
         return !m_qmlComponent->isLoading();
     }
-    m_qmlEngine->addImportPath("qrc:/Mastactva");
+    m_qmlEngine->addImportPath(QStringLiteral("qrc:/Mastactva/"));
     // TODO: is it possible to parametrise filename?
     //const QString fileNameWithCurrentParam = filename.first(filename.indexOf('0'))
     //        + QString{"%1"}.arg(m_renderingWindowsId)
