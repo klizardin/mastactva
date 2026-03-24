@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     qInfo() << "All pairs : " << pairs.size();
 
     QJsonDocument configuration;
-    QFile configurationFile(g_demoConfigurationJsonFileName);
+    QFile configurationFile(sourceImageDir.filePath(g_demoConfigurationJsonFileName));
     configurationFile.open(QFile::ReadOnly);
     configuration.fromJson(configurationFile.read(configurationFile.size()));
 
