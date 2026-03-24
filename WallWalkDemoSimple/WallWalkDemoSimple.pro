@@ -184,4 +184,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     lua_dependency.pri \
-    qml/quizImage.qml
+    qml/quizImage.qml   \
+    Mastactva/Constants.qml \
+    Mastactva/qmldir
