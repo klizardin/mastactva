@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     configurationFile.open(QFile::ReadOnly);
     configuration.fromJson(configurationFile.read(configurationFile.size()));
 
-    QuizImageQWindowSingleThread window(QStringLiteral("qrc:/qml/quizImage0.qml"), false);
+    QuizImageQWindowSingleThread window(QStringLiteral("qrc:/qml/quizImage.qml"), false);
     // set default size
     window.resize(800, 600);
     // show
