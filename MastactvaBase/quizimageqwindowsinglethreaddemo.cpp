@@ -367,7 +367,7 @@ bool QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::startQuick(const 
     {
         return !m_qmlComponent->isLoading();
     }
-    m_qmlEngine->addImportPath(QStringLiteral("qrc:/Mastactva/"));
+    m_qmlEngine->addImportPath(QStringLiteral("qrc:/Mastactva"));
     // TODO: is it possible to parametrise filename?
     //const QString fileNameWithCurrentParam = filename.first(filename.indexOf('0'))
     //        + QString{"%1"}.arg(m_renderingWindowsId)
