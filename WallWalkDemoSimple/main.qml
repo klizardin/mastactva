@@ -37,9 +37,15 @@ ApplicationWindow {
         anchors.fill: parent
         anchors.margins: 10
         t: 0.0
+        tScalesVector: [0.0, 5.0, 1.0,
+            5.0, 0.0,
+            5.0, 0.0,
+            5.0, 1.0,
+            5.0, 1.0,
+            5.0, 0.0]
     }
 
-    SequentialAnimation {
+/*    SequentialAnimation {
         id: animationCycle
         NumberAnimation { target: quizImage; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
         NumberAnimation { target: quizImage; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
@@ -51,6 +57,7 @@ ApplicationWindow {
         running: true
         loops: Animation.Infinite
     }
+*/
 
     Connections {
         target: animationCycle
