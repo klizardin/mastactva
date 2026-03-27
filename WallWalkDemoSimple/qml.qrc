@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
         <file>qml/quizImage.qml</file>
+        <file>main.qml</file>
     </qresource>
     <qresource prefix="/Shaders">
         <file>Shaders/walkeffecttest/walkeffectonepass.vsh</file>
