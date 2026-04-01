@@ -1,5 +1,9 @@
 #include "utils_file.h"
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonValue>
+#include <QJsonObject>
+#include "../MastactvaBase/names.h"
 
 
 QVector<QStringList> getBunchOfImages(const QStringList& images_, int bunchSize_)
@@ -48,4 +52,62 @@ QVector<QPair<QString, QString>> getImagesPairs(const QVector<QStringList>& bunc
 
     //qInfo() << "All pairs : " << pairs.size();
     return pairs;
+}
+
+void convertJsonResultToCoordinates(const QJsonValue &value_, std::vector<QVector4D> &values_)
+{
+    if(!value_.isArray())
+    {
+        return;
+    }
+    const QJsonArray arr = value_.toArray();
+    for(const QJsonValue& val: arr)
+    {
+        if(!val.isObject())
+        {
+            continue;
+        }
+        QVector4D vec;
+        const QJsonObject obj = val.toObject();
+        if(!obj.contains("x") || !obj.contains("y") ||  !obj.contains("z") || !obj.contains("w"))
+        {
+            continue;
+        }
+        vec.setX(obj.value("x").toDouble());
+        vec.setY(obj.value("y").toDouble());
+        vec.setZ(obj.value("z").toDouble());
+        vec.setW(obj.value("w").toDouble());
+        values_.push_back(vec);
+    }
+}
+
+QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> getCoordinates(
+        const QJsonDocument& configuration_,
+        QVector<QPair<QString, QString>>& resultPairs_
+        )
+{
+    QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> result;
+    if(!configuration_.isArray())
+    {
+        return result;
+    }
+    const QJsonArray arr = configuration_.array();
+    for(const QJsonValue& val: arr)
+    {
+        if(!val.isObject())
+        {
+            continue;
+        }
+        const QJsonObject obj = val.toObject();
+        QString fromName = obj.value(g_demoJsonFieldFromFile).toString();
+        QString toFile = obj.value(g_demoJsonFieldToFile).toString();
+        const QJsonValue fromValuesArray = obj.value(g_demoJsonFieldFromValues);
+        const QJsonValue toValuesArray = obj.value(g_demoJsonFieldToValues);
+        std::vector<QVector4D> fromValues, toValues;
+        convertJsonResultToCoordinates(fromValuesArray, fromValues);
+        convertJsonResultToCoordinates(toValuesArray, toValues);
+        resultPairs_.emplace_back(qMakePair(std::move(fromName), std::move(toFile)));
+        result.emplace_back(qMakePair(std::move(fromValues), std::move(toValues)));
+    }
+    return result;
 }
