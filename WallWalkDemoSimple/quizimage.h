@@ -27,6 +27,8 @@
 #include "../MastactvaBase/utils_scaledtime.h"
 #include "drawingdatainitializer.h"
 #include <vector>
+#include <QPair>
+#include <QVector4D>
 
 
 /*
@@ -86,6 +88,10 @@ public:
     void setLoops(int loops);
 
     std::shared_ptr<uint> getScreenTextureId() const;
+
+    void initData(const QVector<QPair<QString, QString>>& filenames_,
+                  const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_
+                  );
 
 protected:
     void setT(const qreal &t_);

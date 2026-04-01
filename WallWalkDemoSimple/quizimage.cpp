@@ -428,6 +428,13 @@ bool QuizImage::isDefaultTexture() const
     return TextureNames::isDefaultTexcture(m_renderingTextureName);
 }
 
+void QuizImage::initData(const QVector<QPair<QString, QString>>& filenames_,
+              const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_
+              )
+{
+    m_defaultData.initData(filenames_, coordinates_);
+}
+
 QuizImages &QuizImages::getInstance()
 {
     static QuizImages _;

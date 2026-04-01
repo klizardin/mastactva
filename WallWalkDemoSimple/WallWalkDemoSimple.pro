@@ -24,12 +24,14 @@ SOURCES += \
     drawingdatainitializer.cpp  \
     main.cpp    \
     quizimage.cpp   \
+    quizimageqwindowsinglethreaddemo.cpp    \
 
 
 HEADERS += \
     drawingdatainitializer_utils.h  \
     drawingdatainitializer.h    \
-    quizimage.h
+    quizimage.h \
+    quizimageqwindowsinglethreaddemo.h  \
 
 
 unix:SOURCES += \
@@ -76,7 +78,6 @@ unix:SOURCES += \
     qmlobjects.cpp  \
     quizimagedrawingdatademo.cpp    \
     quizimageopengldrawingdatademo.cpp  \
-    quizimageqwindowsinglethreaddemo.cpp    \
     requestdata.cpp \
     timeutils.cpp   \
     utils_scaledtime.cpp    \
@@ -147,7 +148,6 @@ unix:HEADERS += \
     qmlobjects.h    \
     quizimagedrawingdatademo.h  \
     quizimageopengldrawingdatademo.h    \
-    quizimageqwindowsinglethreaddemo.h  \
     requestdata.h   \
     timeutils.h \
     utils_enum.h    \

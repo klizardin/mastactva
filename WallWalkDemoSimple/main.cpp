@@ -5,7 +5,7 @@
 #include <QJsonDocument>
 #include <QFile>
 #include <QDir>
-#include "../MastactvaBase/quizimageqwindowsinglethreaddemo.h"
+#include "quizimageqwindowsinglethreaddemo.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/utils_file.h"
 
@@ -64,6 +64,9 @@ int main(int argc, char *argv[])
     configuration.fromJson(configurationFile.read(configurationFile.size()));
 
     QuizImageQWindowSingleThread window(QStringLiteral("qrc:/qml/quizImage.qml"), false);
+    QVector<QPair<QString, QString>> resultPairs;
+    auto coordinates = getCoordinates(configuration, resultPairs);
+    window.initData(resultPairs, coordinates);
     // set default size
     window.resize(800, 600);
     // show

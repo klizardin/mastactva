@@ -488,6 +488,14 @@ WalkEffectOnePass::WalkEffectOnePass()
     m_filesource = createMapFileSource();
 }
 
+void WalkEffectOnePass::initData(const QVector<QPair<QString, QString>>& filenames_,
+                                 const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_)
+{
+    m_filenames = filenames_;
+    m_coordinates = coordinates_;
+}
+
+
 void WalkEffectOnePass::initialize(
         drawing_data::QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
@@ -496,7 +504,7 @@ void WalkEffectOnePass::initialize(
     Q_UNUSED(argsSetIndex_);
     Q_UNUSED(data_);
 
-    auto effectObjectsData = createWalkEffectOnePassTestData(m_filenames, m_coordinates);
+    auto effectObjectsData = createWalkEffectOnePassTestData(m_filenames.front(), m_coordinates.front());
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(m_filesource);
     drawingDataEffect->initialize(data_);
