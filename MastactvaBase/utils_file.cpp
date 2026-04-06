@@ -87,6 +87,10 @@ QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> getCoordinates(
         )
 {
     QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> result;
+    if(configuration_.isEmpty() || configuration_.isNull())
+    {
+        return result;
+    }
     if(!configuration_.isArray())
     {
         return result;
