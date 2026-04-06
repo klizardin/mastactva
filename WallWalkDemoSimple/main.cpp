@@ -59,9 +59,16 @@ int main(int argc, char *argv[])
     qInfo() << "All pairs : " << pairs.size();
 
     QJsonDocument configuration;
-    QFile configurationFile(sourceImageDir.filePath(g_demoConfigurationJsonFileName));
+    const QString configurationFilename = sourceImageDir.filePath(g_demoConfigurationJsonFileName);
+    QFile configurationFile(configurationFilename);
     configurationFile.open(QFile::ReadOnly);
-    configuration.fromJson(configurationFile.read(configurationFile.size()));
+    QJsonParseError jsonError;
+    configuration.fromJson(configurationFile.read(configurationFile.size()),&jsonError);
+    if(jsonError.error != QJsonParseError::NoError)
+    {
+        qDebug() << jsonError.errorString();
+        return -1;
+    }
 
     QuizImageQWindowSingleThread window(QStringLiteral("qrc:/qml/quizImage.qml"), false);
     QVector<QPair<QString, QString>> resultPairs;
