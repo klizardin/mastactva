@@ -91,11 +91,17 @@ QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> getCoordinates(
     {
         return result;
     }
-    if(!configuration_.isArray())
+    if(!configuration_.isObject())
     {
         return result;
     }
-    const QJsonArray arr = configuration_.array();
+    const QJsonObject rootObj = configuration_.object();
+    const QJsonValue rootObjVal = rootObj.value(g_demoJsonPairs);
+    if(!rootObjVal.isArray())
+    {
+        return result;
+    }
+    const QJsonArray arr = rootObjVal.toArray();
     for(const QJsonValue& val: arr)
     {
         if(!val.isObject())
