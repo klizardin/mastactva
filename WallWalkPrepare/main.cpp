@@ -146,7 +146,6 @@ int main(int argc, char *argv[])
     auto modules = std::make_shared<AddonModules>();
     modules->create(addonsDir);
 
-    QJsonDocument result;
     QJsonArray jsonPairs;
 
     int index = 0;
@@ -201,9 +200,12 @@ int main(int argc, char *argv[])
         ++index;
     }
 
-    result.setArray(jsonPairs);
+    QJsonObject obj;
+    obj.insert("pairs", QJsonValue(jsonPairs));
+    QJsonDocument result;
+    result.setObject(obj);
     QFile resultFile(sourceImageDir.filePath(g_demoConfigurationJsonFileName));
-    resultFile.open(QFile::WriteOnly);
+    resultFile.open(QFile::WriteOnly | QFile::Text);
     resultFile.write(result.toJson());
 
     //return a.exec();
