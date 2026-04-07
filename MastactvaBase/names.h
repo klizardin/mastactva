@@ -266,6 +266,7 @@ Q_DECL_UNUSED static const char * g_demoJsonFieldFromFile = "file_from";
 Q_DECL_UNUSED static const char * g_demoJsonFieldToFile = "file_to";
 Q_DECL_UNUSED static const char * g_demoJsonFieldFromValues = "from_values";
 Q_DECL_UNUSED static const char * g_demoJsonFieldToValues = "to_values";
+Q_DECL_UNUSED static const char * g_demoJsonPairs = "pairs";
 
 
 #endif // NAMES_H

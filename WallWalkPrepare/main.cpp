@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
     }
 
     QJsonObject obj;
-    obj.insert("pairs", QJsonValue(jsonPairs));
+    obj.insert(g_demoJsonPairs, QJsonValue(jsonPairs));
     QJsonDocument result;
     result.setObject(obj);
     QFile resultFile(sourceImageDir.filePath(g_demoConfigurationJsonFileName));
