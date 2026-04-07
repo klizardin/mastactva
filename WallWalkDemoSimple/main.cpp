@@ -61,9 +61,10 @@ int main(int argc, char *argv[])
     QJsonDocument configuration;
     const QString configurationFilename = sourceImageDir.filePath(g_demoConfigurationJsonFileName);
     QFile configurationFile(configurationFilename);
-    configurationFile.open(QFile::ReadOnly);
+    configurationFile.open(QFile::ReadOnly | QFile::Text);
     QJsonParseError jsonError;
-    configuration.fromJson(configurationFile.read(configurationFile.size()),&jsonError);
+    const QByteArray configurationData = configurationFile.readAll();
+    configuration = QJsonDocument::fromJson(configurationData, &jsonError);
     if(jsonError.error != QJsonParseError::NoError)
     {
         qDebug() << jsonError.errorString();
