@@ -22,6 +22,7 @@
 #include <memory>
 #include <QtQuick/QQuickFramebufferObject>
 #include <QTimer>
+#include <QDir>
 #include "../MastactvaBase/quizimagedrawingdatademo.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/utils_scaledtime.h"
@@ -90,7 +91,8 @@ public:
     std::shared_ptr<uint> getScreenTextureId() const;
 
     void initData(const QVector<QPair<QString, QString>>& filenames_,
-                  const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_
+                  const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_,
+                  const QDir& sourceImageDir_
                   );
 
 protected:

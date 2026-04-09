@@ -47,6 +47,20 @@ void createGeometry(
 }
 
 
+void MapFileSource::loadImage(const QString &filename_, const QDir& sourceImageDir_)
+{
+    if(m_images.contains(filename_))
+    {
+        return;
+    }
+    QImage img;
+    if(!img.load(sourceImageDir_.filePath(filename_)))
+    {
+        return;
+    }
+    add(filename_, img);
+}
+
 void MapFileSource::add(const QString &filename_, const QString &text_)
 {
     m_texts.insert(filename_, text_);

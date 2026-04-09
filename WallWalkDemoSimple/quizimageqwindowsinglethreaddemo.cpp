@@ -241,7 +241,8 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         const QSize &windowSize,
         bool runTestByTest,
         const QVector<QPair<QString, QString>>& filenames_,
-        const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_
+        const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_,
+        const QDir &sourceImageDir_
         )
 {
     //disconnect(m_qmlComponent, &QQmlComponent::statusChanged, qwindow, &QuizImageQWindowSingleThread::run);
@@ -294,7 +295,7 @@ void QuizImageQWindowSingleThread::QuizImageQMLDrawingSurface::run(
         delete rootObject;
         return;
     }
-    quizImage->initData(filenames_, coordinates_);
+    quizImage->initData(filenames_, coordinates_, sourceImageDir_);
     quizImageQuickItem->setProperty("renderingTextureName", QVariant::fromValue(m_textureName));
     const int renderingWindowsId = getRenderingWindowsId();
     quizImageQuickItem->setProperty("renderingWindowsId", QVariant::fromValue(renderingWindowsId));
@@ -578,10 +579,12 @@ bool QuizImageQWindowSingleThread::didDrawing() const
 }
 
 void QuizImageQWindowSingleThread::initData(const QVector<QPair<QString, QString>>& filenames_,
-              const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_)
+              const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_,
+              const QDir& sourceImageDir_)
 {
     m_filenames = filenames_;
     m_coordinates = coordinates_;
+    m_sourceImageDir = sourceImageDir_;
 }
 
 void QuizImageQWindowSingleThread::exposeEvent(QExposeEvent *e)
@@ -676,7 +679,7 @@ void QuizImageQWindowSingleThread::run()
     {
         if(!it->isQuickInitialized())
         {
-            it->run(m_context.get(), m_offscreenSurface.get(), QSize{width(), height()}, m_runTestByTest, m_filenames, m_coordinates);
+            it->run(m_context.get(), m_offscreenSurface.get(), QSize{width(), height()}, m_runTestByTest, m_filenames, m_coordinates, m_sourceImageDir);
         }
     }
     it = std::begin(m_drawingSurfaces);

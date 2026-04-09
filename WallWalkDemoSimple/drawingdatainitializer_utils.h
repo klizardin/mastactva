@@ -2,6 +2,7 @@
 #define DRAWINGDATAINITIALIZER_UTILS_H
 
 
+#include <QDir>
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaBase/format.h"
 #include <GL/gl.h>
@@ -16,6 +17,7 @@ public:
     MapFileSource() = default;
     ~MapFileSource() override = default;
 
+    void loadImage(const QString &filename_, const QDir& sourceImageDir_);
     void add(const QString &filename_, const QString &text_);
     void add(const QString &filename_, const QImage &image_);
 

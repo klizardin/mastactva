@@ -24,6 +24,7 @@
 #include <QMatrix4x4>
 #include <QTimer>
 #include <QQmlApplicationEngine>
+#include <QDir>
 #include <list>
 #include <vector>
 #include <string>
@@ -78,7 +79,8 @@ protected:
                 const QSize &windowSize,
                 bool runTestByTest,
                 const QVector<QPair<QString, QString>>& filenames_,
-                const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_
+                const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_,
+                const QDir &sourceImageDir_
                 );
         void updateSizes(const QSize &windowSize);
         QQmlComponent* getQmlComponent();
@@ -121,7 +123,8 @@ public:
     void setDrawing() override;
     bool didDrawing() const override;
     void initData(const QVector<QPair<QString, QString>>& filenames_,
-                  const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_);
+                  const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_,
+                  const QDir &sourceImageDir_);
 
 protected:
     void exposeEvent(QExposeEvent *e) override;
@@ -169,6 +172,7 @@ private:
     int m_renderingWindowsId = -1;
     QVector<QPair<QString, QString>> m_filenames;
     QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> m_coordinates;
+    QDir m_sourceImageDir;
 };
 
 
