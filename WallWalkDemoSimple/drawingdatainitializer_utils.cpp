@@ -82,6 +82,31 @@ QImage MapFileSource::getImage(const FileSource &filename_) const
 }
 
 
+static const char *g_baseVertexShader0 =
+    "attribute highp vec4 vertex;\n"
+    "attribute mediump vec3 normal;\n"
+    "uniform mediump mat4 matrix;\n"
+    "uniform mediump float alpha;\n"
+    "varying mediump vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    mediump vec3 toLight = normalize(vec3(0.0, 0.3, 1.0));\n"
+    "    mediump float angle = max(dot(normal, toLight), 0.0);\n"
+    "    mediump vec3 col = vec3(0.40, 1.0, 0.0);\n"
+    "    color = vec4(col * 0.2 + col * 0.8 * angle, alpha);\n"
+    "    color = clamp(color, 0.0, 1.0);\n"
+    "    gl_Position = matrix * vertex;\n"
+    "}\n";
+
+static const char *g_baseFragmentShader =
+    "varying mediump vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_FragColor = color;\n"
+    "}\n";
+
+
+
 std::shared_ptr<MapFileSource> createMapFileSource()
 {
     QRandomGenerator gen;
@@ -95,9 +120,14 @@ std::shared_ptr<MapFileSource> createMapFileSource()
                     loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectonepass.fsh")
                     );
     filesource->add(names::emptyFilename, QString{});
+    filesource->add(names::baseVertexShaderFilename, g_baseVertexShader0);
+    filesource->add(names::baseFragmentShaderFilename, g_baseFragmentShader);
     return filesource;
 }
 
 const char *names::walkEffectOnePassVertexShaderFilename = "walkeffectonepass.vsh";
 const char *names::walkEffectOnePassFragmentShaderFilename = "walkeffectonepass.fsh";
 const char *names::emptyFilename = "empty.lua";
+const char *names::baseVertexShaderFilename = "base.vsh";
+const char *names::baseFragmentShaderFilename = "base.fsh";
+

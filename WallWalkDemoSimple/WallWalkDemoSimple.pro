@@ -25,6 +25,7 @@ SOURCES += \
     main.cpp    \
     quizimage.cpp   \
     quizimageqwindowsinglethreaddemo.cpp    \
+    tests/logoGeometry.cpp  \
 
 
 HEADERS += \
@@ -32,6 +33,7 @@ HEADERS += \
     drawingdatainitializer.h    \
     quizimage.h \
     quizimageqwindowsinglethreaddemo.h  \
+    tests/logoGeometry.h  \
 
 
 unix:SOURCES += \

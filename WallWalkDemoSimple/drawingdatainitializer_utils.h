@@ -165,6 +165,8 @@ struct names
     static const char *walkEffectOnePassVertexShaderFilename;
     static const char *walkEffectOnePassFragmentShaderFilename;
     static const char *emptyFilename;
+    static const char *baseVertexShaderFilename;
+    static const char *baseFragmentShaderFilename;
 };
 
 #endif // DRAWINGDATAINITIALIZER_UTILS_H

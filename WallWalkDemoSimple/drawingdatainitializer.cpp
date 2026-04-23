@@ -2,6 +2,7 @@
 #include <QRandomGenerator>
 #include <QDir>
 #include "drawingdatainitializer_utils.h"
+#include "tests/logoGeomerty.h"
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaModels/effect_data.h"
 #include "../MastactvaModels/drawingdata_effectdemo.h"
@@ -408,6 +409,195 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
     return effectObject;
 }
 
+std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
+        int effectId_,
+        const QDateTime &now_,
+        int effectObjectStep_,
+        QRandomGenerator &gen_,
+        const int objectInfoId_,
+        const char *effectObjectName_,
+        const char *effectObjectProgrammerName_,
+        float alpha_ = 1.0,
+        const QString &alphaBlendingMode_
+            = QString(g_alphaBlendingDisable)
+                + QString(g_renderObjectsStatesSpliter)
+                + QString(g_depthTestEnable)
+        )
+{
+    static const int effectObjectId = 1;
+    std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
+                effectObjectId,
+                effectId_,
+                objectInfoId_,
+                effectObjectStep_,
+                MergeId()
+                );
+
+    // object info
+    auto objectInfoData = std::make_unique<ObjectInfoData>(
+                objectInfoId_,
+                effectObjectName_,
+                effectObjectProgrammerName_,
+                now_,
+                MergeId()
+                );
+    effectObject->m_objectInfoData->push_back(objectInfoData.release());
+
+    // prepare data
+    std::vector<QVector3D> vertexData;
+    std::vector<QVector3D> normalData;
+    test::createQTLogoGeometry(vertexData, normalData);
+
+    qreal fScale = 1;
+    qreal fAngle = gen_.generateDouble() * 360.0;
+    QMatrix4x4 modelview;
+    modelview.rotate(fAngle, 0.0f, 1.0f, 0.0f);
+    modelview.rotate(fAngle, 1.0f, 0.0f, 0.0f);
+    modelview.rotate(fAngle, 0.0f, 0.0f, 1.0f);
+    modelview.scale(fScale);
+    modelview.translate(0.0f, -0.2f, 0.0f);
+
+    // for both artefacts
+    static const int objectArtefactStep0 = 0;
+
+    // vertex shader artefact
+    const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, QString> vertexArgs[] = {
+        {
+            1,
+            ArtefactArgTypeEn::vec3Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "vertex",
+            toString(vertexData)
+        },
+        {
+            2,
+            ArtefactArgTypeEn::vec3Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "normal",
+            toString(normalData)
+        },
+        {
+            3,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            "matrix",
+            toString(modelview)
+        },
+        {
+            4,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            "alpha",
+            toString(alpha_)
+        },
+        {
+            4,
+            ArtefactArgTypeEn::stringsType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderObjectsStatesName,
+            alphaBlendingMode_
+        }
+    };
+    static const int artefactId1 = 1;
+    static const char *artefactName1 = "vertext shader";
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::shaderVertex;
+    auto artefact1 = std::make_unique<ArtefactData>(
+                artefactId1,
+                artefactName1,
+                names::baseVertexShaderFilename,
+                emptyStr,
+                artefactType1,
+                emptyStr,
+                now_,
+                MergeId()
+                );
+    for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
+    {
+        auto arg = std::make_unique<ArtefactArgData>(
+                std::get<to_underlying(ArgEn::id)>(vertexArgs[i]),
+                artefactId1,
+                std::get<to_underlying(ArgEn::type)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::storage)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
+                emptyStr,
+                now_,
+                MergeId(),
+                false, false, QString(), QString()
+                );
+        artefact1->m_artefactArgData->push_back(arg.release());
+    }
+    static const int objectArtefactId1 = 1;
+    auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
+                objectArtefactId1,
+                effectId_,
+                artefactId1,
+                objectArtefactStep0,
+                artefact1.release(),
+                MergeId()
+                );
+    effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
+
+    // fragment shader artefact
+    static const int artefactId2 = 2;
+    static const char *artefactName2 = "fragment shader";
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::shaderFragmet;
+    auto artefact2 = std::make_unique<ArtefactData>(
+                artefactId2,
+                artefactName2,
+                names::baseFragmentShaderFilename,
+                emptyStr,
+                artefactType2,
+                emptyStr,
+                now_,
+                MergeId()
+                );
+    static const int objectArtefactId2 = 2;
+    auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
+                objectArtefactId2,
+                effectId_,
+                artefactId2,
+                objectArtefactStep0,
+                artefact2.release(),
+                MergeId()
+                );
+    effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
+
+    return effectObject;
+}
+
+
+std::unique_ptr<EffectData> createTestData1()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 0;
+    static const int objectInfoId = 1;
+    static const char *effectObjectName = "qt logo";
+    static const char *effectObjectProgrammerName = "gtlogo";
+
+    auto effectObject1 = createDrawingQtLogoEffectObject(
+                effectId,
+                now,
+                effectObjectStep0,
+                gen,
+                objectInfoId,
+                effectObjectName,
+                effectObjectProgrammerName
+                );
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now,
+                MergeId()
+                );
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    return effect;
+}
+
 std::unique_ptr<EffectData> createWalkEffectOnePassTestData(
         const QPair<QString,QString> &filenames_,
         const QPair<std::vector<QVector4D>, std::vector<QVector4D>> &coordinates_
@@ -483,12 +673,12 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData(
 namespace drawing_objects
 {
 
-WalkEffectOnePass::WalkEffectOnePass()
+TestsBase::TestsBase()
 {
     m_filesource = createMapFileSource();
 }
 
-void WalkEffectOnePass::initData(const QVector<QPair<QString, QString>>& filenames_,
+void TestsBase::initData(const QVector<QPair<QString, QString>>& filenames_,
                                  const QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>>& coordinates_,
                                  const QDir& sourceImageDir_)
 {
@@ -497,6 +687,20 @@ void WalkEffectOnePass::initData(const QVector<QPair<QString, QString>>& filenam
     m_coordinates = coordinates_;
 }
 
+void BaseTest::initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ /*= 0*/) const
+{
+    Q_UNUSED(argsSetIndex_);
+
+    auto effectObjectsData = createTestData1();
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(m_filesource);
+    drawingDataEffect->initialize(data_);
+}
+
+std::pair<const char *, const char *> BaseTest::getDescription() const
+{
+    return {"BaseTest", "base test"};
+}
 
 void WalkEffectOnePass::initialize(
         drawing_data::QuizImageObjects &data_,
