@@ -21,7 +21,6 @@ namespace drawing_objects
                       const QDir& sourceImageDir_);
     protected:
         QDir m_sourceImageDir;
-        std::shared_ptr<MapFileSource> m_filesource;
         QVector<QPair<QString, QString>> m_filenames;
         QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> m_coordinates;
     };
