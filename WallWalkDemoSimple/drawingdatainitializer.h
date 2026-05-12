@@ -41,8 +41,8 @@ namespace drawing_objects
     };
 }
 
-//using DrawingDataInitializer = drawing_objects::WalkEffectOnePass;
-using DrawingDataInitializer = drawing_objects::BaseTest;
+using DrawingDataInitializer = drawing_objects::WalkEffectOnePass;
+//using DrawingDataInitializer = drawing_objects::BaseTest;
 
 
 #endif // DRAWINGDATAINITIALIZER_H
