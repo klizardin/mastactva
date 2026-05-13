@@ -710,8 +710,6 @@ void WalkEffectOnePass::initialize(
     Q_UNUSED(argsSetIndex_);
     Q_UNUSED(data_);
 
-    qDebug() << m_filenames.front().first;
-    qDebug() << m_filenames.front().second;
     auto effectObjectsData = createWalkEffectOnePassTestData(m_filenames.front(), m_coordinates.front());
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(m_filesource);
