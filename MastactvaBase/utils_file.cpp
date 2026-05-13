@@ -83,7 +83,8 @@ void convertJsonResultToCoordinates(const QJsonValue &value_, std::vector<QVecto
 
 QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> getCoordinates(
         const QJsonDocument& configuration_,
-        QVector<QPair<QString, QString>>& resultPairs_
+        QVector<QPair<QString, QString>>& resultPairs_,
+        const QDir& basePath_
         )
 {
     QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> result;
@@ -109,14 +110,14 @@ QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> getCoordinates(
             continue;
         }
         const QJsonObject obj = val.toObject();
-        QString fromName = obj.value(g_demoJsonFieldFromFile).toString();
+        QString fromFile = obj.value(g_demoJsonFieldFromFile).toString();
         QString toFile = obj.value(g_demoJsonFieldToFile).toString();
         const QJsonValue fromValuesArray = obj.value(g_demoJsonFieldFromValues);
         const QJsonValue toValuesArray = obj.value(g_demoJsonFieldToValues);
         std::vector<QVector4D> fromValues, toValues;
         convertJsonResultToCoordinates(fromValuesArray, fromValues);
         convertJsonResultToCoordinates(toValuesArray, toValues);
-        resultPairs_.emplace_back(qMakePair(std::move(fromName), std::move(toFile)));
+        resultPairs_.emplace_back(qMakePair(basePath_.filePath(std::move(fromFile)), basePath_.filePath(std::move(toFile))));
         result.emplace_back(qMakePair(std::move(fromValues), std::move(toValues)));
     }
     return result;

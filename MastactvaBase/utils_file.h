@@ -7,12 +7,14 @@
 #include <QVector>
 #include <QVector4D>
 #include <QJsonDocument>
+#include <QDir>
 
 QVector<QStringList> getBunchOfImages(const QStringList& images_, int bunchSize);
 QVector<QPair<QString, QString>> getImagesPairs(const QVector<QStringList>& bunchOfImages_, int bunchSize_);
 QVector<QPair<std::vector<QVector4D>, std::vector<QVector4D>>> getCoordinates(
         const QJsonDocument& configuration_,
-        QVector<QPair<QString, QString>>& resultPairs_
+        QVector<QPair<QString, QString>>& resultPairs_,
+        const QDir& basePath_
         );
 
 #endif // UTILS_FILE_H

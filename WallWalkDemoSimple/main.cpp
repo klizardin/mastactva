@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
     QuizImageQWindowSingleThread window(QStringLiteral("qrc:/qml/quizImage.qml"), false);
     QVector<QPair<QString, QString>> resultPairs;
-    auto coordinates = getCoordinates(configuration, resultPairs);
+    auto coordinates = getCoordinates(configuration, resultPairs, sourceImageDir);
     window.initData(resultPairs, coordinates, sourceImageDir);
     // set default size
     window.resize(800, 600);
