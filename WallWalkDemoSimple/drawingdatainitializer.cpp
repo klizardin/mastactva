@@ -675,6 +675,7 @@ namespace drawing_objects
 
 TestsBase::TestsBase()
 {
+    m_filesource = createMapFileSource();
 }
 
 void TestsBase::initData(const QVector<QPair<QString, QString>>& filenames_,
@@ -690,10 +691,9 @@ void BaseTest::initialize(drawing_data::QuizImageObjects &data_, int argsSetInde
 {
     Q_UNUSED(argsSetIndex_);
 
-    std::shared_ptr<MapFileSource> filesource = createMapFileSource();
     auto effectObjectsData = createTestData1();
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
-    drawingDataEffect->init(filesource);
+    drawingDataEffect->init(m_filesource);
     drawingDataEffect->initialize(data_);
 }
 
@@ -710,12 +710,9 @@ void WalkEffectOnePass::initialize(
     Q_UNUSED(argsSetIndex_);
     Q_UNUSED(data_);
 
-    std::shared_ptr<MapFileSource> filesource = createMapFileSource();
-    filesource->loadImage(m_filenames.front().first, m_sourceImageDir);
-    filesource->loadImage(m_filenames.front().second, m_sourceImageDir);
     auto effectObjectsData = createWalkEffectOnePassTestData(m_filenames.front(), m_coordinates.front());
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
-    drawingDataEffect->init(filesource);
+    drawingDataEffect->init(m_filesource);
     drawingDataEffect->initialize(data_);
 }
 
