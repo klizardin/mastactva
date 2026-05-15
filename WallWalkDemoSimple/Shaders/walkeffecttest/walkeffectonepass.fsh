@@ -47,7 +47,7 @@ void main(void)
     }
     else
     {
-        mediump float t = ((exp(10.0*renderT - 5.0) - exp(-10.0*renderT + 5.0))/(exp(10.0*renderT - 5.0) + exp(-10.0*renderT + 5.0)) + 1.0) * 0.5;
+        mediump float t = renderT;//((exp(10.0*renderT - 5.0) - exp(-10.0*renderT + 5.0))/(exp(10.0*renderT - 5.0) + exp(-10.0*renderT + 5.0)) + 1.0) * 0.5;
         gl_FragColor = vec4(
             mix(sfrom.rgb, sto.rgb, t) * renderOpacity,
             1.0);
