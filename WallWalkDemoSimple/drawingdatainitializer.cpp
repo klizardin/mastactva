@@ -615,8 +615,8 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData(
     createGeometry(10, 10, coordinates_.first, fromCoords);
     createGeometry(10, 10, coordinates_.second, toCoords);
 
-    //qDebug() << "fromCoords" << fromCoords;
-    //qDebug() << "toCoords" << toCoords;
+    qDebug() << "fromCoords" << fromCoords;
+    qDebug() << "toCoords" << toCoords;
 
     auto effectObject0 = createWalkEffectOnePassTestObject(
                 effectId,
