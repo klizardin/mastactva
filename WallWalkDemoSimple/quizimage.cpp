@@ -360,7 +360,7 @@ void QuizImage::updateT()
         m_pauseScalledTime = false;
     }
     m_millisecondsSinceEpoche += (qint64)(ct*1000.0);
-    qDebug() << t;
+    //qDebug() << t;
     setT(t);
 }
 
