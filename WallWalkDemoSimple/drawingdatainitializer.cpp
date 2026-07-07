@@ -611,6 +611,8 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData(
     const QDateTime now = QDateTime::currentDateTime();
     static const int effectObjectStep0 = 0;
 
+    qDebug() << filenames_;
+
     std::vector<GLfloat> fromCoords, toCoords;
     createGeometry(10, 10, coordinates_.first, fromCoords);
     createGeometry(10, 10, coordinates_.second, toCoords);
