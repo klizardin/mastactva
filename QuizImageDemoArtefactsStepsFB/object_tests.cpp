@@ -3741,14 +3741,22 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
     auto modules = std::make_shared<AddonModules>();
     modules->create(addonsDir);
 
+    const QString image1 = "/home/klizardin/tmpgaleries/gallerytest002/photo_2025-02-20_06-39-33.jpg";
+    const QString image2 = "/home/klizardin/tmpgaleries/gallerytest002/photo_2025-02-20_06-40-28.jpg";
+
     //QString inputJson = QString(g_inputJson).arg(
     //            absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
     //            absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
     //            absoluteHomePath("~/tmp/")
     //            );
+    //QString inputJson = QString(g_inputJson).arg(
+    //            absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+    //            absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+    //            absoluteHomePath("~/tmp/")
+    //            );
     QString inputJson = QString(g_inputJson).arg(
-                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath(image1),
+                absoluteHomePath(image2),
                 absoluteHomePath("~/tmp/")
                 );
     //20220116_145321.jpg",
@@ -3779,8 +3787,10 @@ std::unique_ptr<EffectData> createWalkEffectOnePassTestData()
                 g_walkEffectOnePassFragmentShaderFilename,
                 //absoluteHomePath("~/Pictures/test_images/20220116_145321.jpg"),
                 //absoluteHomePath("~/Pictures/test_images/20220116_145325.jpg"),
-                absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
-                absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/from_image.jpg"),
+                //absoluteHomePath("~/Pictures/test_images/to_image.jpg"),
+                absoluteHomePath(image1),
+                absoluteHomePath(image2),
                 fromCoords,
                 toCoords,
                 QPoint(10, 10)
