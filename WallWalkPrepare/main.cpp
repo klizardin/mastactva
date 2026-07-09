@@ -126,10 +126,17 @@ int main(int argc, char *argv[])
                 QCoreApplication::translate("main", "bunch")
                 );
     cmdsParser.addOption(bunchSizeOption);
+    QCommandLineOption traceOption(
+                QStringList() << "t" << "trace",
+                QCoreApplication::translate("main", "flag if trace is needed"),
+                QCoreApplication::translate("main", "trace")
+                );
+    cmdsParser.addOption(traceOption);
     cmdsParser.process(app);
 
     const QString sourceDir = cmdsParser.value(sourceDirOption);
     const int bunchSize = cmdsParser.value(bunchSizeOption).toInt();
+    const bool traceCreation = cmdsParser.value(traceOption).toInt() != 0;
 
     qInfo() << "Source directory: " << sourceDir << " bunch size: " << bunchSize;
 
@@ -153,13 +160,19 @@ int main(int argc, char *argv[])
     {
         const QFileInfo fi1(pair.first);
         const QFileInfo fi2(pair.second);
-        const QDir outputPathForFiles = absoluteHomePath("~/tmp/");
-        outputPathForFiles.mkdir(fi1.baseName() + "_" + fi2.baseName());
+        const QDir outputBasePathForFiles = absoluteHomePath("~/tmp/");
+        if(traceCreation)
+        {
+            outputBasePathForFiles.mkdir(fi1.baseName() + "_" + fi2.baseName());
+        }
+        const QDir outputPathForFiles = absoluteHomePath("~/tmp/")
+                + (traceCreation? fi1.baseName() + "_" + fi2.baseName() + "/" : QString())
+                ;
         const QString inputJson = QString(g_inputJson).arg(
                     sourceImageDir.filePath(pair.first),
                     sourceImageDir.filePath(pair.second),
-                    absoluteHomePath("~/tmp/") + fi1.baseName() + "_" + fi2.baseName() + "/",
-                    "true"
+                    outputPathForFiles.path(),
+                    traceCreation ? "true": "false"
                     );
         qInfo() << index << ":" << pair.first << "," << pair.second;
 
