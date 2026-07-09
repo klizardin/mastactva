@@ -49,7 +49,7 @@ static const char * g_inputJson =
             "\"find_rects_rect_size_coef\":9E-1,"
             "\"find_rects_max_rect_count\":10,"
             "\"find_transform_size_coef\":5E-1,"
-            "\"trace_operations_with_images\":false,"
+            "\"trace_operations_with_images\":%4,"
             "\"trace_operations_with_messages\":false,"
             "\"mode\":\"generated_rects\","
             "\"test_is_convex\":true,"
@@ -151,10 +151,15 @@ int main(int argc, char *argv[])
     int index = 0;
     for(const auto& pair : pairs)
     {
+        const QFileInfo fi1(pair.first);
+        const QFileInfo fi2(pair.second);
+        const QDir outputPathForFiles = absoluteHomePath("~/tmp/");
+        outputPathForFiles.mkdir(fi1.baseName() + "_" + fi2.baseName());
         const QString inputJson = QString(g_inputJson).arg(
                     sourceImageDir.filePath(pair.first),
                     sourceImageDir.filePath(pair.second),
-                    absoluteHomePath("~/tmp/")
+                    absoluteHomePath("~/tmp/") + fi1.baseName() + "_" + fi2.baseName() + "/",
+                    "true"
                     );
         qInfo() << index << ":" << pair.first << "," << pair.second;
 
