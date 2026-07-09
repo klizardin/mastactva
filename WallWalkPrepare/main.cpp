@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
         const QString inputJson = QString(g_inputJson).arg(
                     sourceImageDir.filePath(pair.first),
                     sourceImageDir.filePath(pair.second),
-                    outputPathForFiles.path(),
+                    outputPathForFiles.absolutePath() + "/",
                     traceCreation ? "true": "false"
                     );
         qInfo() << index << ":" << pair.first << "," << pair.second;
