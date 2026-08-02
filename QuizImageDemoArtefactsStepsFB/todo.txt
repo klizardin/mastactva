@@ -205,6 +205,7 @@ opencv addon test
             - simpilify data structures
     * reimplemnt constant reallocation
     * debug effect ..
+    * updating image processor .
 - new add-on
     - learn how to build ...
 
