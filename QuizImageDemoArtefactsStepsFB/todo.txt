@@ -206,7 +206,8 @@ opencv addon test
     * reimplemnt constant reallocation
     * debug effect ..
     * updating image processor ...
-        * feature loading
+        * loading a feature model
+        * edge detections experfiments
 - new add-on
     - learn how to build ...
 
