@@ -205,9 +205,10 @@ opencv addon test
             - simpilify data structures
     * reimplemnt constant reallocation
     * debug effect ..
-    * updating image processor ...
+    * updating image processor .
         * loading a feature model
         * edge detections experfiments
+        * algorithm of minimizing the edge to detect
 - new add-on
     - learn how to build ...
 
